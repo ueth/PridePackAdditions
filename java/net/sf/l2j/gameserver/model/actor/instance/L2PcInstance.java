@@ -1011,7 +1011,7 @@ public void setIsRespawnRequested(final boolean val)
 
 protected boolean _inventoryDisable = false;
 
-protected Map<Integer, L2CubicInstance> _cubics = new FastMap<Integer, L2CubicInstance>().shared();
+protected Map<Integer, L2CubicInstance> _cubics = new FastMap<Integer, L2CubicInstance>();
 
 /** Event parameters */
 public int eventX;

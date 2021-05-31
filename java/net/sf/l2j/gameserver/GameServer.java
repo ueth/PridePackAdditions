@@ -458,7 +458,7 @@ public GameServer() throws Exception
 	
 	/** Initialize Vote System */
 	//Util.printSection("Vote Reward");
-	VoteSystem.initialize();
+	//VoteSystem.initialize();
 	
 	try
 	{
