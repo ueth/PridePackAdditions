@@ -38,7 +38,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 
 public class WorldObjectMap<T extends L2Object> extends L2ObjectMap<T>
 {
-    Map<Integer, T> _objectMap = new FastMap<Integer, T>().shared();
+    Map<Integer, T> _objectMap = new FastMap<Integer, T>();
 
     /* (non-Javadoc)
      * @see net.sf.l2j.util.L2ObjectMap#size()

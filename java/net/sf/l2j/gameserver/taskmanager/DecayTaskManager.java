@@ -29,7 +29,7 @@ public class DecayTaskManager
 {
 	protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
 	
-	protected Map<L2Character, Long> _decayTasks = new FastMap<L2Character, Long>().shared();
+	protected Map<L2Character, Long> _decayTasks = new FastMap<L2Character, Long>();
 	
 	public static final int RAID_BOSS_DECAY_TIME = 30000;
 	public static final int ATTACKABLE_DECAY_TIME = 8500;

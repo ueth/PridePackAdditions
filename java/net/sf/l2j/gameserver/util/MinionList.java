@@ -46,7 +46,7 @@ private static Logger _log = Logger.getLogger(L2MonsterInstance.class.getName())
 
 /** List containing the current spawned minions for this L2MonsterInstance */
 private final List<L2MinionInstance> minionReferences;
-protected FastMap<Long, Integer> _respawnTasks = new FastMap<Long, Integer>().shared();
+protected FastMap<Long, Integer> _respawnTasks = new FastMap<Long, Integer>();
 private final L2MonsterInstance master;
 
 public MinionList(L2MonsterInstance pMaster)

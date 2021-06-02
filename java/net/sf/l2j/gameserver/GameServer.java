@@ -19,6 +19,7 @@ import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.PvPBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.RaidStatusBBSManager;
+import net.sf.l2j.gameserver.custom.battlepass.BattlePassTable;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.ArmorSetsTable;
@@ -459,6 +460,8 @@ public GameServer() throws Exception
 	/** Initialize Vote System */
 	//Util.printSection("Vote Reward");
 	//VoteSystem.initialize();
+	BattlePassTable.initBattlePasses();
+	IconTable.getInstance().reload();
 	
 	try
 	{

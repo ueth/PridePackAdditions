@@ -23,6 +23,8 @@ import net.sf.l2j.gameserver.communitybbs.Manager.RaidStatusBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.TopBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.TopicBBSManager;
+import net.sf.l2j.gameserver.communitybbs.Manager.custom.BattlePassBBSManager;
+import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
 import net.sf.l2j.gameserver.handler.voicedcommandhandlers.Wedding;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.actor.L2Character;
@@ -70,7 +72,10 @@ public void handleCommands(L2GameClient client, String command)
 		RegionBBSManager.getInstance().parsecmd(command, activeChar);
 		break;
 	case 2: // new
-		if (command.startsWith("_bbsclan"))
+		if(command.startsWith("_bbsBattlePass")){
+			BattlePassBBSManager.getInstance().parsecmd(command,activeChar);
+		}
+		else if (command.startsWith("_bbsclan"))
 		{
 			ClanBBSManager.getInstance().parsecmd(command, activeChar);
 		}
@@ -110,126 +115,7 @@ public void handleCommands(L2GameClient client, String command)
 		{
 			ClanBBSManager.getInstance().parsecmd(command, activeChar);
 		}
-		else if (command.startsWith("_bbsengage"))
-		{
-			Wedding.engage(activeChar);
-		}
-		else if (command.startsWith("_bbsdivorce"))
-		{
-			Wedding.divorce(activeChar);
-		}
-		else if (command.startsWith("_bbsgotolove"))
-		{
-			Wedding.goToLove(activeChar);
-		}
-		else if (command.startsWith("_bbstradeoff"))
-		{
-			activeChar.setTradeRefusal(true);
-		}
-		else if (command.startsWith("_bbstradeon"))
-		{
-			activeChar.setTradeRefusal(false);
-		}
-		else if (command.startsWith("_bbsaccd"))
-		{
-			byte i = activeChar.getAccDisplay();
-			i = (byte) (i + 1);
-			if (i > 3)
-				i = 0;
-			
-			activeChar.setAccDisplay(i);
-			
-			switch (i)
-			{
-			case 0:
-				activeChar.sendMessage("Displaying both of your accessories");
-				break;
-			case 1:
-				activeChar.sendMessage("Displaying only your hair accessory");
-				break;
-			case 2:
-				activeChar.sendMessage("Displaying only your face accessory");
-				break;
-			case 3:
-				activeChar.sendMessage("Displaying none of your accessories");
-				break;
-			}
-			activeChar.broadcastUserInfo();
-		}
-		else if (command.startsWith("_bbsroll"))
-		{
-			if (!activeChar.getFloodProtectors().getRollDice().tryPerformAction("roll dice"))
-				return;
-			
-			final int number = Rnd.get(1, 100);
-			
-			SystemMessage sm = new SystemMessage(SystemMessageId.C1_ROLLED_S2);
-			sm.addCharName(activeChar);
-			sm.addNumber(number);
-			
-			activeChar.sendPacket(sm);
-			if (activeChar.isInsideZone(L2Character.ZONE_PEACE))
-				Broadcast.toKnownPlayers(activeChar, sm);
-			else if (activeChar.isInParty())
-				activeChar.getParty().broadcastToPartyMembers(activeChar, sm);
-		}
-		else if (command.startsWith("_bbslockdown"))
-		{
-			double timeInHours = 4.2;
-						
-			if (timeInHours < 0.1 || timeInHours > 504)
-			{
-				activeChar.sendMessage("It's a minimum of 0.1 and a maximum of 504 hours");
-			}
-			
-			activeChar.doLockdown(timeInHours);
-		}
-		else if (command.startsWith("_bbslockdowntime"))
-		{
-			if (activeChar.isAccountLockedDown())
-				activeChar.sendLockdownTime();
-			else
-				activeChar.sendMessage("Your account is not locked down");
-		}
-		else if (command.startsWith("_bbsadenaclanwh"))
-		{
-			final L2Clan clan = activeChar.getClan();
-			
-			if (clan == null)
-			{
-				activeChar.sendMessage("You don't have a clan");
-			}
-			
-			long num = Long.MAX_VALUE;
-			
-			
-			if (num <= 100 || num > Long.MAX_VALUE)
-			{
-				activeChar.sendMessage("Adena value has to be greater than 100");
-			}
-			
-			if (activeChar.getInventory().getInventoryItemCount(57, 0) >= num)
-			{
-				final ItemContainer wh = clan.getWarehouse();
-				
-				if (wh != null)
-				{
-					InventoryUpdate iu = new InventoryUpdate();
-					
-					final int adenaObjId = activeChar.getInventory().getAdenaInstance().getObjectId();
-					
-					activeChar.getInventory().transferItem("ClanWH deposit Adena", adenaObjId, num, wh, activeChar, null);
-					activeChar.getInventory().updateDatabase();
-					
-					activeChar.sendPacket(iu);
-					activeChar.sendMessage(num+" Adenas has been deposited to your clan warehouse");
-				}
-			}
-			else
-			{
-				activeChar.sendMessage("You don't have that much Adena");
-			}
-		}
+
 		else
 		{
 			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command

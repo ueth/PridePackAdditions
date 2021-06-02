@@ -42,7 +42,7 @@ public class WorldObjectSet<T extends L2Object> extends L2ObjectSet<T>
 
     public WorldObjectSet()
     {
-        _objectMap = new FastMap<Integer, T>().shared();
+        _objectMap = new FastMap<Integer, T>();
     }
 
     /* (non-Javadoc)

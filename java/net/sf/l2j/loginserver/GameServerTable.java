@@ -55,7 +55,7 @@ public class GameServerTable
 	private static Map<Integer, String> _serverNames = new FastMap<Integer, String>();
 	
 	// Game Server Table
-	private Map<Integer, GameServerInfo> _gameServerTable = new FastMap<Integer, GameServerInfo>().shared();
+	private Map<Integer, GameServerInfo> _gameServerTable = new FastMap<Integer, GameServerInfo>();
 	
 	// RSA Config
 	private static final int KEYS_SIZE = 10;

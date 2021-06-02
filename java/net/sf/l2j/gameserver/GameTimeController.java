@@ -31,7 +31,7 @@ protected static int _gameTicks;
 protected static long _gameStartTime;
 protected static boolean _isNight = false;
 
-private static Map<Integer, L2Character> _movingObjects = new FastMap<Integer, L2Character>().shared();
+private static Map<Integer, L2Character> _movingObjects = new FastMap<>();
 
 protected static TimerThread _timer;
 private ScheduledFuture<?> _timerWatcher;

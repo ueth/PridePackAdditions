@@ -329,6 +329,7 @@ protected void runImpl()
 	sendPacket(new SystemMessage(SystemMessageId.WELCOME_TO_LINEAGE));
 	
 	activeChar.updateEffectIcons();
+	activeChar.getBattlePass().loadPreviousBattlePasses(activeChar);
 	
 	activeChar.sendPacket(new EtcStatusUpdate(activeChar));
 	

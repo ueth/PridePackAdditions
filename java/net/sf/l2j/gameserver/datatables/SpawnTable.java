@@ -19,7 +19,7 @@ public class SpawnTable
 {
 private static Logger _log = Logger.getLogger(SpawnTable.class.getName());
 
-private final Map<Integer, L2Spawn> _spawntable = new FastMap<Integer, L2Spawn>().shared();
+private final Map<Integer, L2Spawn> _spawntable = new FastMap<>();
 private int _npcSpawnCount;
 private int _customSpawnCount;
 @SuppressWarnings("unused")

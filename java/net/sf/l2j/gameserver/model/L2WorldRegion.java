@@ -59,8 +59,8 @@ private final FastList<L2ZoneType>			_zones;
 
 public L2WorldRegion(int pTileX, int pTileY)
 {
-	_allPlayable = new FastMap<Integer, L2Playable>().shared();
-	_visibleObjects = new FastMap<Integer, L2Object>().shared();
+	_allPlayable = new FastMap<Integer, L2Playable>();
+	_visibleObjects = new FastMap<Integer, L2Object>();
 	_surroundingRegions = new ArrayList<L2WorldRegion>();
 	
 	_tileX = pTileX;

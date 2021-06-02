@@ -80,9 +80,9 @@ private L2WorldRegion[][] _worldRegions;
 private L2World()
 {
 	//_allGms	 = new FastMap<String, L2PcInstance>();
-	_allPlayers = new FastMap<Integer, L2PcInstance>().shared();
-	_petsInstance = new FastMap<Integer, L2PetInstance>().shared();
-	_allObjects = new FastMap<Integer, L2Object>().shared();
+	_allPlayers = new FastMap<>();
+	_petsInstance = new FastMap<>();
+	_allObjects = new FastMap<>();
 	
 	initRegions();
 }

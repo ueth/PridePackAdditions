@@ -108,21 +108,6 @@ private void showOldCommunityPI(L2PcInstance activeChar, String name)
 		String sex = "Male";
 		if (player.getAppearance().getSex())
 			sex = "Female";
-		/*			String levelApprox = "low";
-			if (player.getLevel() >= 95)
-				levelApprox = "maxed";
-			else if (player.getLevel() >= 93)
-				levelApprox = "extremely high";
-			else if (player.getLevel() >= 90)
-				levelApprox = "super high";
-			else if (player.getLevel() >= 86)
-				levelApprox = "very high";
-			else if (player.getLevel() >= 79)
-				levelApprox = "high";
-			else if (player.getLevel() >= 50)
-				levelApprox = "medium";
-			else if (player.getLevel() >= 20)
-				levelApprox = "low";*/
 		
 		StringUtil.append(htmlCode, "<br><center><table border=0 width=400><tr><td align=right><font color=FFF8C6>", player.getName(), " (", sex, " ", player.getTemplate().className, ")</font></td></tr>");
 		
@@ -290,8 +275,8 @@ public void parsewrite(String ar1, String ar2, String ar3, String ar4, String ar
 }
 private int _onlineCount = 0;
 private int _onlineCountGm = 0;
-private static FastMap<Integer, FastList<L2PcInstance>> _onlinePlayers = new FastMap<Integer, FastList<L2PcInstance>>().shared();
-private static FastMap<Integer, FastMap<String, String>> _communityPages = new FastMap<Integer, FastMap<String, String>>().shared();
+private static FastMap<Integer, FastList<L2PcInstance>> _onlinePlayers = new FastMap<>();
+private static FastMap<Integer, FastMap<String, String>> _communityPages = new FastMap<>();
 
 /**
  * @return

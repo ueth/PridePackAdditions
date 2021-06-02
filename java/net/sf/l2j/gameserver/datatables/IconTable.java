@@ -39,7 +39,7 @@ public class IconTable
 	
 	protected IconTable()
 	{
-		_icons = new FastMap<Integer, String>();
+		_icons = new FastMap<>();
 		load();
 	}
 	
@@ -57,8 +57,8 @@ public class IconTable
 			con = L2DatabaseFactory.getInstance().getConnection();
 			final PreparedStatement stmt = con.prepareStatement("SELECT * FROM icons");
 			final ResultSet rset = stmt.executeQuery();
-			int id = 1;
-			String value = null;
+			int id;
+			String value;
 			
 			while (rset.next())
 			{

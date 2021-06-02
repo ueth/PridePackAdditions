@@ -67,10 +67,10 @@ private final static int LOGIN_TIMEOUT = 60 * 1000;
 protected FastSet<L2LoginClient> _clients = new FastSet<L2LoginClient>();
 
 /** Authed Clients on LoginServer*/
-protected FastMap<String, L2LoginClient> _loginServerClients = new FastMap<String, L2LoginClient>().shared();
+protected FastMap<String, L2LoginClient> _loginServerClients = new FastMap<String, L2LoginClient>();
 
-private Map<String, BanInfo> _bannedIps = new FastMap<String, BanInfo>().shared();
-private Map<byte[], BanInfo> _bannedHwid = new FastMap<byte[], BanInfo>().shared();
+private Map<String, BanInfo> _bannedIps = new FastMap<String, BanInfo>();
+private Map<byte[], BanInfo> _bannedHwid = new FastMap<byte[], BanInfo>();
 private Map<InetAddress, FailedLoginAttempt> _hackProtection;
 
 protected ScrambledKeyPair[] _keyPairs;
@@ -562,7 +562,7 @@ public ScrambledKeyPair getScrambledRSAKeyPair()
 
 //private static final String _badChars[] =
 //{
-//	"á","à","é","è","í","ó","ò","ú","ù","ý","`y"
+//	"ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","`y"
 //};
 
 public static String removeAccents(String text) {
@@ -626,7 +626,7 @@ public boolean loginValid(String user, String password, L2LoginClient client)// 
 		{
 			if (Config.AUTO_CREATE_ACCOUNTS)
 			{
-				if ((user.length() >= 2) && (user.length() <= 14) && !Pattern.matches(".*[éèáàúùíìóòúùý].*", user))
+				if ((user.length() >= 2) && (user.length() <= 14) && !Pattern.matches(".*[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½].*", user))
 				{
 					statement = con.prepareStatement("INSERT INTO accounts (login,password,lastactive,accessLevel,lastIP,pass) values(?,?,?,?,?,?)");
 					statement.setString(1, user);
@@ -665,7 +665,7 @@ public boolean loginValid(String user, String password, L2LoginClient client)// 
 			
 			ok = true;
 			
-			if (Pattern.matches(".*[éèáàúùíìóòúùý].*", user)) 
+			if (Pattern.matches(".*[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½].*", user)) 
 			{
 				_log.warning("Invalid username use attempt: " + user);
 				return false;

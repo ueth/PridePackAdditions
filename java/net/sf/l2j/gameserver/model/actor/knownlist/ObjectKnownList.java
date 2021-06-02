@@ -193,7 +193,7 @@ public int getDistanceToWatchObject(L2Object object) { return 0; }
 /** Return the _knownObjects containing all L2Object known by the L2Character. */
 public final Map<Integer, L2Object> getKnownObjects()
 {
-	if (_knownObjects == null) _knownObjects = new FastMap<Integer, L2Object>().shared();
+	if (_knownObjects == null) _knownObjects = new FastMap<Integer, L2Object>();
 	return _knownObjects;
 }
 }

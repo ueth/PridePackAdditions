@@ -203,7 +203,7 @@ private boolean _isImmobilized                          = false;
  /** FastMap(Integer, L2Skill) containing all skills of the L2Character */
  private final Map<Integer, L2Skill> _skills;
  
- protected final Map<Integer, Integer[]> _retrySkills = new FastMap<Integer, Integer[]>().shared();
+ protected final Map<Integer, Integer[]> _retrySkills = new FastMap<Integer, Integer[]>();
  
  /** FastMap containing the active chance skills on this character */
  protected ChanceSkillList _chanceSkills;
@@ -437,7 +437,7 @@ private boolean _isImmobilized                          = false;
 		 else
 		 {
 			 // Initialize the FastMap _skills to null
-			 _skills = new FastMap<Integer,L2Skill>().shared();
+			 _skills = new FastMap<Integer,L2Skill>();
 		 }
 		 
 		 Formulas.addFuncsToNewCharacter(this);

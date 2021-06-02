@@ -12,6 +12,7 @@ import net.sf.l2j.gameserver.ai.L2AttackableAI;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2FortSiegeGuardAI;
 import net.sf.l2j.gameserver.ai.L2SiegeGuardAI;
+import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
 import net.sf.l2j.gameserver.datatables.EventDroplist;
 import net.sf.l2j.gameserver.datatables.EventDroplist.DateDrop;
 import net.sf.l2j.gameserver.datatables.ItemLists;
@@ -261,7 +262,7 @@ public class L2Attackable extends L2Npc
 
 	}
 
-	private final FastMap<L2Character, AggroInfo> _aggroList = new FastMap<L2Character, AggroInfo>().shared();
+	private final FastMap<L2Character, AggroInfo> _aggroList = new FastMap<L2Character, AggroInfo>();
 
 	public final FastMap<L2Character, AggroInfo> getAggroList()
 	{
@@ -311,7 +312,7 @@ public class L2Attackable extends L2Npc
 
 	private boolean _absorbed;
 
-	private final FastMap<L2PcInstance, AbsorberInfo> _absorbersList = new FastMap<L2PcInstance, AbsorberInfo>().shared();
+	private final FastMap<L2PcInstance, AbsorberInfo> _absorbersList = new FastMap<L2PcInstance, AbsorberInfo>();
 
 	private boolean _mustGiveExpSp;
 
@@ -329,7 +330,6 @@ public class L2Attackable extends L2Npc
 	 * 
 	 * @param objectId
 	 *            Identifier of the object to initialized
-	 * @param L2NpcTemplate
 	 *            Template to apply to the NPC
 	 */
 	public L2Attackable(int objectId, L2NpcTemplate template)
@@ -419,8 +419,7 @@ public class L2Attackable extends L2Npc
 	/**
 	 * Reduce the current HP of the L2Attackable, update its _aggroList and
 	 * launch the doDie Task if necessary.
-	 * 
-	 * @param i
+	 *
 	 *            The HP decrease value
 	 * @param attacker
 	 *            The L2Character who attacks
@@ -534,6 +533,13 @@ public class L2Attackable extends L2Npc
 		// Kill the L2NpcInstance (the corpse disappeared after 7 seconds)
 		if (!super.doDie(killer))
 			return false;
+
+		if(killer instanceof L2PcInstance){
+			L2PcInstance player = (L2PcInstance) killer;
+			for(BattlePass battlePass : player.getBattlePass().getBattlePasses()){
+				battlePass.increasePoints();
+			}
+		}
 
 		try
 		{
@@ -892,7 +898,6 @@ public class L2Attackable extends L2Npc
 	 * 
 	 * @param attacker
 	 *            The L2Character that gave damages to this L2Attackable
-	 * @param damage
 	 *            The number of damages given by the attacker L2Character
 	 * @param aggro
 	 *            The hate (=damage) given by the attacker L2Character
@@ -1216,7 +1221,6 @@ public class L2Attackable extends L2Npc
 	 *            The L2DropData count is being calculated for
 	 * @param lastAttacker
 	 *            The L2PcInstance that has killed the L2Attackable
-	 * @param deepBlueDrop
 	 *            Factor to divide the drop chance
 	 * @param levelModifier
 	 *            level modifier in %'s (will be subtracted from drop chance)
@@ -1322,12 +1326,10 @@ public class L2Attackable extends L2Npc
 	 * Calculates quantity of items for specific drop CATEGORY according to
 	 * current situation Only a max of ONE item from a category is allowed to be
 	 * dropped.
-	 * 
-	 * @param drop
+	 *
 	 *            The L2DropData count is being calculated for
 	 * @param lastAttacker
 	 *            The L2PcInstance that has killed the L2Attackable
-	 * @param deepBlueDrop
 	 *            Factor to divide the drop chance
 	 * @param levelModifier
 	 *            level modifier in %'s (will be subtracted from drop chance)
@@ -2733,8 +2735,7 @@ public class L2Attackable extends L2Npc
 	/**
 	 * Calculate the leveling chance of Soul Crystals based on the attacker that
 	 * killed this L2Attackable
-	 * 
-	 * @param attacker
+	 *
 	 *            The player that last killed this L2Attackable $ Rewrite
 	 *            06.12.06 - Yesod
 	 */
@@ -2909,7 +2910,6 @@ public class L2Attackable extends L2Npc
 	 * @param diff
 	 *            The difference of level between attacker (L2PcInstance,
 	 *            L2SummonInstance or L2Party) and the L2Attackable
-	 * @param damage
 	 *            The damages given by the attacker (L2PcInstance,
 	 *            L2SummonInstance or L2Party)
 	 * 

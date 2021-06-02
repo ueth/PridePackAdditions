@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledFuture;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.L2AttackableAI;
+import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
 import net.sf.l2j.gameserver.model.actor.L2Attackable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Playable;
@@ -44,7 +45,6 @@ private static final int MONSTER_MAINTENANCE_INTERVAL = 1000;
  * <li>Create a RandomAnimation Task that will be launched after the calculated delay if the server allow it </li><BR><BR>
  *
  * @param objectId Identifier of the object to initialized
- * @param L2NpcTemplate Template to apply to the NPC
  */
 public L2MonsterInstance(int objectId, L2NpcTemplate template)
 {
@@ -224,6 +224,8 @@ public boolean doDie(L2Character killer)
 		player = ((L2Summon) killer).getOwner();
 	
 	player.setDamageCount(0);*/
+
+
 	
 	if (_minionMaintainTask != null)
 		_minionMaintainTask.cancel(true); // doesn't do it?

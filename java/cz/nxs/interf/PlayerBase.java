@@ -17,7 +17,7 @@ public class PlayerBase implements IPlayerBase
 	
 	public PlayerBase()
 	{
-		players = new FastMap<Integer, PlayerEventInfo>().shared();
+		players = new FastMap<Integer, PlayerEventInfo>();
 	}
 	
 	public void load()

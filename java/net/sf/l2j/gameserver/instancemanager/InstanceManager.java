@@ -41,8 +41,8 @@ import net.sf.l2j.gameserver.model.entity.Instance;
 public class InstanceManager
 {
 private final static Logger _log = Logger.getLogger(InstanceManager.class.getName());
-private final FastMap<Integer, Instance> _instanceList = new FastMap<Integer, Instance>().shared();
-private final FastMap<Integer, InstanceWorld> _instanceWorlds = new FastMap<Integer, InstanceWorld>().shared();
+private final FastMap<Integer, Instance> _instanceList = new FastMap<Integer, Instance>();
+private final FastMap<Integer, InstanceWorld> _instanceWorlds = new FastMap<Integer, InstanceWorld>();
 private int _dynamic = 300000;
 
 // InstanceId Names

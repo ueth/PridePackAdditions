@@ -55,8 +55,8 @@ public boolean _allowShops = true;
 protected L2ZoneType(int id)
 {
 	_id = id;
-	_characterList = new FastMap<Integer, L2Character>().shared();
-	_zones = new FastMap<Integer, Integer>().shared();
+	_characterList = new FastMap<Integer, L2Character>();
+	_zones = new FastMap<Integer, Integer>();
 	
 	_checkAffected = false;
 	
