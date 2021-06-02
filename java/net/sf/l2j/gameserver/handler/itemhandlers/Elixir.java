@@ -14,6 +14,8 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExUseSharedGroupItem;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class Elixir implements IItemHandler
 {
 	public synchronized void useItem(L2Playable playable, L2ItemInstance item)
@@ -155,7 +157,7 @@ public class Elixir implements IItemHandler
 	private void reuse(L2PcInstance player,L2Skill skill)
 	{
 		SystemMessage sm = null;
-		FastMap<Integer, TimeStamp> timeStamp = player.getReuseTimeStamp();
+		ConcurrentHashMap<Integer, TimeStamp> timeStamp = player.getReuseTimeStamp();
 		
 		if (timeStamp != null && timeStamp.containsKey(skill.getId()))
 		{

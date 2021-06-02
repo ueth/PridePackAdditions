@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javolution.io.UTF8StreamReader;
@@ -41,8 +42,8 @@ import net.sf.l2j.gameserver.model.entity.Instance;
 public class InstanceManager
 {
 private final static Logger _log = Logger.getLogger(InstanceManager.class.getName());
-private final FastMap<Integer, Instance> _instanceList = new FastMap<Integer, Instance>();
-private final FastMap<Integer, InstanceWorld> _instanceWorlds = new FastMap<Integer, InstanceWorld>();
+private final ConcurrentHashMap<Integer, Instance> _instanceList = new ConcurrentHashMap<Integer, Instance>();
+private final ConcurrentHashMap<Integer, InstanceWorld> _instanceWorlds = new ConcurrentHashMap<Integer, InstanceWorld>();
 private int _dynamic = 300000;
 
 // InstanceId Names
@@ -301,7 +302,7 @@ public Instance getInstance(int instanceid)
 	return _instanceList.get(instanceid);
 }
 
-public FastMap<Integer, Instance> getInstances()
+public ConcurrentHashMap<Integer, Instance> getInstances()
 {
 	return _instanceList;
 }

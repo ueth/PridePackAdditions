@@ -606,9 +606,7 @@ public void run()
 }
 }
 
-/**
- * @param activeChar
- */
+
 private void engage(L2PcInstance cha)
 {
 	int _chaid = cha.getObjectId();
@@ -631,9 +629,7 @@ private void engage(L2PcInstance cha)
 	}
 }
 
-/**
- * @param activeChar partnerid
- */
+
 private void notifyPartner(L2PcInstance cha,int partnerId)
 {
 	if (cha.getPartnerId()!=0)
@@ -657,9 +653,7 @@ private void notifyPartner(L2PcInstance cha,int partnerId)
 	}
 }
 
-/**
- * @param activeChar
- */
+
 private void notifyFriends(L2PcInstance cha)
 {
 	Connection con = null;
@@ -754,9 +748,6 @@ private void notifySponsorOrApprentice(L2PcInstance activeChar)
 }
 
 /*	*//**
- * @param string
- * @return
- * @throws UnsupportedEncodingException
  *//*
 	private String getText(String string)
 	{

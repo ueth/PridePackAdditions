@@ -459,10 +459,10 @@ public GameServer() throws Exception
 	
 	/** Initialize Vote System */
 	//Util.printSection("Vote Reward");
-	//VoteSystem.initialize();
+	VoteSystem.initialize();
 	BattlePassTable.initBattlePasses();
 	IconTable.getInstance().reload();
-	
+
 	try
 	{
 		_log.info("Loading Server Scripts");

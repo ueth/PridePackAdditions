@@ -3,8 +3,9 @@
  */
 package cz.nxs.l2j;
 
-import javolution.util.FastMap;
 import cz.nxs.interf.PlayerEventInfo;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author hNoke
@@ -16,7 +17,7 @@ public interface IPlayerBase
 	
 	public PlayerEventInfo getPlayer(int id);
 	
-	public FastMap<Integer, PlayerEventInfo> getPs();
+	public ConcurrentHashMap<Integer, PlayerEventInfo> getPs();
 	
 	public void eventEnd(PlayerEventInfo player);
 	public void playerDisconnected(PlayerEventInfo player);

@@ -28,6 +28,7 @@ import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -86,7 +87,7 @@ public class LoginServerThread extends Thread
 	private final boolean						_reserveHost;
 	private int									_maxPlayer;
 	private final List<WaitingClient>			_waitingClients;
-	private final FastMap<String, L2GameClient>	_accountsInGameServer;
+	private final ConcurrentHashMap<String, L2GameClient> _accountsInGameServer;
 	private int									_status;
 	private String								_serverName;
 	private final String						_gameExternalHost;
@@ -113,7 +114,7 @@ public class LoginServerThread extends Thread
 		_gameExternalHost = Config.EXTERNAL_HOSTNAME;
 		_gameInternalHost = Config.INTERNAL_HOSTNAME;
 		_waitingClients = new FastList<WaitingClient>();
-		_accountsInGameServer = new FastMap<>();
+		_accountsInGameServer = new ConcurrentHashMap<String, L2GameClient>();
 		_maxPlayer = Config.MAXIMUM_ONLINE_USERS;
 	}
 	
@@ -528,10 +529,7 @@ public class LoginServerThread extends Thread
 	{
 		return _maxPlayer;
 	}
-	
-	/**
-	 * @param server_gm_only
-	 */
+
 	public void sendServerStatus(int id, int value)
 	{
 		ServerStatus ss = new ServerStatus();

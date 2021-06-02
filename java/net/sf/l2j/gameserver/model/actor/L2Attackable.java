@@ -1,5 +1,6 @@
 package net.sf.l2j.gameserver.model.actor;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import javolution.util.FastList;
@@ -262,9 +263,9 @@ public class L2Attackable extends L2Npc
 
 	}
 
-	private final FastMap<L2Character, AggroInfo> _aggroList = new FastMap<L2Character, AggroInfo>();
+	private final ConcurrentHashMap<L2Character, AggroInfo> _aggroList = new ConcurrentHashMap<L2Character, AggroInfo>();
 
-	public final FastMap<L2Character, AggroInfo> getAggroList()
+	public final ConcurrentHashMap<L2Character, AggroInfo> getAggroList()
 	{
 		return _aggroList;
 	}
@@ -312,7 +313,7 @@ public class L2Attackable extends L2Npc
 
 	private boolean _absorbed;
 
-	private final FastMap<L2PcInstance, AbsorberInfo> _absorbersList = new FastMap<L2PcInstance, AbsorberInfo>();
+	private final ConcurrentHashMap<L2PcInstance, AbsorberInfo> _absorbersList = new ConcurrentHashMap<L2PcInstance, AbsorberInfo>();
 
 	private boolean _mustGiveExpSp;
 
@@ -327,10 +328,7 @@ public class L2Attackable extends L2Npc
 	 * to NPC_STD_CALCULATOR) Set the name of the L2Attackable Create a
 	 * RandomAnimation Task that will be launched after the calculated delay if
 	 * the server allow it
-	 * 
-	 * @param objectId
-	 *            Identifier of the object to initialized
-	 *            Template to apply to the NPC
+	 *  	 Template to apply to the NPC
 	 */
 	public L2Attackable(int objectId, L2NpcTemplate template)
 	{
@@ -419,7 +417,6 @@ public class L2Attackable extends L2Npc
 	/**
 	 * Reduce the current HP of the L2Attackable, update its _aggroList and
 	 * launch the doDie Task if necessary.
-	 *
 	 *            The HP decrease value
 	 * @param attacker
 	 *            The L2Character who attacks
@@ -1327,9 +1324,6 @@ public class L2Attackable extends L2Npc
 	 * current situation Only a max of ONE item from a category is allowed to be
 	 * dropped.
 	 *
-	 *            The L2DropData count is being calculated for
-	 * @param lastAttacker
-	 *            The L2PcInstance that has killed the L2Attackable
 	 *            Factor to divide the drop chance
 	 * @param levelModifier
 	 *            level modifier in %'s (will be subtracted from drop chance)

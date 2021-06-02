@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -1031,7 +1032,7 @@ public final class L2PcInstance extends L2Playable {
 
     protected boolean _inventoryDisable = false;
 
-    protected Map<Integer, L2CubicInstance> _cubics = new FastMap<Integer, L2CubicInstance>();
+    protected Map<Integer, L2CubicInstance> _cubics = new ConcurrentHashMap<Integer, L2CubicInstance>();
 
     /**
      * Event parameters
@@ -1916,10 +1917,7 @@ public FastList<L2Skill> getPartyPassiveList()
             insertNewRecipeData(recipe.getId(), true);
     }
 
-    /**
-     * @param RecipeID The Identifier of the L2RecipeList to check in the player's recipe books
-     * @return <b>TRUE</b> if player has the recipe on Common or Dwarven Recipe book else returns <b>FALSE</b>
-     */
+
     public boolean hasRecipeList(int recipeId) {
         if (_dwarvenRecipeBook.containsKey(recipeId))
             return true;
@@ -1929,11 +1927,7 @@ public FastList<L2Skill> getPartyPassiveList()
             return false;
     }
 
-    /**
-     * Tries to remove a L2RecipList from the table _DwarvenRecipeBook or from table _CommonRecipeBook, those table contain all L2RecipeList of the L2PcInstance <BR><BR>
-     *
-     * @param RecipeID The Identifier of the L2RecipeList to remove from the _recipebook
-     */
+
     public void unregisterRecipeList(int recipeId) {
         if (_dwarvenRecipeBook.remove(recipeId) != null)
             deleteRecipeData(recipeId, true);
@@ -2065,11 +2059,6 @@ public FastList<L2Skill> getPartyPassiveList()
         return quests.toArray(new Quest[quests.size()]);
     }
 
-    /**
-     * Return a table containing all QuestState to modify after a L2Attackable killing.<BR><BR>
-     *
-     * @param npcId The Identifier of the L2Attackable attacked
-     */
     public QuestState[] getQuestsForAttacks(L2Npc npc) {
         // Create a QuestState table that will contain all QuestState to modify
         QuestState[] states = null;
@@ -2093,7 +2082,6 @@ public FastList<L2Skill> getPartyPassiveList()
     /**
      * Return a table containing all QuestState to modify after a L2Attackable killing.<BR><BR>
      *
-     * @param npcId The Identifier of the L2Attackable killed
      */
     public QuestState[] getQuestsForKills(L2Npc npc) {
         // Create a QuestState table that will contain all QuestState to modify
@@ -4123,15 +4111,7 @@ public FastList<L2Skill> getPartyPassiveList()
 
     }
 
-    /**
-     * Transfers item to another ItemContainer and send a Server->Client InventoryUpdate packet to the L2PcInstance.
-     *
-     * @param process   : String Identifier of process triggering this action
-     * @param itemId    : int Item Identifier of the item to be transfered
-     * @param count     : long Quantity of items to be transfered
-     * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
-     * @return L2ItemInstance corresponding to the new item or the updated item in inventory
-     */
+
     public L2ItemInstance transferItem(String process, int objectId, long count, Inventory target, L2Object reference) {
         L2ItemInstance oldItem = checkItemManipulation(objectId, count, "transfer");
         if (oldItem == null) return null;
@@ -5622,20 +5602,7 @@ public FastList<L2Skill> getPartyPassiveList()
         return _lastKiller;
     }
 
-    /**
-     * Kill the L2Character, Apply Death Penalty, Manage gain/loss Karma and Item Drop.<BR><BR>
-     *
-     * <B><U> Actions</U> :</B><BR><BR>
-     * <li>Reduce the Experience of the L2PcInstance in function of the calculated Death Penalty </li>
-     * <li>If necessary, unsummon the Pet of the killed L2PcInstance </li>
-     * <li>Manage Karma gain for attacker and Karam loss for the killed L2PcInstance </li>
-     * <li>If the killed L2PcInstance has Karma, manage Drop Item</li>
-     * <li>Kill the L2PcInstance </li><BR><BR>
-     *
-     * @param i        The HP decrease value
-     * @param attacker The L2Character who attacks
-     * @see net.sf.l2j.gameserver.model.actor.L2Playable#doDie(net.sf.l2j.gameserver.model.actor.L2Character)
-     */
+
     @Override
     public boolean doDie(L2Character killer) {
         if (!super.doDie(killer))
@@ -11042,7 +11009,7 @@ public FastList<L2Skill> getPartyPassiveList()
         if (isSkillDisabled(skill.getId())) {
             if (!skill.isPotion()) {
                 SystemMessage sm = null;
-                FastMap<Integer, TimeStamp> timeStamp = getReuseTimeStamp();
+                ConcurrentHashMap<Integer, TimeStamp> timeStamp = getReuseTimeStamp();
 
                 if (timeStamp != null && timeStamp.containsKey(skill.getId())) {
                     int remainingTime = (int) (_reuseTimeStamps.get(skill.getId()).getRemaining() / 1000);
@@ -11428,14 +11395,7 @@ public FastList<L2Skill> getPartyPassiveList()
         return false;
     }
 
-    /**
-     * Check if the requested casting is a Pc->Pc skill cast and if it's a valid pvp condition
-     *
-     * @param target      L2Object instance containing the target
-     * @param skill       L2Skill instance with the skill being casted
-     * @param srcIsSummon is L2Summon - caster?
-     * @return False if the skill is a pvpSkill and target is not a valid pvp target
-     */
+
     public boolean checkPvpSkill(L2Object obj, L2Skill skill, boolean CtrlPressed) {
         if (isGM()) return true;
 
@@ -12358,16 +12318,7 @@ public FastList<L2Skill> getPartyPassiveList()
         sendPacket(sl);
     }
 
-    /**
-     * 1. Add the specified class ID as a subclass (up to the maximum number of <b>three</b>)
-     * for this character.<BR>
-     * 2. This method no longer changes the active _classIndex of the player. This is only
-     * done by the calling of setActiveClass() method as that should be the only way to do so.
-     *
-     * @param int classId
-     * @param int classIndex
-     * @return boolean subclassAdded
-     */
+
     public boolean addSubClass(int classId, int classIndex) {
         if (!_subclassLock.tryLock())
             return false;
@@ -12468,15 +12419,7 @@ public FastList<L2Skill> getPartyPassiveList()
         }
     }
 
-    /**
-     * 1. Completely erase all existance of the subClass linked to the classIndex.<BR>
-     * 2. Send over the newClassId to addSubClass()to create a new instance on this classIndex.<BR>
-     * 3. Upon Exception, revert the player to their BaseClass to avoid further problems.<BR>
-     *
-     * @param int classIndex
-     * @param int newClassId
-     * @return boolean subclassAdded
-     */
+
     public boolean modifySubClass(int classIndex, int newClassId) {
         if (!_subclassLock.tryLock())
             return false;
@@ -14563,12 +14506,7 @@ private boolean cannotChangeSubsDueToInstance()
         return _souls;
     }
 
-    /**
-     * Absorbs a Soul from a Npc.
-     *
-     * @param skill
-     * @param target
-     */
+
     public void absorbSoul(L2Skill skill, L2Npc npc) {
         if (_souls >= calcStat(Stats.SOUL_MAX, skill.getNumSouls(), null, null)) {
             SystemMessage sm = new SystemMessage(SystemMessageId.SOUL_CANNOT_BE_INCREASED_ANYMORE);
@@ -14731,7 +14669,7 @@ private boolean cannotChangeSubsDueToInstance()
         }
     }
 
-    private final FastMap<Integer, TimeStamp> _reuseTimeStamps = new FastMap<Integer, TimeStamp>();
+    private final ConcurrentHashMap<Integer, TimeStamp> _reuseTimeStamps = new ConcurrentHashMap<Integer, TimeStamp>();
     private boolean _canFeed;
 
     private boolean _isInSiege;
@@ -14740,7 +14678,7 @@ private boolean cannotChangeSubsDueToInstance()
         return _reuseTimeStamps.values();
     }
 
-    public FastMap<Integer, TimeStamp> getReuseTimeStamp() {
+    public ConcurrentHashMap<Integer, TimeStamp> getReuseTimeStamp() {
         return _reuseTimeStamps;
     }
 
@@ -14796,34 +14734,18 @@ private boolean cannotChangeSubsDueToInstance()
         }
     }
 
-    /**
-     * Index according to skill id the current
-     * timestamp of use.
-     *
-     * @param skillid
-     * @param reuse   delay
-     */
+
     @Override
     public void addTimeStamp(int s, int r) {
         _reuseTimeStamps.put(s, new TimeStamp(s, r));
     }
 
-    /**
-     * Index according to skill this TimeStamp
-     * instance for restoration purposes only.
-     *
-     * @param TimeStamp
-     */
+
     public void addTimeStamp(TimeStamp ts) {
         _reuseTimeStamps.put(ts.getSkill(), ts);
     }
 
-    /**
-     * Index according to skill id the current
-     * timestamp of use.
-     *
-     * @param skillid
-     */
+
     @Override
     public void removeTimeStamp(int s) {
         _reuseTimeStamps.remove(s);
@@ -17397,9 +17319,10 @@ public void setKillStreak(int streak)
 
         return "FFFFFF"; //Default White
     }
-	BattlePassPlayer battlePass = new BattlePassPlayer(this);
+
+    BattlePassPlayer battlePass = new BattlePassPlayer(this);
 
     public BattlePassPlayer getBattlePass(){
-    	return battlePass;
-	}
+        return battlePass;
+    }
 }

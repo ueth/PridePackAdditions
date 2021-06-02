@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -80,9 +81,9 @@ private L2WorldRegion[][] _worldRegions;
 private L2World()
 {
 	//_allGms	 = new FastMap<String, L2PcInstance>();
-	_allPlayers = new FastMap<>();
-	_petsInstance = new FastMap<>();
-	_allObjects = new FastMap<>();
+	_allPlayers = new ConcurrentHashMap<Integer, L2PcInstance>();
+	_petsInstance = new ConcurrentHashMap<Integer, L2PetInstance>();
+	_allObjects = new ConcurrentHashMap<Integer, L2Object>();
 	
 	initRegions();
 }
@@ -239,11 +240,7 @@ public int getAllPlayersCount()
 	return _allPlayers.size();
 }
 
-/**
- * Return the player instance corresponding to the given name.<BR><BR>
- *
- * @param name Name of the player to get Instance
- */
+
 public L2PcInstance getPlayer(int objectId)
 {
 	if (objectId <= 0)
@@ -330,11 +327,6 @@ public void removePet(L2PetInstance pet)
  * <li> Drop an Item </li>
  * <li> Spawn a L2Character</li>
  * <li> Apply Death Penalty of a L2PcInstance </li><BR><BR>
- *
- * @param object L2object to add in the world
- * @param newregion L2WorldRegion in wich the object will be add (not used)
- * @param dropper L2Character who has dropped the object (if necessary)
- *
  */
 public void addVisibleObject(L2Object object, L2WorldRegion newRegion)
 {
@@ -454,9 +446,6 @@ public void removeFromAllPlayers(L2PcInstance cha)
  * <B><U> Example of use </U> :</B><BR><BR>
  * <li> Pickup an Item </li>
  * <li> Decay a L2Character</li><BR><BR>
- *
- * @param object L2object to remove from the world
- * @param oldregion L2WorldRegion in wich the object was before removing
  *
  */
 public void removeVisibleObject(L2Object object, L2WorldRegion oldRegion)
@@ -722,8 +711,6 @@ public List<L2Playable> getVisiblePlayable(L2Object object)
  * <B><U> Example of use </U> :</B><BR><BR>
  * <li> Set position of a new L2Object (drop, spawn...) </li>
  * <li> Update position of a L2Object after a mouvement </li><BR>
- *
- * @param Point3D point position of the object
  */
 public L2WorldRegion getRegion(Point3D point)
 {

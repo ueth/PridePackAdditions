@@ -569,13 +569,7 @@ public static String removeAccents(String text) {
     return text == null ? null : Normalizer.normalize(text, Form.NFD)
             .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 }
-/**
- * user name is not case sensitive any more
- * @param user
- * @param password
- * @param address
- * @return
- */
+
 @SuppressWarnings("resource")
 public boolean loginValid(String user, String password, L2LoginClient client)// throws HackingException
 {

@@ -1,9 +1,10 @@
 package cz.nxs.interf;
 
-import javolution.util.FastMap;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import cz.nxs.l2j.CallBack;
 import cz.nxs.l2j.IPlayerBase;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author hNoke
@@ -11,13 +12,13 @@ import cz.nxs.l2j.IPlayerBase;
  */
 public class PlayerBase implements IPlayerBase
 {
-	private FastMap<Integer, PlayerEventInfo> players;
+	private ConcurrentHashMap<Integer, PlayerEventInfo> players;
 	
 	//TODO: offline players
 	
 	public PlayerBase()
 	{
-		players = new FastMap<Integer, PlayerEventInfo>();
+		players = new ConcurrentHashMap<>();
 	}
 	
 	public void load()
@@ -32,7 +33,7 @@ public class PlayerBase implements IPlayerBase
 	}
 	
 	@Override
-	public FastMap<Integer, PlayerEventInfo> getPs()
+	public ConcurrentHashMap<Integer, PlayerEventInfo> getPs()
 	{
 		return players;
 	}

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -203,7 +204,7 @@ private boolean _isImmobilized                          = false;
  /** FastMap(Integer, L2Skill) containing all skills of the L2Character */
  private final Map<Integer, L2Skill> _skills;
  
- protected final Map<Integer, Integer[]> _retrySkills = new FastMap<Integer, Integer[]>();
+ protected final Map<Integer, Integer[]> _retrySkills = new ConcurrentHashMap<Integer, Integer[]>();
  
  /** FastMap containing the active chance skills on this character */
  protected ChanceSkillList _chanceSkills;
@@ -437,7 +438,7 @@ private boolean _isImmobilized                          = false;
 		 else
 		 {
 			 // Initialize the FastMap _skills to null
-			 _skills = new FastMap<Integer,L2Skill>();
+			 _skills = new ConcurrentHashMap<Integer,L2Skill>();
 		 }
 		 
 		 Formulas.addFuncsToNewCharacter(this);

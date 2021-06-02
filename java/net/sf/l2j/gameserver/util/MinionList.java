@@ -26,6 +26,7 @@ package net.sf.l2j.gameserver.util;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -46,7 +47,7 @@ private static Logger _log = Logger.getLogger(L2MonsterInstance.class.getName())
 
 /** List containing the current spawned minions for this L2MonsterInstance */
 private final List<L2MinionInstance> minionReferences;
-protected FastMap<Long, Integer> _respawnTasks = new FastMap<Long, Integer>();
+protected ConcurrentHashMap<Long, Integer> _respawnTasks = new ConcurrentHashMap<Long, Integer>();
 private final L2MonsterInstance master;
 
 public MinionList(L2MonsterInstance pMaster)
@@ -173,16 +174,7 @@ public void maintainMinions()
 	}
 }
 
-/**
- * Manage the spawn of all Minions of this RaidBoss.<BR><BR>
- *
- * <B><U> Actions</U> :</B><BR><BR>
- * <li>Get the Minion data of all Minions that must be spawn </li>
- * <li>For each Minion type, spawn the amount of Minion needed </li><BR><BR>
- *
- * @param player The L2PcInstance to attack
- *
- */
+
 public void spawnMinions()
 {
 	if (master == null || master.isAlikeDead() || master instanceof L2MinionInstance)
@@ -224,19 +216,7 @@ public void recallMinions()
 	}
 }
 
-/**
- * Init a Minion and add it in the world as a visible object.<BR><BR>
- *
- * <B><U> Actions</U> :</B><BR><BR>
- * <li>Get the template of the Minion to spawn </li>
- * <li>Create and Init the Minion and generate its Identifier </li>
- * <li>Set the Minion HP, MP and Heading </li>
- * <li>Set the Minion leader to this RaidBoss </li>
- * <li>Init the position of the Minion and add it in the world as a visible object </li><BR><BR>
- *
- * @param minionid The I2NpcTemplate Identifier of the Minion to spawn
- *
- */
+
 public void spawnSingleMinion(int minionId, int instanceId)
 {
 	// Get the template of the Minion to spawn

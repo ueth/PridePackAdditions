@@ -16,6 +16,8 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class ItemSkills implements IItemHandler
 {
 public void useItem(L2Playable playable, L2ItemInstance item)
@@ -155,7 +157,7 @@ private void reuse(L2PcInstance player, L2Skill skill)
 		return;
 	
 	SystemMessage sm = null;
-	FastMap<Integer, TimeStamp> timeStamp = player.getReuseTimeStamp();
+	ConcurrentHashMap<Integer, TimeStamp> timeStamp = player.getReuseTimeStamp();
 	
 	if (timeStamp != null && timeStamp.containsKey(skill.getId()))
 	{

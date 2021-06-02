@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
@@ -19,7 +20,7 @@ public class SpawnTable
 {
 private static Logger _log = Logger.getLogger(SpawnTable.class.getName());
 
-private final Map<Integer, L2Spawn> _spawntable = new FastMap<>();
+private final Map<Integer, L2Spawn> _spawntable = new ConcurrentHashMap<Integer, L2Spawn>();
 private int _npcSpawnCount;
 private int _customSpawnCount;
 @SuppressWarnings("unused")

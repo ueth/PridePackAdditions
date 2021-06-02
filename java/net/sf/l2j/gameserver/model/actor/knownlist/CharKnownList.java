@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.actor.knownlist;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
@@ -242,19 +243,19 @@ public Collection<L2Character> getKnownCharactersInRadius(long radius)
 
 public final Map<Integer, L2PcInstance> getKnownPlayers()
 {
-	if (_knownPlayers == null) _knownPlayers = new FastMap<Integer, L2PcInstance>();
+	if (_knownPlayers == null) _knownPlayers = new ConcurrentHashMap<Integer, L2PcInstance>();
 	return _knownPlayers;
 }
 
 public final Map<Integer, Integer> getKnownRelations()
 {
-	if (_knownRelations == null) _knownRelations = new FastMap<Integer, Integer>();
+	if (_knownRelations == null) _knownRelations = new ConcurrentHashMap<Integer, Integer>();
 	return _knownRelations;
 }
 
 public final Map<Integer, L2Summon> getKnownSummons()
 {
-	if (_knownSummons == null) _knownSummons = new FastMap<Integer, L2Summon>();
+	if (_knownSummons == null) _knownSummons = new ConcurrentHashMap<Integer, L2Summon>();
 	return _knownSummons;
 }
 

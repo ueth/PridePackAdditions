@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.actor.knownlist;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -193,7 +194,7 @@ public int getDistanceToWatchObject(L2Object object) { return 0; }
 /** Return the _knownObjects containing all L2Object known by the L2Character. */
 public final Map<Integer, L2Object> getKnownObjects()
 {
-	if (_knownObjects == null) _knownObjects = new FastMap<Integer, L2Object>();
+	if (_knownObjects == null) _knownObjects = new ConcurrentHashMap<Integer, L2Object>();
 	return _knownObjects;
 }
 }

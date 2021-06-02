@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -37,11 +38,11 @@ public class L2Manor
 {
 	private static Logger _log = Logger.getLogger(L2Manor.class.getName());
 	
-	private static FastMap<Integer, SeedData> _seeds;
+	private static ConcurrentHashMap<Integer, SeedData> _seeds;
 	
 	private L2Manor()
 	{
-		_seeds = new FastMap<>();
+		_seeds = new ConcurrentHashMap<Integer, SeedData>();
 		parseData();
 	}
 	

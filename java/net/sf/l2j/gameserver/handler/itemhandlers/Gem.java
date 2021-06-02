@@ -84,7 +84,9 @@ public class Gem implements IItemHandler
 		activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 
-
+	/**
+	 * @see net.sf.l2j..gameserver.handler.IItemHandler#getItemIds()
+	 */
 	public int[] getItemIds()
 	{
 		return ITEM_IDS;

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
@@ -31,7 +32,7 @@ protected static int _gameTicks;
 protected static long _gameStartTime;
 protected static boolean _isNight = false;
 
-private static Map<Integer, L2Character> _movingObjects = new FastMap<>();
+private static Map<Integer, L2Character> _movingObjects = new ConcurrentHashMap<Integer, L2Character>();
 
 protected static TimerThread _timer;
 private ScheduledFuture<?> _timerWatcher;

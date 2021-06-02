@@ -26,6 +26,7 @@ package net.sf.l2j.util;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -42,7 +43,7 @@ public class WorldObjectSet<T extends L2Object> extends L2ObjectSet<T>
 
     public WorldObjectSet()
     {
-        _objectMap = new FastMap<Integer, T>();
+        _objectMap = new ConcurrentHashMap<Integer, T>();
     }
 
     /* (non-Javadoc)

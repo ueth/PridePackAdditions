@@ -19,13 +19,15 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *
  * @author -Nemesiss-
  */
 public class WarehouseCacheManager
 {
-	protected final FastMap<L2PcInstance, Long> _cachedWh;
+	protected final ConcurrentHashMap<L2PcInstance, Long> _cachedWh;
 	protected final long _cacheTime;
 	
 	public static WarehouseCacheManager getInstance()
@@ -36,7 +38,7 @@ public class WarehouseCacheManager
 	private WarehouseCacheManager()
 	{
 		_cacheTime = Config.WAREHOUSE_CACHE_TIME * 60000L; // 60*1000 = 60000
-		_cachedWh = new FastMap<L2PcInstance, Long>();
+		_cachedWh = new ConcurrentHashMap<L2PcInstance, Long>();
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new CacheScheduler(), 120000, 60000);
 	}
 	

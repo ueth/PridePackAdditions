@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.taskmanager;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -29,7 +30,7 @@ public class AttackStanceTaskManager
 {
 protected static final Logger _log = Logger.getLogger(AttackStanceTaskManager.class.getName());
 
-protected Map<L2Character, Long> _attackStanceTasks = new FastMap<L2Character, Long>();
+protected Map<L2Character, Long> _attackStanceTasks = new ConcurrentHashMap<L2Character, Long>();
 
 private AttackStanceTaskManager()
 {

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
@@ -59,8 +60,8 @@ private final FastList<L2ZoneType>			_zones;
 
 public L2WorldRegion(int pTileX, int pTileY)
 {
-	_allPlayable = new FastMap<Integer, L2Playable>();
-	_visibleObjects = new FastMap<Integer, L2Object>();
+	_allPlayable = new ConcurrentHashMap<Integer, L2Playable>();
+	_visibleObjects = new ConcurrentHashMap<Integer, L2Object>();
 	_surroundingRegions = new ArrayList<L2WorldRegion>();
 	
 	_tileX = pTileX;

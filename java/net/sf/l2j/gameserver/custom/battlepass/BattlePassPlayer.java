@@ -2,14 +2,12 @@ package net.sf.l2j.gameserver.custom.battlepass;
 
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import sun.util.resources.ext.CalendarData_vi;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class BattlePassPlayer implements Cloneable{
     private List<BattlePass> _battlePasses = new ArrayList<>(BattlePassTable.getBattlePasses().size());

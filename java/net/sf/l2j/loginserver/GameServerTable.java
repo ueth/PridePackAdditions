@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,7 +56,7 @@ public class GameServerTable
 	private static Map<Integer, String> _serverNames = new FastMap<Integer, String>();
 	
 	// Game Server Table
-	private Map<Integer, GameServerInfo> _gameServerTable = new FastMap<Integer, GameServerInfo>();
+	private Map<Integer, GameServerInfo> _gameServerTable = new ConcurrentHashMap<Integer, GameServerInfo>();
 	
 	// RSA Config
 	private static final int KEYS_SIZE = 10;

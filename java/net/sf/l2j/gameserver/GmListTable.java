@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -67,7 +68,7 @@ public class GmListTable
 	
 	private GmListTable()
 	{
-		_gmList = new FastMap<>();
+		_gmList = new FastMap<L2PcInstance, Boolean>();
 	}
 	
 	/**

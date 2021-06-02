@@ -5,11 +5,8 @@ import net.sf.l2j.L2DatabaseFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * This class loads all the battle passes from the sql and stores
@@ -57,10 +54,4 @@ public class BattlePassTable {
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
-
-    //TODO
-    /**
-     * Create an sql table that will have all the battlepasses by id and name
-     *
-     */
 }

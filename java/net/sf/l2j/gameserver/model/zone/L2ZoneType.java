@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.zone;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -38,8 +39,8 @@ protected static final Logger _log = Logger.getLogger(L2ZoneType.class.getName()
 
 protected final int _id;
 protected List<L2ZoneForm> _zone;
-protected FastMap<Integer, L2Character> _characterList;
-protected FastMap<Integer, Integer> _zones;
+protected ConcurrentHashMap<Integer, L2Character> _characterList;
+protected ConcurrentHashMap<Integer, Integer> _zones;
 
 /** Parameters to affect specific characters */
 private boolean _checkAffected;
@@ -55,8 +56,8 @@ public boolean _allowShops = true;
 protected L2ZoneType(int id)
 {
 	_id = id;
-	_characterList = new FastMap<Integer, L2Character>();
-	_zones = new FastMap<Integer, Integer>();
+	_characterList = new ConcurrentHashMap<>();
+	_zones = new ConcurrentHashMap<>();
 	
 	_checkAffected = false;
 	
@@ -77,11 +78,7 @@ public int getId()
 	return _id;
 }
 
-/**
- * Setup new parameters for this zone
- * @param type
- * @param value
- */
+
 public void setParameter(String name, String value)
 {
 	_checkAffected = true;
@@ -232,11 +229,7 @@ public void setZone(L2ZoneForm zone)
 	getZones().add(zone);
 }
 
-/**
- * Returns this zones zone form
- * @param zone
- * @return
- */
+
 public L2ZoneForm getZone()
 {
 	for (L2ZoneForm zone : getZones())
@@ -377,7 +370,7 @@ public abstract void onDieInside(L2Character character);
 
 public abstract void onReviveInside(L2Character character);
 
-public FastMap<Integer, L2Character> getCharactersInside()
+public ConcurrentHashMap<Integer, L2Character> getCharactersInside()
 {
 	return _characterList;
 }
