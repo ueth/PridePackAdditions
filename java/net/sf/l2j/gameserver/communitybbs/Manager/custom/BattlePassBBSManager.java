@@ -11,7 +11,7 @@ public class BattlePassBBSManager {
     }
 
     public void parsecmd(final String command, final L2PcInstance activeChar) {
-        final String path = "data/html/CommunityBoard/customs/";
+        final String path = "data/html/CommunityBoard/customs/battlePasses/";
         String filepath = "";
         String content = "";
         if (command.equals("_bbsBattlePassMain")) {
@@ -21,20 +21,27 @@ public class BattlePassBBSManager {
             this.separateAndSend(content, activeChar);
         }
         else if(command.equals("_bbsBattlePassPlayer")){
-            final int id = Integer.parseInt(command.substring(20));
-
+            filepath = path + "battlePassesPlayer.html";
+            content = HtmCache.getInstance().getHtm(filepath);
+            content = activeChar.getBattlePass().getBattlePassPages().fillPages(content);
+            this.separateAndSend(content, activeChar);
         }
-        else if(command.startsWith("_bbsBattlePassBuy")){
-            final int id = Integer.parseInt(command.substring(18));
+        else if(command.startsWith("_bbsBattlePassBuyPlayer ")){
+            final int id = Integer.parseInt(command.substring(24));
             BattlePassPlayer.saveBattlePass(id, activeChar);
         }
+        else if(command.startsWith("_bbsBattlePassBuyClan")){
+            final int id = Integer.parseInt(command.substring(21));
+            //BattlePassPlayer.saveBattlePass(id, activeChar);
+        }
+        else if(command.equals("_bbsBattlePasses")){
 
-
+            filepath = path + "battlePasses.html";
+            content = HtmCache.getInstance().getHtm(filepath);
+            this.separateAndSend(content, activeChar);
+        }
         else {
-            final ShowBoard sb =
-                    new ShowBoard(
-                            "<html><body><br><br><center>the command: "
-                                    + command
+            final ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command
                                     + " is not implemented yet</center><br><br></body></html>",
                             "101");
             activeChar.sendPacket(sb);

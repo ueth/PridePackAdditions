@@ -11,30 +11,33 @@ import java.util.List;
 
 public class BattlePassPlayer implements Cloneable{
     private List<BattlePass> _battlePasses = new ArrayList<>(BattlePassTable.getBattlePasses().size());
+    private BattlePassPages _battlePassPages;
 
     public BattlePassPlayer(L2PcInstance player) {
-        loadPreviousBattlePasses(player);
+        _battlePassPages = new BattlePassPages(player);
     }
 
     public List<BattlePass> getBattlePasses(){
         return _battlePasses;
     }
 
-    public void loadPreviousBattlePasses(L2PcInstance player){
-        int counter = 0;
+    public BattlePassPages getBattlePassPages(){
+        return _battlePassPages;
+    }
 
+    public void loadPreviousBattlePasses(L2PcInstance player){
         try (Connection con = L2DatabaseFactory.getInstance().getConnection()) {
             PreparedStatement statement = con.prepareStatement("SELECT * FROM battle_pass_player where playerId=?");
             statement.setInt(1, player.getObjectId());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                counter++;
                 for(BattlePass battlePass : BattlePassTable.getBattlePasses().values()){
                     if(battlePass.getId() == rs.getInt("battlePassId")){
-                        _battlePasses.add((BattlePass) battlePass.clone());
-                        battlePass.setPlayer(player);
-                        battlePass.setPoints(rs.getInt("points"));
-                        battlePass.setAvailability(rs.getInt("availability") == 1 ? true : false);
+                        BattlePass battlePassClone = (BattlePass) battlePass.clone();
+                        battlePassClone.setPlayer(player);
+                        battlePassClone.setPoints(rs.getInt("points"));
+                        battlePassClone.setAvailability(rs.getInt("availability") == 1 ? true : false);
+                        _battlePasses.add(battlePassClone);
                     }
                 }
             }
@@ -56,14 +59,29 @@ public class BattlePassPlayer implements Cloneable{
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    public static void updateBattlePass(int id, L2PcInstance player, double points){
+    public static void updateBattlePass(int id, L2PcInstance player, double points, int rewarded){
         try (Connection con = L2DatabaseFactory.getInstance().getConnection()) {
-            PreparedStatement stm = con.prepareStatement("UPDATE battle_pass_player SET battlePassId=?,points=? WHERE playerId=?");
+            PreparedStatement stm = con.prepareStatement("UPDATE battle_pass_player SET battlePassId=?,points=?,rewarded=? WHERE playerId=?");
             stm.setLong(1, id);
             stm.setDouble(2, points);
-            stm.setInt(3, player.getObjectId());
+            stm.setInt(3, rewarded);
+            stm.setInt(4, player.getObjectId());
             stm.execute();
             stm.close();
         }catch (Exception e) { e.printStackTrace(); }
     }
+
+    public static void updateBattlePassAvailability(boolean bool, L2PcInstance player){
+        try (Connection con = L2DatabaseFactory.getInstance().getConnection()) {
+            PreparedStatement stm = con.prepareStatement("UPDATE battle_pass_player SET availability=? WHERE playerId=?");
+            stm.setInt(2, player.getObjectId());
+            if(bool)
+                stm.setInt(1, 1);
+            else
+                stm.setInt(1, 0);
+            stm.execute();
+            stm.close();
+        }catch (Exception e) { e.printStackTrace(); }
+    }
+
 }

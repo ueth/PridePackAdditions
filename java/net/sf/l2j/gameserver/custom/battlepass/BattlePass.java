@@ -18,6 +18,7 @@ public class BattlePass implements Cloneable{
     private int _price;
     private int _itemId;
     private boolean _availability;
+    private int _rewarded;
 
     public BattlePass(L2PcInstance player, double points, String name, boolean availability, int id, int price, int itemId, int minLvl){
         _points = points;
@@ -31,11 +32,22 @@ public class BattlePass implements Cloneable{
         _minLvl = minLvl;
     }
 
+    public BattlePass(L2PcInstance player, double points, String name, boolean availability, int id, int price, int itemId, int minLvl, Map<Integer, Reward> rewards, int rewarded){
+        _points = points;
+        _name = name;
+        _id = id;
+        _rewards = rewards;
+        _availability = availability;
+        _player = player;
+        _price = price;
+        _itemId = itemId;
+        _minLvl = minLvl;
+        _rewarded = rewarded;
+    }
+
     public void increasePoints(){
         if(!_availability)
             return;
-
-        _player.sendMessage("Got into increase points");
 
         _points +=0.5;
 
@@ -71,6 +83,14 @@ public class BattlePass implements Cloneable{
 
     public void addReward(int id, Reward reward){ _rewards.put(id, reward); }
 
+    public Map<Integer, Reward> getRewards(){
+        return _rewards;
+    }
+
+    public String getName(){ return _name; }
+
+    public int getPrice(){return _price;}
+
     public int getId(){
         return _id;
     }
@@ -79,14 +99,21 @@ public class BattlePass implements Cloneable{
      * This method is called every time _points are increasing
      */
     public void update(){
-        _player.sendMessage("Got into update");
-        BattlePassPlayer.updateBattlePass(_id, _player, _points);
+        if(!_availability)
+            return;
+
+        BattlePassPlayer.updateBattlePass(_id, _player, _points, _rewarded);
         int maxRewardNumber = _rewards.size();
-        for(int i = maxRewardNumber-1; i >= 0; i--){
-            if(_points >= i+1 && _availability){
-                goodies(_rewards.get(i).getItemId(), _rewards.get(i).getAmount());
-                break;
-            }
+
+        if(_points >= _rewarded+1 && _rewarded <= maxRewardNumber-1) {
+            BattlePassPlayer.updateBattlePass(_id, _player, _points, ++_rewarded);
+            goodies(_rewards.get(_rewarded).getItemId(), _rewards.get(_rewarded).getAmount());
+        }
+
+        if(_points > maxRewardNumber && _availability) {
+            _points = maxRewardNumber;
+            BattlePassPlayer.updateBattlePassAvailability(_availability=false, _player);
+            return;
         }
     }
 
@@ -94,18 +121,18 @@ public class BattlePass implements Cloneable{
         if(!_availability)
             return;
 
-        _player.addItem("BattlePassReward", itemId, amount, null, false);
+        _player.addItem("BattlePassReward", itemId, amount, null, true);
 
         NpcHtmlMessage html = new NpcHtmlMessage(1);
         html.setHtml("<html><body>Test text<br></body></html>");
         _player.sendPacket(html);
 
-        MagicSkillUse msk = new MagicSkillUse(_player, _player, 837, 1, 1000, 0);
+        MagicSkillUse msk = new MagicSkillUse(_player, _player, 5103, 1, 0, 0);
         Broadcast.toSelfAndKnownPlayersInRadius(_player, msk, 1000000);
     }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        return new BattlePass(_player, _points, _name, _availability, _id, _price, _itemId, _minLvl);
+        return new BattlePass(_player, _points, _name, _availability, _id, _price, _itemId, _minLvl, _rewards, _rewarded);
     }
 }
