@@ -15,9 +15,9 @@ public class BattlePassPages {
         _player = player;
     }
 
-    public String fillPages(String html){
+    public void fillPages(){
         _playerBattlePassPages.clear();
-        final StringBuilder sb = StringUtil.startAppend(1000, "");
+        StringBuilder sb = StringUtil.startAppend(1000, "");
         int counter = 0;
 
         for(BattlePass battlePass : BattlePassTable.getBattlePasses().values()){
@@ -41,6 +41,7 @@ public class BattlePassPages {
 
             if(counter != 1 && counter%6 == 0){
                 _playerBattlePassPages.add(sb.toString());
+                sb.setLength(0);
             }
         }
 
@@ -50,12 +51,6 @@ public class BattlePassPages {
         if(counter%6!=0){
             _playerBattlePassPages.add(sb.toString());
         }
-
-        StringUtil.append(sb, fillNextPageButtons());
-
-        html = html.replace("%replace%", _playerBattlePassPages.get(0));
-
-        return html;
     }
 
     public String fillNextPageButtons(){
@@ -64,11 +59,17 @@ public class BattlePassPages {
         StringUtil.append(sb, "<table width=780><tr>");
 
         for(int i=0; i<_playerBattlePassPages.size(); i++){
-            StringUtil.append(sb, "<td width=10 align=center><button value=\"" + (i+1) + "\" action=\"bypass _bbsBattlePassPlayer\"" +
+            StringUtil.append(sb, "<td width=10 align=center><button value=\"" + (i+1) + "\" action=\"bypass _bbsBattlePassPlayer " + i + "\"" +
                     " back=\"l2ui_ct1.button.button_df_small_down\" fore=\"l2ui_ct1.button.button_df_small\" width=\"31\" height=\"31\"/></td>");
         }
 
+        StringUtil.append(sb, "</tr></table>");
+
         return sb.toString();
+    }
+
+    public String getPage(int i){
+        return _playerBattlePassPages.get(i);
     }
 
     public void displayBattlePassPage(int pageNumber){

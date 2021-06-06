@@ -20,10 +20,15 @@ public class BattlePassBBSManager {
             content = this.replaceVars(activeChar, content);
             this.separateAndSend(content, activeChar);
         }
-        else if(command.equals("_bbsBattlePassPlayer")){
+        else if(command.startsWith("_bbsBattlePassPlayer ")){
+            final int pageNum = Integer.parseInt(command.substring(21));
             filepath = path + "battlePassesPlayer.html";
             content = HtmCache.getInstance().getHtm(filepath);
-            content = activeChar.getBattlePass().getBattlePassPages().fillPages(content);
+            activeChar.getBattlePass().getBattlePassPages().fillPages();
+
+            content = content.replace("%replace%", activeChar.getBattlePass().getBattlePassPages().getPage(pageNum));
+            content = content.replace("%nextPageButtons%", activeChar.getBattlePass().getBattlePassPages().fillNextPageButtons());
+
             this.separateAndSend(content, activeChar);
         }
         else if(command.startsWith("_bbsBattlePassBuyPlayer ")){
