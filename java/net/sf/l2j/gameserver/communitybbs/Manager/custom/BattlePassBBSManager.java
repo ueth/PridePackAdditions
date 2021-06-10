@@ -1,7 +1,9 @@
 package net.sf.l2j.gameserver.communitybbs.Manager.custom;
 
 import net.sf.l2j.gameserver.cache.HtmCache;
+import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
 import net.sf.l2j.gameserver.custom.battlepass.BattlePassPlayer;
+import net.sf.l2j.gameserver.custom.battlepass.BattlePassTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ShowBoard;
 
@@ -22,18 +24,34 @@ public class BattlePassBBSManager {
         }
         else if(command.startsWith("_bbsBattlePassPlayer ")){
             final int pageNum = Integer.parseInt(command.substring(21));
-            filepath = path + "battlePassesPlayer.html";
+            filepath = path + "battlePassesList.html";
             content = HtmCache.getInstance().getHtm(filepath);
-            activeChar.getBattlePass().getBattlePassPages().fillPages();
-
-            content = content.replace("%replace%", activeChar.getBattlePass().getBattlePassPages().getPage(pageNum));
-            content = content.replace("%nextPageButtons%", activeChar.getBattlePass().getBattlePassPages().fillNextPageButtons());
-
-            this.separateAndSend(content, activeChar);
+            sendListOfBattlePasses(content, activeChar, pageNum);
         }
         else if(command.startsWith("_bbsBattlePassBuyPlayer ")){
             final int id = Integer.parseInt(command.substring(24));
-            BattlePassPlayer.saveBattlePass(id, activeChar);
+            filepath = path + "battlePassesList.html";
+            content = HtmCache.getInstance().getHtm(filepath);
+
+            for(BattlePass battlePass : activeChar.getBattlePass().getBattlePasses()){
+                if(battlePass.getId() == id){
+                    if(battlePass.isAvailable() || battlePass.getPoints()!=0){
+                        activeChar.sendMessage("You already own this Battle Pass");
+                        sendListOfBattlePasses(content, activeChar, 0);
+                        return;
+                    }
+                }
+            }
+
+            int itemIdNeed = BattlePassTable.getBattlePasses().get(id).getItemId();
+            int amountNeed = BattlePassTable.getBattlePasses().get(id).getPrice();
+
+            if(activeChar.destroyItemByItemId("Consume", itemIdNeed, amountNeed, activeChar, false))
+                activeChar.getBattlePass().saveBattlePass(id, activeChar);
+            else
+                activeChar.sendMessage("You do not have the required items");
+
+            sendListOfBattlePasses(content, activeChar, 0);
         }
         else if(command.startsWith("_bbsBattlePassBuyClan")){
             final int id = Integer.parseInt(command.substring(21));
@@ -43,6 +61,27 @@ public class BattlePassBBSManager {
 
             filepath = path + "battlePasses.html";
             content = HtmCache.getInstance().getHtm(filepath);
+            this.separateAndSend(content, activeChar);
+        }
+        else if(command.startsWith("_bbsBattlePassPreview ")){
+            final int id = Integer.parseInt(command.substring(22));
+
+            filepath = path + "previewBattlePassRewards.html";
+            content = HtmCache.getInstance().getHtm(filepath);
+            activeChar.getBattlePass().getBattlePassPages().fillRewards(id);
+
+            content = content.replace("%replace%", activeChar.getBattlePass().getBattlePassPages().getRewardPage(0));
+            content = content.replace("%nextPageButtons%", activeChar.getBattlePass().getBattlePassPages().fillNextPageRewardButtons());
+            this.separateAndSend(content, activeChar);
+        }
+        else if(command.startsWith("_bbsBattlePassPreviewNextPage ")){
+            final int id = Integer.parseInt(command.substring(30));
+
+            filepath = path + "previewBattlePassRewards.html";
+            content = HtmCache.getInstance().getHtm(filepath);
+
+            content = content.replace("%replace%", activeChar.getBattlePass().getBattlePassPages().getRewardPage(id));
+            content = content.replace("%nextPageButtons%", activeChar.getBattlePass().getBattlePassPages().fillNextPageRewardButtons());
             this.separateAndSend(content, activeChar);
         }
         else {
@@ -69,6 +108,15 @@ public class BattlePassBBSManager {
             return;
         }
         acha.sendPacket(new ShowBoard(html, "101"));
+    }
+
+    private void sendListOfBattlePasses(String content, L2PcInstance player, int id){
+        player.getBattlePass().getBattlePassPages().fillPages();
+
+        content = content.replace("%replace%", player.getBattlePass().getBattlePassPages().getPage(id));
+        content = content.replace("%nextPageButtons%", player.getBattlePass().getBattlePassPages().fillNextPageButtons());
+
+        this.separateAndSend(content, player);
     }
 
     private static class SingletonHolder {

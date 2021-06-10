@@ -42,6 +42,7 @@ import net.sf.l2j.gameserver.cache.WarehouseCacheManager;
 import net.sf.l2j.gameserver.communitybbs.BB.Forum;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
+import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
 import net.sf.l2j.gameserver.custom.battlepass.BattlePassPlayer;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
@@ -6134,8 +6135,13 @@ public FastList<L2Skill> getPartyPassiveList()
                 } else if (isInGMPvPEvent()) {
                     setPvpKills(getPvpKills() + _GMPvPEventKillModifier);
                     sendMessage("Your PvP gain is multiplied by " + _GMPvPEventKillModifier + "!");
-                } else if (gearScoreStatus < 5)
+                } else
                     setPvpKills(getPvpKills() + 1);
+
+
+                    for (BattlePass battlePass : getBattlePass().getBattlePasses())
+                        battlePass.increasePoints(true, 0, 0, 0, 0, 0);
+
 
                 setNameColorsDueToPVP();
 
@@ -6240,26 +6246,6 @@ public FastList<L2Skill> getPartyPassiveList()
 
                 if (!isCursedWeaponEquipped() && !isInFunEvent() && gearScoreStatus < 2) {
                     int val = 3;
-
-				/*if (getClan() != null)
-				{
-					if (getClanId() == 268548968 || getClanId() == 271210459) // corrupted - smalls clan and lucy - mukuro's clan
-						val = 5;
-					else if (getClanId() == 268652708) // virtualgods - meitux clan
-						val = 4;
-					else if (getClanId() == 268458015) // wartag - rsprada clan
-						val = 4;
-					else if (getClanId() == 268506856) // borntofight
-						val = 4;
-					else if (getClanId() == 270760281) //friendship
-						val = 4;
-					else if (getClanId() == 268461084) //wutan
-						val = 4;
-					else if (getClanId() == 268453920) //deadlywallers
-						val = 4;
-					else if (getClan().getLevel() >= 7)
-						val = 4;
-				}*/
 
                     if (Rnd.get(val) < 2) {
                         final L2ItemInstance activeWeapon = getActiveWeaponInstance();

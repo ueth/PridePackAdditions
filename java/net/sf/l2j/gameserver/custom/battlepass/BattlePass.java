@@ -54,22 +54,22 @@ public class BattlePass implements Cloneable{
         update();
     }
 
-    public void increasePoints(boolean isPvP, int hp, int pdef, int mdef, int patk, int matk){
+    public void increasePoints(boolean isPvP, double hp, double pdef, double mdef, double patk, double matk){
         if(!_availability)
             return;
 
-        _points +=0.5;
-
-
-
-        /*if(isPvP)
+        if(isPvP)
             _points += 0.004;
-        else
-            _points += hp/50000000 + pdef/500000 + mdef/500000 + patk/1000000 + matk/1000000;*/
+        else{
+            _points += hp/12000000 + pdef/500000 + mdef/500000 + patk/1000000 + matk/1000000;
+        }
+
         update();
     }
 
-    public void setPoints(int points){ _points = points; }
+    public void setPoints(double points){ _points = points; }
+
+    public double getPoints(){return _points;}
 
     public boolean isAvailable() {
         return _availability;
@@ -95,6 +95,10 @@ public class BattlePass implements Cloneable{
         return _id;
     }
 
+    public int getItemId(){return _itemId;}
+
+    public void setRewarded(int i){_rewarded = i;}
+
     /**
      * This method is called every time _points are increasing
      */
@@ -112,7 +116,7 @@ public class BattlePass implements Cloneable{
 
         if(_points > maxRewardNumber && _availability) {
             _points = maxRewardNumber;
-            BattlePassPlayer.updateBattlePassAvailability(_availability=false, _player);
+            BattlePassPlayer.updateBattlePassAvailability(_availability=false, _player, _id);
             return;
         }
     }
@@ -128,7 +132,7 @@ public class BattlePass implements Cloneable{
         _player.sendPacket(html);
 
         MagicSkillUse msk = new MagicSkillUse(_player, _player, 5103, 1, 0, 0);
-        Broadcast.toSelfAndKnownPlayersInRadius(_player, msk, 1000000);
+        Broadcast.toSelfAndKnownPlayersInRadius(_player, msk, 5000);
     }
 
     @Override
