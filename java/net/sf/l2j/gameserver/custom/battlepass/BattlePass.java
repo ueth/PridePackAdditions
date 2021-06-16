@@ -1,5 +1,6 @@
 package net.sf.l2j.gameserver.custom.battlepass;
 
+import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -8,6 +9,9 @@ import net.sf.l2j.gameserver.util.Broadcast;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * this class serves players and clans
+ */
 public class BattlePass implements Cloneable{
     private L2PcInstance _player;
     private double _points;
@@ -19,6 +23,19 @@ public class BattlePass implements Cloneable{
     private int _itemId;
     private boolean _availability;
     private int _rewarded;
+    private L2Clan _clan = null;
+
+    public BattlePass(double points, String name, boolean availability, int id, int price, int itemId, Map<Integer, Reward> rewards, int rewarded, L2Clan clan){
+        _points = points;
+        _name = name;
+        _id = id;
+        _availability = availability;
+        _price = price;
+        _itemId = itemId;
+        _clan = clan;
+        _rewarded = rewarded;
+        _rewards = rewards;
+    }
 
     public BattlePass(L2PcInstance player, double points, String name, boolean availability, int id, int price, int itemId, int minLvl){
         _points = points;
@@ -45,13 +62,13 @@ public class BattlePass implements Cloneable{
         _rewarded = rewarded;
     }
 
-    public void increasePoints(){
+    public void increasePointsClan(){
         if(!_availability)
             return;
 
         _points +=0.5;
 
-        update();
+        updateClan();
     }
 
     public void increasePoints(boolean isPvP, double hp, double pdef, double mdef, double patk, double matk){
@@ -99,6 +116,8 @@ public class BattlePass implements Cloneable{
 
     public void setRewarded(int i){_rewarded = i;}
 
+    public void setClan(L2Clan clan){_clan = clan;}
+
     /**
      * This method is called every time _points are increasing
      */
@@ -135,8 +154,44 @@ public class BattlePass implements Cloneable{
         Broadcast.toSelfAndKnownPlayersInRadius(_player, msk, 5000);
     }
 
+    public void updateClan(){
+        if(!_availability)
+            return;
+
+        BattlePassClan.updateBattlePass(_id, _clan, _points, _rewarded);
+        int maxRewardNumber = _rewards.size();
+
+        if(_points >= _rewarded+1 && _rewarded <= maxRewardNumber-1) {
+            BattlePassClan.updateBattlePass(_id, _clan, _points, ++_rewarded);
+            goodiesClan(_rewards.get(_rewarded).getItemId(), _rewards.get(_rewarded).getAmount());
+        }
+
+        if(_points > maxRewardNumber && _availability) {
+            _points = maxRewardNumber;
+            BattlePassClan.updateBattlePassAvailability(_availability=false, _clan, _id);
+            return;
+        }
+    }
+
+    private void goodiesClan(int itemId, int amount){
+        if(!_availability)
+            return;
+
+        _clan.getWarehouse().addItem("BattlePassReward", itemId, amount, null, null);
+
+        for(L2PcInstance player : _clan.getOnlineMembers(0)){
+            if(player != null && player.isOnline() == 1)
+                player.sendMessage("Your clan has just been rewarded from the " + _name + " Battle Pass!");
+        }
+
+    }
+
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return new BattlePass(_player, _points, _name, _availability, _id, _price, _itemId, _minLvl, _rewards, _rewarded);
+    }
+
+    protected BattlePass cloneClanBattlePass(){
+        return new BattlePass(_points, _name, _availability, _id, _price, _itemId, _rewards, _rewarded, _clan);
     }
 }

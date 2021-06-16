@@ -401,7 +401,8 @@ public GameServer() throws Exception
 		PvPBBSManager.getInstance();
 		RaidStatusBBSManager.getInstance();
 	}
-	
+
+	BattlePassTable.initBattlePasses();
 	ClanTable.getInstance();
 	
 	NpcTable.getInstance();
@@ -460,7 +461,6 @@ public GameServer() throws Exception
 	/** Initialize Vote System */
 	//Util.printSection("Vote Reward");
 	VoteSystem.initialize();
-	BattlePassTable.initBattlePasses();
 	IconTable.getInstance().reload();
 
 	try

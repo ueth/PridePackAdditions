@@ -84,6 +84,7 @@ private ClanTable()
 			int clanId = result.getInt("clan_id");
 			_clans.put(clanId, new L2Clan(clanId));
 			clan = getClan(clanId);
+			clan.getBattlePass().loadPreviousBattlePasses(clan);
 			if (clan.getDissolvingExpiryTime() != 0)
 				scheduleRemoveClan(clan.getClanId());
 			clanCount++;

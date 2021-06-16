@@ -22,14 +22,7 @@ import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
-import net.sf.l2j.gameserver.model.L2CharPosition;
-import net.sf.l2j.gameserver.model.L2CommandChannel;
-import net.sf.l2j.gameserver.model.L2DropCategory;
-import net.sf.l2j.gameserver.model.L2DropData;
-import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.L2Manor;
-import net.sf.l2j.gameserver.model.L2Party;
-import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.*;
 import net.sf.l2j.gameserver.model.actor.instance.L2DecoyInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
@@ -531,6 +524,22 @@ public class L2Attackable extends L2Npc {
         }
     }
 
+    private void handleBattlePassPointsForClan(List<L2PcInstance> players){
+        /**
+         * Reward players that are getting exp with battlepass points
+         */
+        for(L2PcInstance player : players){
+            if(player.getClan()==null)continue;
+            L2Clan clan = player.getClan();
+
+            if(clan.getBattlePass().getBattlePasses().isEmpty())continue;
+
+            for (BattlePass battlePass : clan.getBattlePass().getBattlePasses()) {
+                battlePass.increasePointsClan();
+            }
+        }
+    }
+
     /**
      * Distribute Exp and SP rewards to L2PcInstance (including Summon owner)
      * that hit the L2Attackable and to their Party members.
@@ -623,6 +632,7 @@ public class L2Attackable extends L2Npc {
                 final int partyRewardSize = peopleToRewardExpSp.size();
 
                 handleBattlePassPoints(peopleToRewardExpSp);
+                handleBattlePassPointsForClan(peopleToRewardExpSp);
 
                 if (partyRewardSize == 1) {
                     if (playera.getKnownList().knowsObject(this)) {

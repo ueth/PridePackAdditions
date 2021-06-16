@@ -2,33 +2,33 @@ package net.sf.l2j.gameserver.custom.battlepass;
 
 import net.sf.l2j.gameserver.datatables.IconTable;
 import net.sf.l2j.gameserver.datatables.ItemTable;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BattlePassPages {
-    private List<String> _playerBattlePassPages;
-    private List<String> _playerBattlePassRewardPages;
-    private L2PcInstance _player;
+public class BattlePassClanPages {
+    private List<String> _clanBattlePassPages;
+    private List<String> _clanBattlePassRewardPages;
+    private L2Clan _clan;
 
-    public BattlePassPages (L2PcInstance player) {
-        _playerBattlePassPages = new ArrayList<>();
-        _playerBattlePassRewardPages = new ArrayList<>();
-        _player = player;
+    public BattlePassClanPages (L2Clan clan) {
+        _clanBattlePassPages = new ArrayList<>();
+        _clanBattlePassRewardPages = new ArrayList<>();
+        _clan = clan;
     }
 
     public void fillPages(){
-        _playerBattlePassPages.clear();
+        _clanBattlePassPages.clear();
         StringBuilder sb = StringUtil.startAppend(1000, "");
         int counter = 0;
         String owned = "(Owned)";
 
 
-        for(BattlePass battlePass : BattlePassTable.getBattlePasses().values()){
-            for(BattlePass bp : _player.getBattlePass().getBattlePasses()){
+        for(BattlePass battlePass : BattlePassTable.getClanBattlePasses().values()){
+            for(BattlePass bp : _clan.getBattlePass().getBattlePasses()){
                 if(bp.getId() == battlePass.getId()){
                     owned = "(Owned)";
                     break;
@@ -43,8 +43,8 @@ public class BattlePassPages {
             StringUtil.append(sb, "<table cellpadding=0 cellspacing=10 width=371 height=36 bgcolor=252525><tr><td width=360 align=center><font name=\"hs12\">Cost: </font>" +
                     "<font name=\"hs9\">" + battlePass.getPrice() + " Donation Tokens</font></td></tr></table>");
             StringUtil.append(sb, "<table cellpadding=0 cellspacing=10 width=371 height=36 bgcolor=252525><tr><td width=179 align=center>" +
-                    "<button value=\"Preview\" action=\"bypass _bbsBattlePassPreview " + battlePass.getId() + "\" back=\"l2ui_ct1.button.button_df_small_down\" fore=\"l2ui_ct1.button.button_df_small\" width=\"86\" height=\"31\"/>" +
-                    "</td><td width=180 align=center><button value=\"Buy\" action=\"bypass _bbsBattlePassBuyPlayer " + battlePass.getId() + "\" back=\"l2ui_ct1.button.button_df_small_down\" " +
+                    "<button value=\"Preview\" action=\"bypass _bbsBattlePassClanPreview " + battlePass.getId() + "\" back=\"l2ui_ct1.button.button_df_small_down\" fore=\"l2ui_ct1.button.button_df_small\" width=\"86\" height=\"31\"/>" +
+                    "</td><td width=180 align=center><button value=\"Buy\" action=\"bypass _bbsBattlePassBuyClan " + battlePass.getId() + "\" back=\"l2ui_ct1.button.button_df_small_down\" " +
                     "fore=\"l2ui_ct1.button.button_df_small\" width=\"86\" height=\"31\"/></td></tr></table></td>");
 
             StringUtil.append(sb, "<td width=2></td><td width=2></td>");
@@ -55,7 +55,7 @@ public class BattlePassPages {
             counter++;
 
             if(counter != 1 && counter%6 == 0){
-                _playerBattlePassPages.add(sb.toString());
+                _clanBattlePassPages.add(sb.toString());
                 sb.setLength(0);
             }
         }
@@ -64,7 +64,7 @@ public class BattlePassPages {
             StringUtil.append(sb, "</tr></table><table height=16></table>");
 
         if(counter%6!=0){
-            _playerBattlePassPages.add(sb.toString());
+            _clanBattlePassPages.add(sb.toString());
         }
     }
 
@@ -73,8 +73,8 @@ public class BattlePassPages {
 
         StringUtil.append(sb, "<table><tr>");
 
-        for(int i=0; i<_playerBattlePassPages.size(); i++){
-            StringUtil.append(sb, "<td width=10 align=center><button value=\"" + (i+1) + "\" action=\"bypass _bbsBattlePassPlayer " + i + "\"" +
+        for(int i=0; i<_clanBattlePassPages.size(); i++){
+            StringUtil.append(sb, "<td width=10 align=center><button value=\"" + (i+1) + "\" action=\"bypass _bbsBattlePassClan " + i + "\"" +
                     " back=\"l2ui_ct1.button.button_df_small_down\" fore=\"l2ui_ct1.button.button_df_small\" width=\"31\" height=\"31\"/></td>");
         }
 
@@ -84,10 +84,10 @@ public class BattlePassPages {
     }
 
     public void fillRewards(int battlePassId){
-        _playerBattlePassRewardPages.clear();
+        _clanBattlePassRewardPages.clear();
         BattlePass thisBattlePass = null;
-        int greenBar = 0;
-        int redBar = 0;
+        int greenBar;
+        int redBar;
 
         StringBuilder sb = StringUtil.startAppend(1000, "");
         int counter = 0;
@@ -95,11 +95,18 @@ public class BattlePassPages {
         /**
          * finding the battlepass that we want its rewards to be displayed
          */
-        for(BattlePass battlePass : _player.getBattlePass().getBattlePasses()){
+        for(BattlePass battlePass : _clan.getBattlePass().getBattlePasses()){
             if(battlePassId == battlePass.getId()){
                 thisBattlePass = battlePass;
                 break;
             }
+        }
+
+
+        if(thisBattlePass == null) {
+            System.out.println("This battle pass is null");
+            System.out.println(_clan.getBattlePass().getBattlePasses().size());
+            return;
         }
 
         if(thisBattlePass.getRewards().isEmpty())
@@ -139,7 +146,7 @@ public class BattlePassPages {
             counter++;
 
             if(counter != 1 && counter%16 == 0){
-                _playerBattlePassRewardPages.add(sb.toString());
+                _clanBattlePassRewardPages.add(sb.toString());
                 sb.setLength(0);
             }
         }
@@ -148,7 +155,7 @@ public class BattlePassPages {
             StringUtil.append(sb, "</tr></table>&nbsp;<br1>");
 
         if(counter%16!=0){
-            _playerBattlePassRewardPages.add(sb.toString());
+            _clanBattlePassRewardPages.add(sb.toString());
         }
     }
 
@@ -157,8 +164,8 @@ public class BattlePassPages {
 
         StringUtil.append(sb, "<table><tr>");
 
-        for(int i=0; i<_playerBattlePassRewardPages.size(); i++){
-            StringUtil.append(sb, "<td width=10 align=center><button value=\"" + (i+1) + "\" action=\"bypass _bbsBattlePassPreviewNextPage " + i + "\"" +
+        for(int i=0; i<_clanBattlePassRewardPages.size(); i++){
+            StringUtil.append(sb, "<td width=10 align=center><button value=\"" + (i+1) + "\" action=\"bypass _bbsBattlePassClanPreviewNextPage " + i + "\"" +
                     " back=\"l2ui_ct1.button.button_df_small_down\" fore=\"l2ui_ct1.button.button_df_small\" width=\"31\" height=\"31\"/></td>");
         }
 
@@ -168,7 +175,7 @@ public class BattlePassPages {
     }
 
     public String getPage(int i){
-        return _playerBattlePassPages.get(i);
+        return _clanBattlePassPages.get(i);
     }
-    public String getRewardPage(int i){return  _playerBattlePassRewardPages.get(i);}
+    public String getRewardPage(int i){return  _clanBattlePassRewardPages.get(i);}
 }
