@@ -44,6 +44,7 @@ import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
 import net.sf.l2j.gameserver.custom.battlepass.BattlePassPlayer;
+import net.sf.l2j.gameserver.custom.runes.RunePlayer;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
@@ -17307,8 +17308,10 @@ public void setKillStreak(int streak)
     }
 
     BattlePassPlayer battlePass = new BattlePassPlayer(this);
+    RunePlayer rune = new RunePlayer(this);
 
     public BattlePassPlayer getBattlePass(){
         return battlePass;
     }
+    public RunePlayer getRunePlayer(){return rune;}
 }

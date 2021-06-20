@@ -177,6 +177,8 @@ public class BattlePassBBSManager {
 
         content = content.replace("%replace%", player.getBattlePass().getBattlePassPages().getPage(id));
         content = content.replace("%nextPageButtons%", player.getBattlePass().getBattlePassPages().fillNextPageButtons());
+        content = content.replace("%back%", "<button value=\"Back\" action=\"bypass _bbsBattlePassPlayer 0\" back=\"l2ui_ct1.button.button_df_small_down\" fore=\"l2ui_ct1.button.button_df_small\" width=\"80\" height=\"31\"/>");
+
 
         this.separateAndSend(content, player);
     }
@@ -186,6 +188,7 @@ public class BattlePassBBSManager {
 
         content = content.replace("%replace%", clan.getBattlePass().getBattlePassClanPages().getPage(id));
         content = content.replace("%nextPageButtons%", clan.getBattlePass().getBattlePassClanPages().fillNextPageButtons());
+        content = content.replace("%back%", "<button value=\"Back\" action=\"bypass _bbsBattlePassClan 0\" back=\"l2ui_ct1.button.button_df_small_down\" fore=\"l2ui_ct1.button.button_df_small\" width=\"80\" height=\"31\"/>");
 
         this.separateAndSend(content, player);
     }

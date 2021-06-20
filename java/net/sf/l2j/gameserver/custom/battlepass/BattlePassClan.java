@@ -2,7 +2,6 @@ package net.sf.l2j.gameserver.custom.battlepass;
 
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2Clan;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

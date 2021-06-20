@@ -77,9 +77,8 @@ public class BattlePass implements Cloneable{
 
         if(isPvP)
             _points += 0.004;
-        else{
+        else
             _points += hp/12000000 + pdef/500000 + mdef/500000 + patk/1000000 + matk/1000000;
-        }
 
         update();
     }
@@ -136,7 +135,6 @@ public class BattlePass implements Cloneable{
         if(_points > maxRewardNumber && _availability) {
             _points = maxRewardNumber;
             BattlePassPlayer.updateBattlePassAvailability(_availability=false, _player, _id);
-            return;
         }
     }
 
@@ -169,7 +167,6 @@ public class BattlePass implements Cloneable{
         if(_points > maxRewardNumber && _availability) {
             _points = maxRewardNumber;
             BattlePassClan.updateBattlePassAvailability(_availability=false, _clan, _id);
-            return;
         }
     }
 

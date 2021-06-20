@@ -20,6 +20,8 @@ import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.PvPBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.RaidStatusBBSManager;
 import net.sf.l2j.gameserver.custom.battlepass.BattlePassTable;
+import net.sf.l2j.gameserver.custom.runes.RuneItem;
+import net.sf.l2j.gameserver.custom.runes.RuneTable;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.ArmorSetsTable;
@@ -393,6 +395,7 @@ public GameServer() throws Exception
 	CrestCache.getInstance();
 	
 	ItemLists.getInstance();
+	RuneTable.loadRunes();
 	
 	// forums has to be loaded before clan data, because of last forum id used should have also memo included
 	if (Config.COMMUNITY_TYPE > 0)
@@ -637,6 +640,7 @@ public GameServer() throws Exception
 	ItemHandler.getInstance().registerItemHandler(new TeleportBookmark());
 	ItemHandler.getInstance().registerItemHandler(new Elixir());
 	ItemHandler.getInstance().registerItemHandler(new Gem());
+	ItemHandler.getInstance().registerItemHandler(new RuneItem());
 	ItemHandler.getInstance().registerItemHandler(new DonatePotion());
 	System.out.println("Loaded " + ItemHandler.getInstance().size() + " ItemHandlers");
 	
