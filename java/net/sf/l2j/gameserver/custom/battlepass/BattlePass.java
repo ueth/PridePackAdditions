@@ -117,6 +117,8 @@ public class BattlePass implements Cloneable{
 
     public void setClan(L2Clan clan){_clan = clan;}
 
+    public int getRewarded(){ return _rewarded; }
+
     /**
      * This method is called every time _points are increasing
      */
@@ -124,11 +126,12 @@ public class BattlePass implements Cloneable{
         if(!_availability)
             return;
 
-        BattlePassPlayer.updateBattlePass(_id, _player, _points, _rewarded);
+        //BattlePassPlayer.updateBattlePass(_id, _player, _points, _rewarded);
         int maxRewardNumber = _rewards.size();
 
         if(_points >= _rewarded+1 && _rewarded <= maxRewardNumber-1) {
-            BattlePassPlayer.updateBattlePass(_id, _player, _points, ++_rewarded);
+            //BattlePassPlayer.updateBattlePass(_id, _player, _points, ++_rewarded);
+            ++_rewarded;
             goodies(_rewards.get(_rewarded).getItemId(), _rewards.get(_rewarded).getAmount());
         }
 

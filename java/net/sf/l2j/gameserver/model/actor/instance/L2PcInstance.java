@@ -8843,6 +8843,8 @@ public FastList<L2Skill> getPartyPassiveList()
         storeCharSub();
         storeEffect(storeActiveEffects, isDuringClassChange);
         transformInsertInfo();
+        battlePass.updateBattlePass(this);
+        rune.updateRunes();
         /*EventStats.getInstance().save(this);*/
     }
 

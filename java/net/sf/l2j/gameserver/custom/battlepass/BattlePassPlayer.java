@@ -66,15 +66,19 @@ public class BattlePassPlayer{
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    public static void updateBattlePass(int id, L2PcInstance player, double points, int rewarded){
+    public void updateBattlePass(/*int id, */L2PcInstance player/*, double points, int rewarded*/){
         try (Connection con = L2DatabaseFactory.getInstance().getConnection()) {
             PreparedStatement stm = con.prepareStatement("UPDATE battle_pass_player SET points=?,rewarded=? WHERE playerId=? and battlePassId=?");
 
-            stm.setDouble(1, points);
-            stm.setInt(2, rewarded);
             stm.setInt(3, player.getObjectId());
-            stm.setLong(4, id);
-            stm.execute();
+
+            for(BattlePass bp : _battlePasses) {
+                stm.setDouble(1, bp.getPoints());
+                stm.setInt(2, bp.getRewarded());
+                stm.setLong(4, bp.getId());
+                stm.execute();
+            }
+
             stm.close();
         }catch (Exception e) { e.printStackTrace(); }
     }

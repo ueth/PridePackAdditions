@@ -15,6 +15,7 @@ import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2FortSiegeGuardAI;
 import net.sf.l2j.gameserver.ai.L2SiegeGuardAI;
 import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
+import net.sf.l2j.gameserver.custom.runes.Rune;
 import net.sf.l2j.gameserver.datatables.EventDroplist;
 import net.sf.l2j.gameserver.datatables.EventDroplist.DateDrop;
 import net.sf.l2j.gameserver.datatables.ItemLists;
@@ -540,6 +541,27 @@ public class L2Attackable extends L2Npc {
         }
     }
 
+    private void handleRuneExp(List<L2PcInstance> players){
+
+        double hp = getMaxHp();
+        double pdef = getPDef(null);
+        double mdef = getMDef(null, null);
+        double patk = getPAtk(null);
+        double matk = getMAtk(null, null);
+
+        for(L2PcInstance player : players){
+            if(player.getRunePlayer().getActiveRunes().isEmpty())
+                continue;
+
+            if(player.getRunePlayer().getForbiddenRune() != null)
+                player.getRunePlayer().getForbiddenRune().increaseExp(false, hp, pdef, mdef, patk, matk);
+
+            for (Rune rune : player.getRunePlayer().getActiveRunes()) {
+                rune.increaseExp(false, hp, pdef, mdef, patk, matk);
+            }
+        }
+    }
+
     /**
      * Distribute Exp and SP rewards to L2PcInstance (including Summon owner)
      * that hit the L2Attackable and to their Party members.
@@ -633,6 +655,7 @@ public class L2Attackable extends L2Npc {
 
                 handleBattlePassPoints(peopleToRewardExpSp);
                 handleBattlePassPointsForClan(peopleToRewardExpSp);
+                handleRuneExp(peopleToRewardExpSp);
 
                 if (partyRewardSize == 1) {
                     if (playera.getKnownList().knowsObject(this)) {

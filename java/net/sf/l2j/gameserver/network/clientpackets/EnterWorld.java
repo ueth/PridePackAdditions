@@ -330,6 +330,7 @@ protected void runImpl()
 	
 	activeChar.updateEffectIcons();
 	activeChar.getBattlePass().loadPreviousBattlePasses(activeChar);
+	activeChar.getRunePlayer().loadRunes();
 	
 	activeChar.sendPacket(new EtcStatusUpdate(activeChar));
 	
