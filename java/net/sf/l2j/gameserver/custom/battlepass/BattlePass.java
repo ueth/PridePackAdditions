@@ -159,11 +159,12 @@ public class BattlePass implements Cloneable{
         if(!_availability)
             return;
 
-        BattlePassClan.updateBattlePass(_id, _clan, _points, _rewarded);
+        //BattlePassClan.updateBattlePass(_id, _clan, _points, _rewarded);
         int maxRewardNumber = _rewards.size();
 
         if(_points >= _rewarded+1 && _rewarded <= maxRewardNumber-1) {
-            BattlePassClan.updateBattlePass(_id, _clan, _points, ++_rewarded);
+            //BattlePassClan.updateBattlePass(_id, _clan, _points, ++_rewarded);
+            ++_rewarded;
             goodiesClan(_rewards.get(_rewarded).getItemId(), _rewards.get(_rewarded).getAmount());
         }
 

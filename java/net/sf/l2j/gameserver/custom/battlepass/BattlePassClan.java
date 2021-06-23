@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class BattlePassClan {
 
@@ -67,19 +68,6 @@ public class BattlePassClan {
             statement.execute();
             statement.close();
         } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    public static void updateBattlePass(int id, L2Clan clan, double points, int rewarded){
-        try (Connection con = L2DatabaseFactory.getInstance().getConnection()) {
-            PreparedStatement stm = con.prepareStatement("UPDATE battle_pass_clan SET points=?,rewarded=? WHERE clanId=? and battlePassId=?");
-
-            stm.setDouble(1, points);
-            stm.setInt(2, rewarded);
-            stm.setInt(3, clan.getClanId());
-            stm.setLong(4, id);
-            stm.execute();
-            stm.close();
-        }catch (Exception e) { e.printStackTrace(); }
     }
 
     public static void updateBattlePassAvailability(boolean bool, L2Clan clan, int battlePassId){

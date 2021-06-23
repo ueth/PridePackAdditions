@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.datatables.CharSchemesTable;
+import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
@@ -15,6 +16,7 @@ import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
 import net.sf.l2j.gameserver.model.CursedWeapon;
+import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
@@ -51,12 +53,10 @@ public class Shutdown extends Thread
 	/**
 	 * This function starts a shutdown countdown from Telnet (Copied from
 	 * Function startShutdown())
-	 * 
-	 * @param ip
+	 *
 	 *            IP Which Issued shutdown command
 	 * @param seconds
 	 *            seconds untill shutdown
-	 * @param restart
 	 *            true if the server will restart after shutdown
 	 */
 	private void SendServerQuit(int seconds)
@@ -495,6 +495,8 @@ public class Shutdown extends Thread
 		// we cannt abort shutdown anymore, so i removed the "if"
 		disconnectAllCharacters();
 
+		saveClanBattlePasses();
+
 		// Seven Signs data is now saved along with Festival data.
 		if (!SevenSigns.getInstance().isSealValidationPeriod())
 			SevenSignsFestival.getInstance().saveFestivalData(false);
@@ -542,6 +544,15 @@ public class Shutdown extends Thread
 		catch (InterruptedException e)
 		{
 			// never happens :p
+		}
+	}
+
+	/**
+	 * Save all battlepasses for clans
+	 */
+	private void saveClanBattlePasses(){
+		for(L2Clan clan : ClanTable.getInstance().getClans()){
+			clan.updateBattlePass();
 		}
 	}
 

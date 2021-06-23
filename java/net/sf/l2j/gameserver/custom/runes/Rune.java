@@ -39,8 +39,10 @@ public class Rune {
     }
 
     private void checkForLevelUp(){
-        if(_exp >= 100*_level && _level < _maxLevel)
+        if(_exp >= 100*_level && _level < _maxLevel) {
             _level++;
+            _exp = 0.0;
+        }
     }
 
     public int getLevel() { return _level; }

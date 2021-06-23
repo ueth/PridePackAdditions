@@ -1,11 +1,8 @@
 package net.sf.l2j.gameserver.custom.runes;
 
 import net.sf.l2j.L2DatabaseFactory;
-import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
-import net.sf.l2j.gameserver.custom.battlepass.BattlePassTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import org.omg.PortableServer.SERVANT_RETENTION_POLICY_ID;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

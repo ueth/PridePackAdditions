@@ -537,6 +537,7 @@ public class L2Attackable extends L2Npc {
 
             for (BattlePass battlePass : clan.getBattlePass().getBattlePasses()) {
                 battlePass.increasePointsClan();
+                clan.saveCounter++;
             }
         }
     }

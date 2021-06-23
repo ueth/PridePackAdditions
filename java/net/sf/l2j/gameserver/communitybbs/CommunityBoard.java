@@ -24,20 +24,11 @@ import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.TopBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.TopicBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.custom.BattlePassBBSManager;
-import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
-import net.sf.l2j.gameserver.handler.voicedcommandhandlers.Wedding;
-import net.sf.l2j.gameserver.model.L2Clan;
-import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.communitybbs.Manager.custom.RunesBBSManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
 import net.sf.l2j.gameserver.network.L2GameClient;
-import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
-import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ShowBoard;
-import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.util.Broadcast;
-import net.sf.l2j.util.Rnd;
 import cz.nxs.interf.NexusEvents;
 
 public class CommunityBoard
@@ -74,6 +65,9 @@ public class CommunityBoard
 			case 2: // new
 				if(command.startsWith("_bbsBattlePass")){
 					BattlePassBBSManager.getInstance().parsecmd(command,activeChar);
+				}
+				else if(command.startsWith("_bbsRunes")){
+					RunesBBSManager.getInstance().parsecmd(command,activeChar);
 				}
 				else if (command.startsWith("_bbsclan"))
 				{

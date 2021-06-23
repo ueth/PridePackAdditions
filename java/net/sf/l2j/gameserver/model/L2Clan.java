@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,8 +15,10 @@ import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.GameTimeController;
+import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.communitybbs.BB.Forum;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
+import net.sf.l2j.gameserver.custom.battlepass.BattlePass;
 import net.sf.l2j.gameserver.custom.battlepass.BattlePassClan;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
@@ -29,6 +32,7 @@ import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
+import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -213,6 +217,7 @@ public class L2Clan {
         restore();
         getWarehouse().restore();
         _battlePass = new BattlePassClan(this);
+        startAutoSaveClanBattlePassTask();
     }
 
     /**
@@ -225,6 +230,8 @@ public class L2Clan {
         _clanId = clanId;
         _name = clanName;
         initializePrivs();
+
+        startAutoSaveClanBattlePassTask();
     }
 
     /**
@@ -2363,6 +2370,41 @@ public class L2Clan {
             broadcastToOnlineMembers("Your clan has killed 8 raidbosses in a day and cannot kill anymore for today");
     }
 
+    public int saveCounter = 0;
+    protected ScheduledFuture<?> _autoSaveInDB = null;
+
+    public synchronized void updateBattlePass(){
+        try (Connection con = L2DatabaseFactory.getInstance().getConnection()) {
+            PreparedStatement stm = con.prepareStatement("UPDATE battle_pass_clan SET points=?,rewarded=? WHERE clanId=? and battlePassId=?");
+
+            stm.setInt(3, getClanId());
+
+            for(BattlePass bp : _battlePass.getBattlePasses()) {
+                stm.setDouble(1, bp.getPoints());
+                stm.setInt(2, bp.getRewarded());
+                stm.setLong(4, bp.getId());
+                stm.execute();
+            }
+
+            stm.close();
+        }catch (Exception e) { e.printStackTrace(); }
+    }
+
+    public class AutoSaveClanBattlePassTask implements Runnable {
+        public void run() {
+            if(saveCounter > 0) {
+                updateBattlePass();
+                saveCounter = 0;
+            }
+        }
+    }
+
+    public void startAutoSaveClanBattlePassTask(){
+        _autoSaveInDB = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(
+                new AutoSaveClanBattlePassTask(), 600000L,  180000L
+        );
+    }
+
     public int getRBkills() {
         return _rbKills;
     }
@@ -2372,4 +2414,6 @@ public class L2Clan {
     public BattlePassClan getBattlePass(){
         return _battlePass;
     }
+
+
 }
