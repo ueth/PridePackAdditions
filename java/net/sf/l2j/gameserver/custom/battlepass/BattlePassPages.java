@@ -138,7 +138,7 @@ public class BattlePassPages {
 
             counter++;
 
-            if(counter != 1 && counter%16 == 0){
+            if(counter != 1 && counter%14 == 0){
                 _playerBattlePassRewardPages.add(sb.toString());
                 sb.setLength(0);
             }
@@ -147,7 +147,7 @@ public class BattlePassPages {
         if(counter%2!=0)
             StringUtil.append(sb, "</tr></table>&nbsp;<br1>");
 
-        if(counter%16!=0){
+        if(counter%14!=0){
             _playerBattlePassRewardPages.add(sb.toString());
         }
     }

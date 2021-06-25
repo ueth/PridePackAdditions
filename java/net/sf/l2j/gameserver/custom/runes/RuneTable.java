@@ -40,8 +40,9 @@ public class RuneTable {
                     int maxLevel = Integer.valueOf(eElement.getElementsByTagName("maxLevel").item(0).getTextContent());
                     String name = eElement.getElementsByTagName("name").item(0).getTextContent();
                     int skillId = Integer.valueOf(eElement.getElementsByTagName("skillId").item(0).getTextContent());
+                    String description = eElement.getElementsByTagName("description").item(0).getTextContent();
 
-                    _runes.put(id, new Rune(level, maxLevel, id, name, 0.0, skillId));
+                    _runes.put(id, new Rune(level, maxLevel, id, name, 0.0, skillId, description));
                 }
             }
         } catch (Exception e) {

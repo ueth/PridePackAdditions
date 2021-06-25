@@ -7,14 +7,16 @@ public class Rune {
     private String _name;
     private double _exp;
     private int _skillId;
+    private String _description;
 
-    public Rune(int _level, int _maxLevel, int _id, String _name, double _exp, int _skillId) {
+    public Rune(int _level, int _maxLevel, int _id, String _name, double _exp, int _skillId, String _description) {
         this._level = _level;
         this._maxLevel = _maxLevel;
         this._id = _id;
         this._name = _name;
         this._exp = _exp;
         this._skillId = _skillId;
+        this._description = _description;
     }
 
     @Override
@@ -68,4 +70,8 @@ public class Rune {
     public int getMaxLevel() { return _maxLevel; }
 
     public void setMaxLevel(int _maxLevel) { this._maxLevel = _maxLevel; }
+
+    public String getDescription() { return _description; }
+
+    public void setDescription(String _description) { this._description = _description; }
 }

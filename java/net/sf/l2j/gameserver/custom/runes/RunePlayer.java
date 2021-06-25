@@ -17,14 +17,43 @@ public class RunePlayer {
     private List<Rune> _activeRunes = new ArrayList<>();
     private Rune _forbiddenRune;
     private L2PcInstance _player;
+    private RunePages _runePages;
 
     public RunePlayer(L2PcInstance player){
         _player = player;
+        _runePages = new RunePages(_player);
     }
 
     public void addRune(Rune rune){
+        if(!_activeRunes.isEmpty()) {
+            for (Rune rune1 : _activeRunes) {
+                if (rune1.getId() == rune.getId()) {
+                    _player.sendMessage("You already own this rune");
+                    return;
+                }
+            }
+        }
+
+        if(!_runes.isEmpty()) {
+            for (Rune rune1 : _runes.values()) {
+                if (rune1.getId() == rune.getId()) {
+                    _player.sendMessage("You already own this rune");
+                    return;
+                }
+            }
+        }
+
+        if(_forbiddenRune!=null && _forbiddenRune.getId() == rune.getId()){
+            _player.sendMessage("You already own this rune");
+            return;
+        }
+
         _runes.put(rune.getId(), rune);
         saveRune(rune, false);
+    }
+
+    public RunePages getRunePages(){
+        return _runePages;
     }
 
     public List<Rune> getActiveRunes(){
@@ -35,11 +64,18 @@ public class RunePlayer {
         return _runes;
     }
 
+    public Rune getRune(int id){
+        return _runes.get(id);
+    }
+
     public Rune getForbiddenRune(){
         return _forbiddenRune;
     }
 
     public void wearRune(Rune rune){
+        if(rune == null)
+            return;
+
         switch (rune.getMaxLevel()){
             case 10: {
                 if(!_runes.containsKey(rune.getId()))
@@ -72,6 +108,9 @@ public class RunePlayer {
     }
 
     public void removeRune(Rune rune){
+        if(rune == null)
+            return;
+
         switch (rune.getMaxLevel()){
             case 10: {
                 for(int i=0; i<_activeRunes.size(); i++){
@@ -92,6 +131,7 @@ public class RunePlayer {
                 break;
             }
         }
+        _runes.put(rune.getId(), rune);
     }
 
     private void skillHandle(Rune runeIdToAdd, Rune runeIdToRemove){
@@ -99,7 +139,7 @@ public class RunePlayer {
             _player.addSkill(SkillTable.getInstance().getInfo(runeIdToAdd.getSkillId(), runeIdToAdd.getLevel()), true);
 
         if(runeIdToRemove !=null)
-            _player.removeSkill(SkillTable.getInstance().getInfo(runeIdToRemove.getSkillId(), runeIdToRemove.getLevel()), true);
+            _player.removeSkill(SkillTable.getInstance().getInfo(runeIdToRemove.getSkillId(), runeIdToRemove.getLevel()));
     }
 
     public void saveRune(Rune rune, boolean active){
