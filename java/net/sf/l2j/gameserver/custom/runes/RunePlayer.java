@@ -76,10 +76,11 @@ public class RunePlayer {
         if(rune == null)
             return;
 
+        if(!_runes.containsKey(rune.getId()))
+            return;
+
         switch (rune.getMaxLevel()){
             case 10: {
-                if(!_runes.containsKey(rune.getId()))
-                    return;
 
                 if (_activeRunes.size() == 3) {
                     updateRuneActiveness(_activeRunes.get(2), 0);
@@ -93,12 +94,14 @@ public class RunePlayer {
                 break;
             }
             case 15: {
-                if(_forbiddenRune != null) {
-                    skillHandle(rune, _forbiddenRune);
-                    updateRuneActiveness(_forbiddenRune, 0);
-                }
-                else {
-                    skillHandle(rune, null);
+                if (_runes.remove(rune.getId(), rune)) {
+                    if (_forbiddenRune != null) {
+                        skillHandle(rune, _forbiddenRune);
+                        updateRuneActiveness(_forbiddenRune, 0);
+                        _runes.put(_forbiddenRune.getId(), _forbiddenRune);
+                    } else {
+                        skillHandle(rune, null);
+                    }
                 }
                 updateRuneActiveness(rune, 1);
                 _forbiddenRune = rune;

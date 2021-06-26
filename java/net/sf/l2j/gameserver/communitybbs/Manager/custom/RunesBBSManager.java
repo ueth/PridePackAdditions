@@ -97,11 +97,13 @@ public class RunesBBSManager {
             String stats = "";
             int expWidth = 0;
             int expNeedWidth = 100;
+            String name = "Rune Slot ";
 
             if(player.getRunePlayer().getActiveRunes().size()>i && !player.getRunePlayer().getActiveRunes().isEmpty()) {
                 Rune rune = player.getRunePlayer().getActiveRunes().get(i);
                 Rune forbiddenRune = player.getRunePlayer().getForbiddenRune();
                 if (rune == null) {
+                    content = content.replace("%name" + (i+1) + "%", name + (i+1));
                     content = content.replace("%stats" + (i+1) + "%", stats);
                     content = content.replace("%level" + (i+1) + "%", level + "");
                     content = content.replace("%icon" + (i+1) + "%", icon);
@@ -109,6 +111,7 @@ public class RunesBBSManager {
                     content = content.replace("%expneedwidth" + (i+1) + "%", expNeedWidth + "");
                 } else {
                     icon = IconTable.getInstance().getIcon(rune.getId());
+                    content = content.replace("%name" + (i+1) + "%", rune.getName());
                     content = content.replace("%stats" + (i+1) + "%", rune.getDescription());
                     content = content.replace("%level" + (i+1) + "%", rune.getLevel() + "");
                     content = content.replace("%icon" + (i+1) + "%", icon);
@@ -121,6 +124,7 @@ public class RunesBBSManager {
                 }
                 if (i == 3 && forbiddenRune != null) {
                     icon = IconTable.getInstance().getIcon(forbiddenRune.getId());
+                    content = content.replace("%name" + (i+1) + "%", forbiddenRune.getName());
                     content = content.replace("%stats" + (i+1) + "%", forbiddenRune.getDescription());
                     content = content.replace("%level" + (i+1) + "%", forbiddenRune.getLevel() + "");
                     content = content.replace("%icon" + (i+1) + "%", icon);
@@ -135,6 +139,7 @@ public class RunesBBSManager {
                 Rune forbiddenRune = player.getRunePlayer().getForbiddenRune();
                 if (i == 3 && forbiddenRune != null) {
                     icon = IconTable.getInstance().getIcon(forbiddenRune.getId());
+                    content = content.replace("%name" + (i+1) + "%", forbiddenRune.getName());
                     content = content.replace("%stats" + (i+1) + "%", forbiddenRune.getDescription());
                     content = content.replace("%level" + (i+1) + "%", forbiddenRune.getLevel() + "");
                     content = content.replace("%icon" + (i+1) + "%", icon);
@@ -146,6 +151,7 @@ public class RunesBBSManager {
                     content = content.replace("%expneedwidth" + (i+1) + "%", expNeedWidth + "");
                 }
                 else{
+                    content = content.replace("%name" + (i+1) + "%", name + (i+1));
                     content = content.replace("%stats" +(i+1) + "%", stats);
                     content = content.replace("%level" + (i+1) + "%", level + "");
                     content = content.replace("%icon" + (i+1) + "%", icon);

@@ -43,7 +43,7 @@ public class RunePages {
             if(counter%5==0)
                 StringUtil.append(sb, "</tr>");
 
-            if(counter != 1 && counter%5 == 0){
+            if(counter != 1 && counter%10 == 0){
                 _runePages.add(sb.toString());
                 sb.setLength(0);
             }
@@ -52,7 +52,7 @@ public class RunePages {
         if(counter%5!=0)
             StringUtil.append(sb, "</tr>");
 
-        if(counter%5!=0){
+        if(counter%10!=0){
             _runePages.add(sb.toString());
         }
     }
