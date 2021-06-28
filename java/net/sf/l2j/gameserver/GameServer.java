@@ -58,6 +58,7 @@ import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.datatables.StaticObjects;
 import net.sf.l2j.gameserver.datatables.SummonItemsData;
 import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.geoeditorcon.GeoEditorListener;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.ChatHandler;
@@ -396,6 +397,7 @@ public GameServer() throws Exception
 	
 	ItemLists.getInstance();
 	RuneTable.loadRunes();
+	Manager.getInstance().run();
 	
 	// forums has to be loaded before clan data, because of last forum id used should have also memo included
 	if (Config.COMMUNITY_TYPE > 0)

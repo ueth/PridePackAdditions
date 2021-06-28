@@ -15,6 +15,7 @@ import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.handler.IVoicedCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
@@ -56,7 +57,9 @@ private static final String[] _voicedCommands =
 	"lockdown",
 	"lockdowntime",
 	"adenaclanwh",
-	"marrytime"	
+	"marrytime",
+		"abort",
+		"run"
 };
 
 public boolean useVoicedCommand(String command, L2PcInstance activeChar, String target)
@@ -117,10 +120,13 @@ public boolean useVoicedCommand(String command, L2PcInstance activeChar, String 
 		
 		return true;
 	}
-	else if (command.equals("l2net") && activeChar.isGM() && activeChar.getAccessLevel().getLevel() > 5)
-	{
-		
-		
+	else if (command.equals("abort") && activeChar.isGM() && activeChar.getAccessLevel().getLevel() > 5) {
+		Manager.getInstance().abortRegistrationPhase();
+		return true;
+	}
+	else if (command.equals("run") && activeChar.isGM() && activeChar.getAccessLevel().getLevel() > 5) {
+		activeChar.sendMessage("starting fair games");
+		Manager.getInstance().run();
 		return true;
 	}
 	else if (command.startsWith("rbkills"))

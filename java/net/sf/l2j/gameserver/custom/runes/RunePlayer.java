@@ -102,9 +102,9 @@ public class RunePlayer {
                     } else {
                         skillHandle(rune, null);
                     }
+                    updateRuneActiveness(rune, 1);
+                    _forbiddenRune = rune;
                 }
-                updateRuneActiveness(rune, 1);
-                _forbiddenRune = rune;
                 break;
             }
         }

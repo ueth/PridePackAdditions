@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.TopBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.TopicBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.custom.BattlePassBBSManager;
+import net.sf.l2j.gameserver.communitybbs.Manager.custom.MarketPlaceBBSManager;
 import net.sf.l2j.gameserver.communitybbs.Manager.custom.RunesBBSManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.L2GameClient;
@@ -68,6 +69,9 @@ public class CommunityBoard
 				}
 				else if(command.startsWith("_bbsRunes")){
 					RunesBBSManager.getInstance().parsecmd(command,activeChar);
+				}
+				else if(command.startsWith("_bbsMarketPlace")){
+					MarketPlaceBBSManager.getInstance().parsecmd(command,activeChar);
 				}
 				else if (command.startsWith("_bbsclan"))
 				{

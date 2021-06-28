@@ -92,7 +92,7 @@ public class RunesBBSManager {
 
     private String placeActiveRunes(String content, L2PcInstance player){
         for(int i=0; i<4; i++){
-            String icon = "icon.etc_charm_of_courage_i03";
+            String icon = "runes.defaultrune";
             int level = 0;
             String stats = "";
             int expWidth = 0;

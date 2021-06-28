@@ -17308,6 +17308,13 @@ public void setKillStreak(int streak)
 
         return "FFFFFF"; //Default White
     }
+    private boolean _fairGame = false;
+    public void setFairGame(boolean bool){
+        _fairGame = bool;
+    }
+    public boolean isInFairGame(){
+        return _fairGame;
+    }
 
     BattlePassPlayer battlePass = new BattlePassPlayer(this);
     RunePlayer rune = new RunePlayer(this);

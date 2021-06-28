@@ -7414,58 +7414,34 @@ public int calculateTimeBetweenAttacks(L2Character target, L2Weapon weapon)
 	 }
  }
  
- public L2Skill removeSkill(int skillId, boolean cancelEffect)
- {
+ public L2Skill removeSkill(int skillId, boolean cancelEffect) {
 	 // Remove the skill from the L2Character _skills
 	 L2Skill oldSkill = _skills.remove(skillId);
 	 // Remove all its Func objects from the L2Character calculator set
-	 if (oldSkill != null)
-	 {
-		 /*if (oldSkill.getOwnerObjId() != 0) //is a party passive
-		 {
-			 if (oldSkill.getOwnerObjId() == getObjectId())
-				 getActingPlayer().removeSkillFromPartyPassiveList(oldSkill);
-			 else
-			 {
-				 _log.warning("WTF????????? removeSkill removed a skill that has owner obj id but is not the same as owner's WTF?");
-			 }
-		 }*/
-		 
+	 if (oldSkill != null) {
 		 //this is just a fail-safe againts buggers and gm dummies...
-		 if((oldSkill.triggerAnotherSkill()) && oldSkill.getTriggeredId() > 0)
-		 {
+		 if((oldSkill.triggerAnotherSkill()) && oldSkill.getTriggeredId() > 0) {
 			 removeSkill(oldSkill.getTriggeredId(),true);
 		 }
 		 // does not abort casting of the transformation dispell
-		 if (oldSkill.getSkillType() != L2SkillType.TRANSFORMDISPEL)
-		 {
+		 if (oldSkill.getSkillType() != L2SkillType.TRANSFORMDISPEL) {
 			 // Stop casting if this skill is used right now
-			 if (getLastSkillCast() != null && isCastingNow())
-			 {
+			 if (getLastSkillCast() != null && isCastingNow()) {
 				 if (oldSkill.getId() == getLastSkillCast().getId())
 					 abortCast();
 			 }
-			 if (getLastSimultaneousSkillCast() != null && isCastingSimultaneouslyNow())
-			 {
+			 if (getLastSimultaneousSkillCast() != null && isCastingSimultaneouslyNow()) {
 				 if (oldSkill.getId() == getLastSimultaneousSkillCast().getId())
 					 abortCast();
 			 }
 		 }
 		 
-		 if (cancelEffect || oldSkill.isToggle())
-		 {
-			 /*// for now, to support transformations, we have to let their effects stay when skill is removed
-				final L2Effect e = getFirstEffect(oldSkill);
-				
-				if (e == null || e.getEffectType() != L2EffectType.TRANSFORMATION)
-				{*/
+		 if (cancelEffect || oldSkill.isToggle()) {
 			 removeStatsOwner(oldSkill);
 			 stopSkillEffects(oldSkill.getId());
-			 /*}*/
 		 }
 		 
-		 if (oldSkill instanceof L2SkillAgathion && this instanceof L2PcInstance && ((L2PcInstance)this).getAgathionId() > 0)
-		 {
+		 if (oldSkill instanceof L2SkillAgathion && this instanceof L2PcInstance && ((L2PcInstance)this).getAgathionId() > 0) {
 			 ((L2PcInstance)this).setAgathionId(0);
 			 ((L2PcInstance)this).broadcastUserInfo();
 		 }
