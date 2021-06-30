@@ -12,7 +12,7 @@ public class PlayerHandler {
     private L2PcInstance _player;
     private int _instanceId;
     private Loc _oldLocPlayer;
-    private Loc _locPlayer = new Loc(0, 0, 0);
+    private Loc _locPlayer ;
     private List<L2Skill> _oldSkills = new ArrayList<>();
 
     public PlayerHandler(L2PcInstance player, int instanceId) {
@@ -23,6 +23,7 @@ public class PlayerHandler {
     public boolean teleportPlayerToArena() {
         if (_player == null || _player.isOnline() != 1)
             return false;
+        System.out.println("teleportPlayerToArena");
 
         prepPlayer();
         _player.setInstanceId(_instanceId);
@@ -49,35 +50,54 @@ public class PlayerHandler {
         _player.sendSkillList();
     }
 
+    public void fight(){
+        if(_player.isOnline()!=1)
+            return;
+
+        _player.setIsRooted(false);
+        _player.setInvisible(false);
+        _player.broadcastUserInfo();
+    }
+
     /**
      * A method that prepares the player before teleporting him for battle
      */
     public void prepPlayer() {
-        if(_player == null)
+        if(_player.isOnline()!=1)
             return;
 
-        _oldLocPlayer = new Loc(_player.getX(), _player.getY(), _player.getZ()); // save player's old location
+        try{
+            _oldLocPlayer = new Loc(_player.getX(), _player.getY(), _player.getZ()); // save player's old location
 
-        for (L2Skill skill : _player.getAllSkills()) {
-            _oldSkills.add(skill);
-            _player.removeSkill(skill, false);
+            for (L2Skill skill : _player.getAllSkills()) {
+                _oldSkills.add(skill);
+                _player.removeSkill(skill, false);
+            }
+
+            _player.setFairGame(true);
+            _player.addSkill(35150); //Adding the skill that equalizes player's stats
+            _player.sendSkillList();
+
+            if (_player.isSitting())
+                _player.standUp();
+
+            _locPlayer.addRadius(0);
+            _player.setTarget(null);
+            _player.setIsRooted(true);
+            _player.doRevive();
+            _player.setInvisible(true);
+            _player.broadcastUserInfo();
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
-        _player.setFairGame(true);
-        _player.addSkill(SkillTable.getInstance().getInfo(35150, 1), false); //Adding the skill that equalizes player's stats
-        _player.sendSkillList();
-
-        if (_player.isSitting())
-            _player.standUp();
-
-        _locPlayer.addRadius(0);
-        _player.setTarget(null);
-        _player.setIsRooted(true);
-        _player.doRevive();
-        _player.setInvisible(true);
     }
 
     public L2PcInstance getPlayer(){
         return _player;
+    }
+
+    public void setLoc(int x, int y, int z){
+        _locPlayer = new Loc(x, y, z);
     }
 }
