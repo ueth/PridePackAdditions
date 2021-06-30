@@ -1,6 +1,7 @@
 package net.sf.l2j.gameserver.model.actor.status;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.instancemanager.DuelManager;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Decoy;
@@ -298,7 +299,7 @@ public final void reduceHp(double value, L2Character attacker, boolean awake, bo
 		getActiveChar().abortAttack();
 		getActiveChar().abortCast();
 		
-		if (getActiveChar().isInOlympiadMode())
+		if (getActiveChar().isInOlympiadMode() || getActiveChar().isInFairGame())
 		{
 			if (getActiveChar().getPet() != null)
 				getActiveChar().getPet().unSummon(getActiveChar());
@@ -308,6 +309,10 @@ public final void reduceHp(double value, L2Character attacker, boolean awake, bo
 			getActiveChar().setIsPendingRevive(true);
 			if (getActiveChar().getPet() != null)
 				getActiveChar().getPet().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
+
+			if(getActiveChar().isInFairGame()){
+				Manager.getInstance().notifyWin(getActiveChar().getInstanceId());
+			}
 			return;
 		}
 		

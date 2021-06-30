@@ -278,7 +278,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> {
                         return;
                 }
 
-                if (actChar.isInOlympiadMode() && gsp instanceof CreatureSay)
+                if ((actChar.isInOlympiadMode() || actChar.isInFairGame()) && gsp instanceof CreatureSay)
                     return;
             }
         }
@@ -672,7 +672,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> {
                 isDetached(true);
                 L2PcInstance player = getActiveChar();
                 if (player != null) {
-                    if (!player.isInOlympiadMode() && !player.isFestivalParticipant() && !NexusEvents.isInEvent(player) && !TvTEvent.isPlayerParticipant(player.getObjectId()) && !player.isInJail()) {
+                    if (!player.isInOlympiadMode() && !player.isInFairGame() && !player.isFestivalParticipant() && !NexusEvents.isInEvent(player) && !TvTEvent.isPlayerParticipant(player.getObjectId()) && !player.isInJail()) {
                         if ((player.isInStoreMode() && Config.OFFLINE_TRADE_ENABLE) || (player.isInCraftMode() && Config.OFFLINE_CRAFT_ENABLE)) {
                             player.leaveParty();
 

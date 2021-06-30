@@ -166,6 +166,12 @@ private static final boolean validateGateCondition(L2PcInstance clanLeader, L2Pc
 		player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 		return false;
 	}
+
+	if(player.isInFairGame())
+	{
+		player.sendMessage("Cannot use while in Fair Games.");
+		return false;
+	}
 	
 	if (clanLeader.isFestivalParticipant())
 	{

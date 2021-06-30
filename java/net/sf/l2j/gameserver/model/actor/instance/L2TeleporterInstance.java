@@ -326,6 +326,11 @@ public static boolean checkIfCanTeleport(L2PcInstance activeChar)
 		activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
 		return false;
 	}
+	if (activeChar.isInFairGame())
+	{
+		activeChar.sendMessage("Can't teleport while in fair games");
+		return false;
+	}
 	/*// Check to see if the current player is in TvT , CTF or ViP events.
 		if (activeChar.isInFunEvent())
 		{

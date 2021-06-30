@@ -16,6 +16,7 @@ import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.TradeController;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.handler.IUserCommandHandler;
 import net.sf.l2j.gameserver.handler.UserCommandHandler;
@@ -54,6 +55,13 @@ public class Gem implements IItemHandler
 		if (activeChar.isInOlympiadMode())
 		{
 			activeChar.sendMessage("Cannot use while in Olympiad");
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
+		if(activeChar.isInFairGame())
+		{
+			activeChar.sendMessage("Cannot use while in Fair Games.");
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -327,6 +335,12 @@ public class Gem implements IItemHandler
 		if (player.isInOlympiadMode())
 		{
 			player.sendMessage("Cannot use while in Olympiad");
+			return;
+		}
+		if(player.isInFairGame())
+		{
+			player.sendMessage("Cannot use while in Fair Games.");
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		if (action.equalsIgnoreCase("gemmain"))

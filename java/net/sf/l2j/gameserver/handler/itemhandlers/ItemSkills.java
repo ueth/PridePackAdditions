@@ -2,6 +2,7 @@ package net.sf.l2j.gameserver.handler.itemhandlers;
 
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -35,6 +36,18 @@ public void useItem(L2Playable playable, L2ItemInstance item)
 		activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
 		return;
 	}
+
+	if(activeChar.isInFairGame())
+	{
+		activeChar.sendMessage("Cannot use while in Fair Games.");
+		return;
+	}
+	if(Manager.getInstance().isPlayerRegistered(activeChar))
+	{
+		activeChar.sendMessage("You are already registered for Fair Games.");
+		return;
+	}
+
 	if (!TvTEvent.onScrollUse(playable.getObjectId()))
 	{
 		playable.sendPacket(ActionFailed.STATIC_PACKET);

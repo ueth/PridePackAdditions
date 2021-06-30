@@ -368,7 +368,7 @@ public void getCubicTarget()
 			return;
 		}
 		// Olympiad targeting
-		if (_owner.isInOlympiadMode())
+		if (_owner.isInOlympiadMode() || _owner.isInFairGame())
 		{
 			if (_owner.isOlympiadStart())
 			{
@@ -920,7 +920,7 @@ public void CubicTargetForHeal()
 		if (!DuelManager.getInstance().getDuel(_owner.getDuelId()).isPartyDuel())
 			party = null;
 	
-	if (party != null && !_owner.isInOlympiadMode())
+	if (party != null && !_owner.isInOlympiadMode() && !_owner.isInFairGame())
 	{
 		// Get all visible objects in a spheric area near the L2Character
 		// Get a list of Party Members

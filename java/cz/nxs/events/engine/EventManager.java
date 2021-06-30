@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.ThreadPoolManager;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.util.Rnd;
 import cz.nxs.events.Configurable;
@@ -254,6 +255,12 @@ public class EventManager
 		if (player.isOlympiadRegistered() || player.isInOlympiadMode())
 		{
 			player.sendMessage(LanguageEngine.getMsg("registering_olympiad"));
+			return false;
+		}
+
+		if(Manager.getInstance().isPlayerRegistered(player.getOwner()))
+		{
+			player.sendMessage("You are already registered for Fair Games.");
 			return false;
 		}
 		

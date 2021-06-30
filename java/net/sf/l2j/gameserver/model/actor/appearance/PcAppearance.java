@@ -68,6 +68,11 @@ public final String getVisibleName()
 	{
 		return "Olympiader";
 	}
+
+	if(_owner.isInFairGame())
+	{
+		return "Player";
+	}
 	
 	if (NexusEvents.isInEvent(_owner))
 	{
@@ -107,7 +112,9 @@ public final String getVisibleTitle()
 {
 	if (_owner.isInOlympiadMode())
 		return "";
-	
+	if(_owner.isInFairGame())
+		return "";
+
 	if (NexusEvents.isInEvent(_owner))
 	{
 		if (_owner.getEventInfo().hasAntifeedProtection())
@@ -212,6 +219,9 @@ public int getNameColor()
 {
 	if (_owner.isInOlympiadMode())
 		return Integer.decode("0xFFFFFF"); //White
+	if(_owner.isInFairGame())
+		return Integer.decode("0xFFFFFF");
+
 	else if (_owner.isInFunEvent())
 	{
 		try

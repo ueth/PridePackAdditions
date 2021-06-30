@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 
@@ -52,7 +53,7 @@ public final class RequestPrivateStoreManageSell extends L2GameClientPacket
             return;
         }
 
-        if (player.isInOlympiadMode())
+        if (player.isInOlympiadMode() || player.isInFairGame() || Manager.getInstance().isPlayerRegistered(player))
         {
             sendPacket(ActionFailed.STATIC_PACKET);
             return;

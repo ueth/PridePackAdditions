@@ -159,7 +159,7 @@ public void run()
 				reuseDelay = (greaterHeal.isStaticHitTime() ? greaterHeal.getHitTime() : Formulas.calcSkillCastTime(_decoy, greaterHeal, greaterHeal.getHitTime()))+500;
 			}
 		}
-		else if (!_decoy.getOwner().isInOlympiadMode())
+		else if (!_decoy.getOwner().isInOlympiadMode() || !_decoy.getOwner().isInFairGame())
 		{
 			boolean canCastHate = decoyHate.getTargetList(_decoy, true, _decoy).length > 0;
 			final L2Object ownerTarget = _decoy.getActingPlayer().getTarget();

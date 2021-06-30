@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SummonItemsData;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
@@ -55,6 +56,11 @@ public void useItem(L2Playable playable, L2ItemInstance item)
 	if (activeChar.isInOlympiadMode())
 	{
 		activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
+		return;
+	}
+	if(activeChar.isInFairGame())
+	{
+		activeChar.sendMessage("Cannot use while in Fair Games.");
 		return;
 	}
 	if (activeChar.isAllSkillsDisabled() || activeChar.isCastingNow())

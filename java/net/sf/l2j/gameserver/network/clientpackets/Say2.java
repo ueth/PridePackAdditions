@@ -145,7 +145,7 @@ protected void runImpl()
 		return;
 	}
 	
-	if (activeChar.isInOlympiadMode())
+	if (activeChar.isInOlympiadMode() || activeChar.isInFairGame())
 	{
 		activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 		return;

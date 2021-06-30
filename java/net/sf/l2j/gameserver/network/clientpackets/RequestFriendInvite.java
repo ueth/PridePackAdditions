@@ -80,7 +80,7 @@ public final class RequestFriendInvite extends L2GameClientPacket
             return;
         }
     	
-        if (friend.isInOlympiadMode() || activeChar.isInOlympiadMode())
+        if (friend.isInOlympiadMode() || activeChar.isInOlympiadMode() || friend.isInFairGame() || activeChar.isInFairGame())
         {
         	activeChar.sendMessage("You or your target cant request trade in Olympiad mode");
             return;

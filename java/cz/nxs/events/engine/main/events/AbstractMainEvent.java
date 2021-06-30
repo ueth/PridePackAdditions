@@ -57,6 +57,7 @@ import cz.nxs.interf.delegate.PartyData;
 import cz.nxs.interf.delegate.SkillData;
 import cz.nxs.l2j.CallBack;
 import cz.nxs.l2j.ClassType;
+import net.sf.l2j.gameserver.fairgames.Manager;
 
 
 /**
@@ -857,6 +858,13 @@ public abstract class AbstractMainEvent extends Event implements Configurable, E
 			player.sendMessage("Come back after you store the disallowed items to your warehouse.");
 			return false;
 		}
+
+		if(Manager.getInstance().isPlayerRegistered(player.getOwner()))
+		{
+			player.sendMessage("You are already registered for Fair Games.");
+			return false;
+		}
+
 		
 		int maxPlayers = getInt("maxPlayers");
 		if(maxPlayers != -1 && maxPlayers >= _manager.getPlayersCount())

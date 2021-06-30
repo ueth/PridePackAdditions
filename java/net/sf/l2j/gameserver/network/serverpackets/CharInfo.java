@@ -228,7 +228,7 @@ protected final void writeImpl()
 			antifeed = false;
 		}
 		
-		final boolean olympiad = (_activeChar.isInOlympiadMode() || antifeed || _activeChar.isDisguised() || (_activeChar._inEventDM && DM._started));
+		final boolean olympiad = (_activeChar.isInOlympiadMode() || _activeChar.isInFairGame() || antifeed || _activeChar.isDisguised() || (_activeChar._inEventDM && DM._started));
 		
 		writeC(0x31);
 		writeD(_x);

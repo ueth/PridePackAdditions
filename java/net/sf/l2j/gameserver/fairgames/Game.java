@@ -13,6 +13,8 @@ public class Game {
     private PlayerHandler _player2;
     private int _instanceId;
 
+    private boolean _win = false;
+
     protected ScheduledFuture<?> _gameTask = null;
     public static final int GAME_TIME = 120; // seconds
     private GameStage _gameStage;
@@ -36,13 +38,25 @@ public class Game {
     }
 
     public int getInstanceId(){return _instanceId;}
+
+    /**
+     * Setting the instanceid and the location to tp players
+     * @param player
+     */
     public void setPlayer1(L2PcInstance player){
         _player1 = new PlayerHandler(player, _instanceId);
-        _player1.setLoc(148559, 46721, -3413);
+        _player1.setLoc(84455, -17077, -1847);
     }
     public void setPlayer2(L2PcInstance player){
         _player2 = new PlayerHandler(player, _instanceId);
-        _player2.setLoc(150347, 46726, -3413);
+        _player2.setLoc(81931, -15233, -1841);
+    }
+
+    public void increaseDamage(int objectId, int damage){
+        if(_player1.getPlayer().getObjectId() == objectId)
+            _player1.increaseDamage(damage);
+        else
+            _player2.increaseDamage(objectId);
     }
 
     public synchronized void start(){
@@ -79,9 +93,18 @@ public class Game {
         _player2.fight();
     }
 
+    private void sendPlayersClock(){
+        _player1.sendPlayerClock(_clock);
+        _player2.sendPlayerClock(_clock);
+    }
+
     private void sendMessageToPlayers(String message){
         _player1.getPlayer().sendMessage(message);
         _player2.getPlayer().sendMessage(message);
+    }
+
+    public void notifyForWin(){
+        _win = true;
     }
 
     public L2Spawn SpawnCoach(int xPos, int yPos, int zPos, int npcId) {
@@ -104,6 +127,11 @@ public class Game {
 
     public class GameTask implements Runnable {
         public void run() {
+            if(_win || _player1.getPlayer().isOnline() != 1 || _player2.getPlayer().isOnline() != 1){
+                _teleportTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(
+                        new TeleportBackTask(), 1,  1000
+                );
+            }
             switch (_clock){
                 case GAME_TIME :
                     _gameStage = GameStage.CHOOSING_BUILD;
@@ -120,6 +148,7 @@ public class Game {
                     handleGame();
                     break;
             }
+            sendPlayersClock();
             _clock--;
         }
     }
@@ -131,9 +160,9 @@ public class Game {
                 break;
 
             case ENDED:
-                teleportPlayersBack();
-                _gameTask.cancel(false);
-                _gameTask = null;
+                _teleportTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(
+                        new TeleportBackTask(), 1,  1000
+                );
                 Manager.getInstance().removeGame(_instanceId);
                 break;
         }
@@ -160,6 +189,39 @@ public class Game {
                     _teleportTask.cancel(false);
                     _teleportTask = null;
                     _gameTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GameTask(), 100,  1000);
+                    break;
+            }
+            _teleportClock--;
+        }
+    }
+
+    public class TeleportBackTask implements Runnable {
+        TeleportBackTask(){
+            _teleportClock = TELEPORT_TIME;
+            _gameTask.cancel(false);
+            _gameTask = null;
+        }
+
+        public void run() {
+            switch (_teleportClock){
+                case 20 :
+                    sendMessageToPlayers("You will be teleported back in 20 seconds");
+                    break;
+
+                case 10:
+                case 5:
+                case 4:
+                case 3:
+                case 2:
+                case 1:
+                    sendMessageToPlayers(_teleportClock + " seconds left until teleport back");
+                    break;
+
+                case 0:
+                    teleportPlayersBack();
+                    _teleportTask.cancel(false);
+                    _teleportTask = null;
+                    Manager.getInstance().removeGame(_instanceId);
                     break;
             }
             _teleportClock--;

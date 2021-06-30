@@ -105,7 +105,7 @@ protected void runImpl()
 			requestor.sendMessage("You may not invite this player to the party.");
 			return;
 		}
-		if (target.isInOlympiadMode() || requestor.isInOlympiadMode())
+		if (target.isInOlympiadMode() || requestor.isInOlympiadMode() || target.isInFairGame() || requestor.isInFairGame())
 			return;
 		
 		if (target.isInDuel() || requestor.isInDuel())

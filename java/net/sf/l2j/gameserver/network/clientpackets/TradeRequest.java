@@ -106,7 +106,7 @@ protected void runImpl()
 		return;
 	}
 	
-	if (partner.isInOlympiadMode() || player.isInOlympiadMode())
+	if (partner.isInOlympiadMode() || player.isInOlympiadMode() || partner.isInFairGame() || player.isInFairGame())
 	{
 		player.sendMessage("You or your target cant request trade in Olympiad mode");
 		return;

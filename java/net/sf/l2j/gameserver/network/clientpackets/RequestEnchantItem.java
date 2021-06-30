@@ -103,7 +103,7 @@ protected void runImpl()
 		return;
 	}
 	
-	if (activeChar.isInOlympiadMode())
+	if (activeChar.isInOlympiadMode() || activeChar.isInFairGame())
 	{
 		activeChar.sendPacket(new EnchantResult(2, 0, 0));
 		activeChar.setActiveEnchantItem(null);

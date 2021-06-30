@@ -561,6 +561,16 @@ public static boolean canGoToLove(L2PcInstance activeChar, L2PcInstance partner)
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.BOARD_OR_CANCEL_NOT_POSSIBLE_HERE));
 			return false;
 		}
+		if(partner.isInFairGame())
+		{
+			activeChar.sendMessage("Cannot use while in Fair Games.");
+			return false;
+		}
+		if(activeChar.isInFairGame())
+		{
+			activeChar.sendMessage("Cannot use while in Fair Games.");
+			return false;
+		}
 	}
 	
 	if (partner.isTeleporting())
@@ -588,7 +598,7 @@ public static boolean canGoToLove(L2PcInstance activeChar, L2PcInstance partner)
 			activeChar.sendMessage("Your partner is inside a Boss Zone.");
 			return false;
 		}
-		else if (partner.isInOlympiadMode() || Olympiad.getInstance().isRegistered(partner))
+		else if (partner.isInOlympiadMode() || Olympiad.getInstance().isRegistered(partner) || partner.isInFairGame() || Manager.getInstance().isPlayerRegistered(partner))
 		{
 			activeChar.sendMessage("Your partner is in the Olympiad now.");
 			return false;

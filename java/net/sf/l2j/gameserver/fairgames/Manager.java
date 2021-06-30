@@ -20,12 +20,13 @@ public class Manager {
 
     public L2Spawn _spawn;
 
-    private int _instanceID = 1;
+    private int _instanceID = 100;
+
     private Map<Integer, Game> _games = new HashMap<>();
 
     private boolean _registrationPhase = false;
     private ScheduledFuture<?> _registrationTask = null;
-    private static final int REGISTRATION_TIME = 300; // seconds
+    private static final int REGISTRATION_TIME = 3000; // seconds
     private int _clock = REGISTRATION_TIME;
 
     public synchronized void run(){
@@ -48,6 +49,8 @@ public class Manager {
         }
         if(!_registeredPlayers.containsKey(player.getObjectId()))
             _registeredPlayers.put(player.getObjectId(), player);
+
+        checkIfGamesShouldStart(); //When a player registers we check if players are enough for the games to start
     }
 
     public void unRegister(L2PcInstance player){
@@ -57,7 +60,6 @@ public class Manager {
 
     public class RegistrationTask implements Runnable {
         public void run() {
-            checkIfGamesShouldStart();
 
             switch (_clock){
                 case REGISTRATION_TIME:{
@@ -84,10 +86,10 @@ public class Manager {
             System.out.println("Not enough players to start");
             return;
         }
-        System.out.println("Games are starting");
+        //System.out.println("Games are starting");
 
         if(_games.isEmpty())
-            _instanceID = 1;
+            _instanceID = 100;
 
         List<L2PcInstance> players = new ArrayList<>(_registeredPlayers.values());
 
@@ -125,11 +127,24 @@ public class Manager {
         }
     }
 
+    public void notifyGameDamage(int id, int objectID, int damage){
+        if(!_games.isEmpty() && _games.containsKey(id))
+            _games.get(id).increaseDamage(objectID, damage);
+    }
+
+    public void notifyWin(int id){
+        if(!_games.isEmpty() && _games.containsKey(id))
+            _games.get(id).notifyForWin();
+    }
+
     public int incInstanceID(){
         return _instanceID++;
     }
     public void decInstanceID(){
         _instanceID--;
+    }
+    public boolean isPlayerRegistered(L2PcInstance player){
+        return _registeredPlayers.containsKey(player.getObjectId());
     }
 
     public L2Spawn spawnManager(int xPos, int yPos, int zPos, int npcId) {

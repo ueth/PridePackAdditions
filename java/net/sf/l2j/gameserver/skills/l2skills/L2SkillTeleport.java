@@ -66,6 +66,11 @@ public void useSkill(L2Character activeChar, L2Object[] targets)
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
 			return;
 		}
+		if (((L2PcInstance)activeChar).isInFairGame())
+		{
+			activeChar.sendMessage("Can't tp while in Fair Games");
+			return;
+		}
 		
 		if (GrandBossManager.getInstance().getZone(activeChar) != null && !activeChar.isGM())
 		{
@@ -111,7 +116,7 @@ public void useSkill(L2Character activeChar, L2Object[] targets)
 					if (targetChar.isInFunEvent() || !TvTEvent.onEscapeUse(targetChar.getObjectId()))
 						continue;
 					
-					if (targetChar.isInOlympiadMode())
+					if (targetChar.isInOlympiadMode() || targetChar.isInFairGame())
 						continue;
 					
 					if (GrandBossManager.getInstance().getZone(targetChar) != null)

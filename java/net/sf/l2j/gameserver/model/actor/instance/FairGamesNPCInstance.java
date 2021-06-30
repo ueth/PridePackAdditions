@@ -30,7 +30,9 @@ public class FairGamesNPCInstance extends L2NpcInstance {
 
             Manager.getInstance().register(player);
 
-            html.replace("%register%", "Register");
+            if(Manager.getInstance().isPlayerRegistered(player))
+                html.replace("%register%", "Unregister");
+
             sendHtmlMessage(player, html);
         }
 
@@ -67,7 +69,11 @@ public class FairGamesNPCInstance extends L2NpcInstance {
                 NpcHtmlMessage html = new NpcHtmlMessage(1);
                 html.setFile(PARENT_DIR + "registNPC.htm");
 
-                html.replace("%register%", "Register");
+                if(Manager.getInstance().isPlayerRegistered(player))
+                    html.replace("%register%", "Unregister");
+                else
+                    html.replace("%register%", "Register");
+
                 sendHtmlMessage(player, html);
             }
         }

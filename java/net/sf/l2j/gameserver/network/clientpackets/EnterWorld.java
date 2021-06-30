@@ -21,6 +21,7 @@ import net.sf.l2j.gameserver.datatables.CharSchemesTable;
 import net.sf.l2j.gameserver.datatables.MapRegionTable.TeleportWhereType;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 //import net.sf.l2j.gameserver.handler.itemhandlers.Gem;
+import net.sf.l2j.gameserver.fairgames.PlayerSaves;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
@@ -32,10 +33,7 @@ import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
-import net.sf.l2j.gameserver.model.BlockList;
-import net.sf.l2j.gameserver.model.L2Clan;
-import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.L2World;
+import net.sf.l2j.gameserver.model.*;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
@@ -503,6 +501,25 @@ protected void runImpl()
 	{
 		Gem.sendClassChangeHTML(activeChar);
 	}*/
+
+	if(PlayerSaves.getInstance().getPreviousWear(activeChar.getObjectId()) != null) {
+		for (int objectId : PlayerSaves.getInstance().getPreviousWear(activeChar.getObjectId())) {
+			L2ItemInstance item = activeChar.getInventory().getItemByObjectId(objectId);
+			if (item != null)
+				activeChar.getInventory().equipItem(item);
+		}
+
+		PlayerSaves.getInstance().removePreviousWear(activeChar.getObjectId());
+	}
+
+	if(PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId()) != null) {
+		for (L2Skill skill : PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId())) {
+			if(skill != null)
+				activeChar.addSkill(skill, false);
+		}
+
+		PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId());
+	}
 	
 	sendPacket(ActionFailed.STATIC_PACKET);
 	

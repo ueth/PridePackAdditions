@@ -58,7 +58,7 @@ public final class RequestSendFriendMsg extends L2GameClientPacket
     	L2PcInstance activeChar = getClient().getActiveChar();
     	if (activeChar == null) return;
     	
-    	if (activeChar.isInOlympiadMode())
+    	if (activeChar.isInOlympiadMode() || activeChar.isInFairGame())
 		{
     		activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -71,7 +71,7 @@ public final class RequestSendFriendMsg extends L2GameClientPacket
         	return;
         }
         
-    	if (targetPlayer.isInOlympiadMode())
+    	if (targetPlayer.isInOlympiadMode() || targetPlayer.isInFairGame())
 		{
     		activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;

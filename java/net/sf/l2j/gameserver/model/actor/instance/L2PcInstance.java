@@ -4,13 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -59,6 +53,7 @@ import net.sf.l2j.gameserver.datatables.NobleSkillTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IItemHandler;
@@ -5120,13 +5115,18 @@ public FastList<L2Skill> getPartyPassiveList()
 		sendMessage("You need to wait 24 hours after making a character to use vendor");
 		return false;
 	}*/
+        if(Manager.getInstance().isPlayerRegistered(this))
+        {
+            sendMessage("Cannot use while registered for Fair Games.");
+            return false;
+        }
 
         if (isDisguised()) {
             sendMessage("Can't make a store while disguised");
             return false;
         }
 
-        return !isAlikeDead() && !isInOlympiadMode() && !isMounted() && !isInFunEvent() && !isInJail();
+        return !isAlikeDead() && !isInOlympiadMode() && !isMounted() && !isInFunEvent() && !isInJail() && !isInFairGame();
     }
 
     public void tryOpenPrivateBuyStore() {
@@ -9819,6 +9819,12 @@ public FastList<L2Skill> getPartyPassiveList()
                 else
                     return false;
             }
+            if(PCattacker.isInFairGame()) {
+                if(isInFairGame())
+                    return true;
+                else
+                    return false;
+            }
 
             if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
                 return true;
@@ -9914,6 +9920,12 @@ public FastList<L2Skill> getPartyPassiveList()
                 else
                     return false;
             }
+            if(PCattacker.isInFairGame()) {
+                if(isInFairGame())
+                    return true;
+                else
+                    return false;
+            }
 
             if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
                 return true;
@@ -9998,6 +10010,12 @@ public FastList<L2Skill> getPartyPassiveList()
             else
                 return false;
         }
+        if(attacker.isInFairGame()) {
+            if(isInFairGame())
+                return true;
+            else
+                return false;
+        }
 
         if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
             return true;
@@ -10044,6 +10062,10 @@ public FastList<L2Skill> getPartyPassiveList()
 
         if (attacker.isInOlympiadMode())
             return false;
+
+        if(attacker.isInFairGame())
+                return false;
+
 
         if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
             return true;
@@ -10124,6 +10146,9 @@ public FastList<L2Skill> getPartyPassiveList()
 
         if (attacker.isInOlympiadMode())
             return false;
+        if(attacker.isInFairGame())
+            return false;
+
 
         if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
             return true;
@@ -10235,6 +10260,10 @@ public FastList<L2Skill> getPartyPassiveList()
             return false;
         }
         if (!isInOlympiadMode() && target.isInOlympiadMode()) {
+            sendPacket(ActionFailed.STATIC_PACKET);
+            return false;
+        }
+        if(!isInFairGame() && target.isInFairGame()) {
             sendPacket(ActionFailed.STATIC_PACKET);
             return false;
         }
@@ -11482,6 +11511,13 @@ public FastList<L2Skill> getPartyPassiveList()
                 } else if (target.isInOlympiadMode())
                     return false;
 
+                if(isInFairGame()){
+                    if(target.isInFairGame())
+                        return true;
+                    return false;
+                }else if(target.isInFairGame())
+                    return false;
+
                 if (isInsideZone(ZONE_PEACE) || target.isInsideZone(ZONE_PEACE))
                     return false;
 
@@ -11734,6 +11770,8 @@ public FastList<L2Skill> getPartyPassiveList()
 
         if (isInOlympiadMode())
             return 5;
+        if (isInFairGame())
+            return 7;
 
         if (isInFunEvent()) {
             if (wpn.getCrystalType() <= L2Item.CRYSTAL_S && wpn.getUniqueness() < 3) {
@@ -12178,6 +12216,16 @@ public FastList<L2Skill> getPartyPassiveList()
             _noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_PARTICIPATING_IN_THE_OLYMPIAD;
             return false;
         }
+        if(Manager.getInstance().isPlayerRegistered(this))
+        {
+            sendMessage("Cannot while registered in Fair Games.");
+            return false;
+        }
+        if(isInFairGame())
+        {
+            sendMessage("Cannot duel while in Fair Games.");
+            return false;
+        }
         if (isCursedWeaponEquipped()) {
             _noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_IN_A_CHAOTIC_STATE;
             return false;
@@ -12314,6 +12362,9 @@ public FastList<L2Skill> getPartyPassiveList()
         try {
             if (isInDuel() || isInOlympiadMode() || isInCombat() || _transformation != null || Olympiad.getInstance().isRegistered(this))
                 return false;
+            if(isInFairGame() || Manager.getInstance().isPlayerRegistered(this)) {
+                return false;
+            }
 
             if (NexusEvents.isRegistered(this))
                 return false;
@@ -12550,7 +12601,9 @@ public FastList<L2Skill> getPartyPassiveList()
             return false;
 
         try {
-            if (isInDuel() || isInOlympiadMode() || isInCombat() || _transformation != null || Olympiad.getInstance().isRegistered(this))
+            if (isInDuel() || isInOlympiadMode() || isInCombat() || _transformation != null ||
+                    Olympiad.getInstance().isRegistered(this) ||isInFairGame() ||
+                    Manager.getInstance().isPlayerRegistered(this))
                 return false;
 
 		/*if (cannotChangeSubsDueToInstance())
@@ -14780,6 +14833,10 @@ private boolean cannotChangeSubsDueToInstance()
             Olympiad.getInstance().notifyCompetitorDamage(this, damage, getOlympiadGameId());
         }
 
+        if(isInFairGame() && target instanceof L2PcInstance && ((L2PcInstance) target).isInFairGame()){
+            Manager.getInstance().notifyGameDamage(getInstanceId(), getObjectId(), damage);
+        }
+
         SystemMessage sm = new SystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
 
         if (target.isInvul()) {
@@ -14907,6 +14964,12 @@ private boolean cannotChangeSubsDueToInstance()
             return false;
         }
 
+        if(summonerChar.isInFairGame())
+        {
+            summonerChar.sendMessage("Cannot use while in Fair Games.");
+            return false;
+        }
+
         if (summonerChar.inObserverMode()) {
             return false;
         }
@@ -14945,6 +15008,12 @@ private boolean cannotChangeSubsDueToInstance()
 
         if (targetChar.isInOlympiadMode()) {
             summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_SUMMON_PLAYERS_WHO_ARE_IN_OLYMPIAD));
+            return false;
+        }
+
+        if(targetChar.isInFairGame())
+        {
+            summonerChar.sendMessage("Cannot use while in Fair Games.");
             return false;
         }
 
@@ -15015,6 +15084,7 @@ private boolean cannotChangeSubsDueToInstance()
 
         for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++) {
             L2ItemInstance equippedItem = getInventory().getPaperdollItem(i);
+            //getInventory().equipItem();
 
             if (equippedItem != null && (!equippedItem.getItem().checkCondition(this, this, false) || (isInOlympiadMode() && equippedItem.isOlyRestrictedItem()))) {
                 getInventory().unEquipItemInSlotAndRecord(i);
@@ -15077,6 +15147,28 @@ private boolean cannotChangeSubsDueToInstance()
             ItemList il = new ItemList(getInventory().getItems(), true);
             sendPacket(il);
         }
+    }
+
+    public synchronized List<Integer> unEquipItems(){
+        List<Integer> items = new ArrayList<>();
+
+        for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++) {
+            L2ItemInstance equippedItem = getInventory().getPaperdollItem(i);
+
+            if (equippedItem != null ) {
+                getInventory().unEquipItemInSlotAndRecord(i);
+                items.add(equippedItem.getObjectId());
+                if (equippedItem.isWear())
+                    continue;
+            }
+        }
+
+        broadcastUserInfo();
+        // Send the ItemList Server->Client Packet to the player in order to refresh its Inventory
+        ItemList il = new ItemList(getInventory().getItems(), true);
+        sendPacket(il);
+
+        return items;
     }
 
     /**
@@ -15508,7 +15600,7 @@ public int getAttackElementValue(byte attribute)
         } else if (isFlying()) {
             sendPacket(new SystemMessage(2351));
             return false;
-        } else if (isInOlympiadMode()) {
+        } else if (isInOlympiadMode() || isInFairGame()) {
             sendPacket(new SystemMessage(2352));
             return false;
         } else if (isParalyzed()) {
@@ -16949,6 +17041,10 @@ public void setKillStreak(int streak)
             if (isInOlympiadMode() && item.isOlyRestrictedItem()) {
                 /*this.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT));*/
                 sendMessage("You can only use S grade items or lower in the Olympiad.");
+                return;
+            }
+            if (isInFairGame()) {
+                sendMessage("You can't change gear while in Fair Games");
                 return;
             }
 

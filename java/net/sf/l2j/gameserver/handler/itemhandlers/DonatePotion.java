@@ -15,6 +15,7 @@ import net.sf.l2j.gameserver.datatables.CharTemplateTable;
 import net.sf.l2j.gameserver.datatables.ItemLists;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.Elementals;
@@ -88,6 +89,12 @@ final public static boolean allowUse(L2PcInstance player)
 		player.sendMessage("Cannot use while in Olympiad/Duel/Event");
 		return false;
 	}
+	if(player.isInFairGame())
+	{
+		player.sendMessage("Cannot use while in Fair Games.");
+		return false;
+	}
+
 	if (player.getPvpFlag() != 0 || player.isInCombat())
 	{
 		player.sendMessage("Cannot use while in battle");

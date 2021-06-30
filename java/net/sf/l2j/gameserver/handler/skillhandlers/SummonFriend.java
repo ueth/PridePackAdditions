@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.datatables.ItemTable;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
@@ -39,6 +40,11 @@ public static boolean checkSummonerStatus(L2PcInstance summonerChar)
 	if (summonerChar.isInOlympiadMode())
 	{
 		summonerChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
+		return false;
+	}
+	if(summonerChar.isInFairGame())
+	{
+		summonerChar.sendMessage("Cannot use while in Fair Games.");
 		return false;
 	}
 	
@@ -105,6 +111,12 @@ public static boolean checkTargetStatus(L2PcInstance targetChar, L2PcInstance su
 	if (targetChar.isInOlympiadMode())
 	{
 		summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_SUMMON_PLAYERS_WHO_ARE_IN_OLYMPIAD));
+		return false;
+	}
+
+	if(summonerChar.isInFairGame())
+	{
+		summonerChar.sendMessage("Cannot use while in Fair Games.");
 		return false;
 	}
 	
