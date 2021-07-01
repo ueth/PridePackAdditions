@@ -3,6 +3,7 @@ package net.sf.l2j.gameserver.fairgames;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -222,6 +223,7 @@ public class Game {
                     _teleportTask.cancel(false);
                     _teleportTask = null;
                     Manager.getInstance().removeGame(_instanceId);
+                    InstanceManager.getInstance().destroyInstance(_instanceId);
                     break;
             }
             _teleportClock--;

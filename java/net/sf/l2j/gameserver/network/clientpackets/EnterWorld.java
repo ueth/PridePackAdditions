@@ -520,6 +520,15 @@ protected void runImpl()
 
 		PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId());
 	}
+	if(PlayerSaves.getInstance().getItemsToDelete(activeChar.getObjectId()) != null) {
+		for (int objectId : PlayerSaves.getInstance().getItemsToDelete(activeChar.getObjectId())) {
+			L2ItemInstance item = activeChar.getInventory().getItemByObjectId(objectId);
+			if (item != null) {
+				activeChar.getInventory().destroyItem("destroy", item, activeChar, null);
+			}
+		}
+	}
+	PlayerSaves.getInstance().removeItemsToDelete(activeChar.getObjectId());
 	
 	sendPacket(ActionFailed.STATIC_PACKET);
 	

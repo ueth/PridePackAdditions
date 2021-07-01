@@ -3,6 +3,7 @@ package net.sf.l2j.gameserver.fairgames;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -105,9 +106,14 @@ public class Manager {
             }
             if(counter%2 == 0) {
                 game = new Game(incInstanceID());
+
+                InstanceManager.getInstance().createInstance(game.getInstanceId());
+                InstanceManager.getInstance().getInstance(game.getInstanceId()).addPlayer(player.getObjectId());
+
                 game.setPlayer1(player);
                 _games.put(game.getInstanceId(), game);
             }else{
+                InstanceManager.getInstance().getInstance(game.getInstanceId()).addPlayer(player.getObjectId());
                 game.setPlayer2(player);
             }
             _registeredPlayers.remove(player.getObjectId(), player);

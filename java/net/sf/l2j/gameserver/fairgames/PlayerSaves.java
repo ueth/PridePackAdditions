@@ -7,10 +7,25 @@ import java.util.Map;
 
 
 public class PlayerSaves {
+    private Map<Integer, List<Integer>> _itemsToDelete= new HashMap<>();
     private Map<Integer, List<Integer>> _previousWear= new HashMap<>();
     private Map<Integer, List<L2Skill>> _previousSkills = new HashMap<>();
 
     private static PlayerSaves _instance = null;
+
+    public void addItemsToDelete(int objectID, List<Integer> itemList){
+        _itemsToDelete.put(objectID, itemList);
+    }
+    public void removeItemsToDelete(int objectID){
+        if(_itemsToDelete.containsKey(objectID))
+            _itemsToDelete.remove(objectID);
+    }
+    public List<Integer> getItemsToDelete(int objectID){
+        if (_itemsToDelete.containsKey(objectID))
+            return _itemsToDelete.get(objectID);
+        else
+            return null;
+    }
 
     public void addPreviousWear(int objectID, List<Integer> itemList){
         _previousWear.put(objectID, itemList);

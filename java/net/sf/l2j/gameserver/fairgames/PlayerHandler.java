@@ -6,6 +6,7 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowScreenMessage;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,16 +48,24 @@ public class PlayerHandler {
             if(skill != null)
                 _player.addSkill(skill, false); //Give player his old skills
         }
-
         PlayerSaves.getInstance().removePreviousSkills(_player.getObjectId());
+
+        _player.unEquipItems();
 
         for(int objectId : PlayerSaves.getInstance().getPreviousWear(_player.getObjectId())){
             L2ItemInstance item = _player.getInventory().getItemByObjectId(objectId);
             if(item!=null)
                 _player.getInventory().equipItem(item);
         }
-
         PlayerSaves.getInstance().removePreviousWear(_player.getObjectId());
+
+        for(int objectId : PlayerSaves.getInstance().getItemsToDelete(_player.getObjectId())){
+            L2ItemInstance item = _player.getInventory().getItemByObjectId(objectId);
+            if(item!=null){
+                _player.getInventory().destroyItem("destroy", item, _player, null);
+            }
+        }
+        PlayerSaves.getInstance().removeItemsToDelete(_player.getObjectId());
 
         _player.setTarget(null);
         _player.setIsRooted(false);
@@ -107,6 +116,7 @@ public class PlayerHandler {
 
             PlayerSaves.getInstance().addPreviousSkills(_player.getObjectId(), _oldSkills);
             PlayerSaves.getInstance().addPreviousWear(_player.getObjectId(), _player.unEquipItems());
+            addItems();
 
             if (_player.getPet() != null)
                 _player.getPet().unSummon(_player);
@@ -127,6 +137,24 @@ public class PlayerHandler {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void addItems(){
+        List<Integer> items = new ArrayList<>();
+
+        L2ItemInstance item  = _player.addItem("asdf", 90000,1,null, false);
+        items.add(item.getObjectId());
+        _player.getInventory().equipItem(item);
+
+        item  = _player.addItem("asdf", 71001,1,null, false);
+        items.add(item.getObjectId());
+        _player.getInventory().equipItem(item);
+
+        item  = _player.addItem("asdf", 71002,1,null, false);
+        items.add(item.getObjectId());
+        _player.getInventory().equipItem(item);
+
+        PlayerSaves.getInstance().addItemsToDelete(_player.getObjectId(), items);
 
     }
 
