@@ -33,8 +33,13 @@ public abstract class AbstractFGClass {
 
     }
 
-    public void displaySkills(L2PcInstance player){
+    public String displaySkills(){
         //display skills in an html window
+        return null;
+    }
+
+    public String displayBuffs(){
+        return null;
     }
 
     public List<Integer> getSkills() {

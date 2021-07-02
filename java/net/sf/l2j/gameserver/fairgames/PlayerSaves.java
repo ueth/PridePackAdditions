@@ -218,6 +218,19 @@ public class PlayerSaves {
             PreparedStatement statement = con.prepareStatement("DELETE FROM fg_previous_skills WHERE playerId=?");
             statement.setInt(1, objectId);
             statement.execute();
+
+            statement = con.prepareStatement("DELETE FROM fg_previous_effects WHERE playerId=?");
+            statement.setInt(1, objectId);
+            statement.execute();
+
+            statement = con.prepareStatement("DELETE FROM fg_previous_wear WHERE playerId=?");
+            statement.setInt(1, objectId);
+            statement.execute();
+
+            statement = con.prepareStatement("DELETE FROM fg_items_to_delete WHERE playerId=?");
+            statement.setInt(1, objectId);
+            statement.execute();
+
             statement.close();
         } catch (Exception e) { e.printStackTrace(); }
     }

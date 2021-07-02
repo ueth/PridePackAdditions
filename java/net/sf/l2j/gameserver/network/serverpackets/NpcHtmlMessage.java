@@ -140,7 +140,6 @@ private boolean _validate = true;
 /**
  * 
  * @param npcObjId
- * @param text
  * @param itemId
  */
 public NpcHtmlMessage(int npcObjId, int itemId)
@@ -149,9 +148,6 @@ public NpcHtmlMessage(int npcObjId, int itemId)
 	_itemId = itemId;
 }
 
-/**
- * @param _characters
- */
 public NpcHtmlMessage(int npcObjId, String text)
 {
 	_npcObjId = npcObjId;
