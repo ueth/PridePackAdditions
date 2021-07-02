@@ -108,12 +108,10 @@ public class Manager {
                 game = new Game(incInstanceID());
 
                 InstanceManager.getInstance().createInstance(game.getInstanceId());
-                InstanceManager.getInstance().getInstance(game.getInstanceId()).addPlayer(player.getObjectId());
 
                 game.setPlayer1(player);
                 _games.put(game.getInstanceId(), game);
             }else{
-                InstanceManager.getInstance().getInstance(game.getInstanceId()).addPlayer(player.getObjectId());
                 game.setPlayer2(player);
             }
             _registeredPlayers.remove(player.getObjectId(), player);
@@ -138,9 +136,9 @@ public class Manager {
             _games.get(id).increaseDamage(objectID, damage);
     }
 
-    public void notifyWin(int id){
+    public void notifyWin(int id, int objectId){
         if(!_games.isEmpty() && _games.containsKey(id))
-            _games.get(id).notifyForWin();
+            _games.get(id).notifyWin(objectId);
     }
 
     public int incInstanceID(){

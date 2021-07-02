@@ -1,4 +1,4 @@
-package net.sf.l2j.gameserver.fairgames;
+package net.sf.l2j.gameserver.fairgames.enums;
 
 public enum GameStage {
     TELEPORTING,

@@ -1,7 +1,6 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -502,33 +501,8 @@ protected void runImpl()
 		Gem.sendClassChangeHTML(activeChar);
 	}*/
 
-	if(PlayerSaves.getInstance().getPreviousWear(activeChar.getObjectId()) != null) {
-		for (int objectId : PlayerSaves.getInstance().getPreviousWear(activeChar.getObjectId())) {
-			L2ItemInstance item = activeChar.getInventory().getItemByObjectId(objectId);
-			if (item != null)
-				activeChar.getInventory().equipItem(item);
-		}
-
-		PlayerSaves.getInstance().removePreviousWear(activeChar.getObjectId());
-	}
-
-	if(PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId()) != null) {
-		for (L2Skill skill : PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId())) {
-			if(skill != null)
-				activeChar.addSkill(skill, false);
-		}
-
-		PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId());
-	}
-	if(PlayerSaves.getInstance().getItemsToDelete(activeChar.getObjectId()) != null) {
-		for (int objectId : PlayerSaves.getInstance().getItemsToDelete(activeChar.getObjectId())) {
-			L2ItemInstance item = activeChar.getInventory().getItemByObjectId(objectId);
-			if (item != null) {
-				activeChar.getInventory().destroyItem("destroy", item, activeChar, null);
-			}
-		}
-	}
-	PlayerSaves.getInstance().removeItemsToDelete(activeChar.getObjectId());
+	PlayerSaves.getInstance().loadEverythingFromDB(activeChar.getObjectId());
+	PlayerSaves.getInstance().doItAll(activeChar);
 	
 	sendPacket(ActionFailed.STATIC_PACKET);
 	

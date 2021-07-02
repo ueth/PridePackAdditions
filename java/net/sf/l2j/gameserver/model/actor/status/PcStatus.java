@@ -311,7 +311,7 @@ public final void reduceHp(double value, L2Character attacker, boolean awake, bo
 				getActiveChar().getPet().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
 
 			if(getActiveChar().isInFairGame()){
-				Manager.getInstance().notifyWin(getActiveChar().getInstanceId());
+				Manager.getInstance().notifyWin(getActiveChar().getInstanceId(), getActiveChar().getObjectId());
 			}
 			return;
 		}

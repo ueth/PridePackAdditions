@@ -3,6 +3,7 @@ package net.sf.l2j.gameserver.fairgames;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
+import net.sf.l2j.gameserver.fairgames.enums.GameStage;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -14,8 +15,6 @@ public class Game {
     private PlayerHandler _player2;
     private int _instanceId;
 
-    private boolean _win = false;
-
     protected ScheduledFuture<?> _gameTask = null;
     public static final int GAME_TIME = 120; // seconds
     private GameStage _gameStage;
@@ -25,7 +24,8 @@ public class Game {
     public static final int TELEPORT_TIME = 20; // seconds
     private int _teleportClock = TELEPORT_TIME;
 
-    private boolean _abort;
+    private boolean _abort = false;
+    private boolean _win = false;
 
     public L2Spawn _spawnOne;
     public L2Spawn _spawnTwo;
@@ -53,30 +53,63 @@ public class Game {
         _player2.setLoc(81931, -15233, -1841);
     }
 
+
+    public void notifyWin(int objectId){
+        if(_player2.getPlayer().isOnline() == 1 && _player2.getPlayer().getObjectId() == objectId)
+            sendMessageToPlayers(_player1.getPlayer().getName() + " won the match!");
+        else if(_player1.getPlayer().isOnline() == 1 && _player1.getPlayer().getObjectId() == objectId)
+            sendMessageToPlayers(_player2.getPlayer().getName() + " won the match!");
+
+        _win = true;
+    }
+
+    private void notifyWinDamage(){
+        if(_player1.getDamage() > _player2.getDamage())
+            sendMessageToPlayers(_player1.getPlayer().getName() + " won the match!");
+        else if(_player1.getDamage() < _player2.getDamage())
+            sendMessageToPlayers(_player2.getPlayer().getName() + " won the match!");
+        else
+            sendMessageToPlayers("Match ended in a draw");
+    }
+
+    private boolean notifyWinDisconnect(){
+        if(_player1.getPlayer().isOnline() != 1) {
+            sendMessageToPlayers(_player2.getPlayer().getName() + " won the match!");
+            return true;
+        }
+        else if(_player2.getPlayer().isOnline() != 1) {
+            sendMessageToPlayers(_player1.getPlayer().getName() + " won the match!");
+            return true;
+        }
+        return false;
+    }
+
     public void increaseDamage(int objectId, int damage){
         if(_player1.getPlayer().getObjectId() == objectId)
             _player1.increaseDamage(damage);
         else
-            _player2.increaseDamage(objectId);
+            _player2.increaseDamage(damage);
     }
 
     public synchronized void start(){
-        sendMessageToPlayers("You will be teleported in 20 seconds");
         _gameStage = GameStage.TELEPORTING;
         _teleportTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(
                 new TeleportTask(), 100,  1000
         );
-
     }
 
     public boolean teleportPlayersIntoArena(){
         System.out.println("teleportPlayersToArena");
+
+        _abort = !(_player1.getPlayer().isOnline() == 1 && _player2.getPlayer().isOnline() == 1);
+
+        if(_abort)
+            return false;
+
         _player1.teleportPlayerToArena();
         _player2.teleportPlayerToArena();
 
-//        if(_abort) {
-//            return false;
-//        }
+        //InstanceManager.getInstance().getInstance(_instanceId).addNpc(_spawnOne);
 
         _spawnOne = SpawnCoach(0,0, 0, 123);
         _spawnTwo = SpawnCoach(0,0, 0, 123);
@@ -100,12 +133,10 @@ public class Game {
     }
 
     private void sendMessageToPlayers(String message){
-        _player1.getPlayer().sendMessage(message);
-        _player2.getPlayer().sendMessage(message);
-    }
-
-    public void notifyForWin(){
-        _win = true;
+        if(_player1.getPlayer().isOnline()==1)
+            _player1.getPlayer().sendMessage(message);
+        if(_player2.getPlayer().isOnline()==1)
+            _player2.getPlayer().sendMessage(message);
     }
 
     public L2Spawn SpawnCoach(int xPos, int yPos, int zPos, int npcId) {
@@ -128,7 +159,7 @@ public class Game {
 
     public class GameTask implements Runnable {
         public void run() {
-            if(_win || _player1.getPlayer().isOnline() != 1 || _player2.getPlayer().isOnline() != 1){
+            if(_win || notifyWinDisconnect()){
                 _teleportTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(
                         new TeleportBackTask(), 1,  1000
                 );
@@ -139,7 +170,7 @@ public class Game {
                     handleGame();
                     break;
 
-                case GAME_TIME-60 :
+                case GAME_TIME-5 :
                     _gameStage = GameStage.STARTED;
                     handleGame();
                     break;
@@ -161,6 +192,7 @@ public class Game {
                 break;
 
             case ENDED:
+                notifyWinDamage();
                 _teleportTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(
                         new TeleportBackTask(), 1,  1000
                 );
@@ -173,7 +205,7 @@ public class Game {
         public void run() {
             switch (_teleportClock){
                 case 20 :
-                    sendMessageToPlayers("You will be teleported in 20 seconds");
+                    sendMessageToPlayers("You will be teleported in Fair Games in 20 seconds");
                     break;
 
                 case 10:
@@ -182,14 +214,20 @@ public class Game {
                 case 3:
                 case 2:
                 case 1:
-                    sendMessageToPlayers(_teleportClock + " seconds left until teleport");
+                    sendMessageToPlayers(_teleportClock + " seconds left");
                     break;
 
                 case 0:
-                    teleportPlayersIntoArena();
                     _teleportTask.cancel(false);
                     _teleportTask = null;
-                    _gameTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GameTask(), 100,  1000);
+                    if(teleportPlayersIntoArena())
+                        _gameTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GameTask(), 100,  1000);
+                    else{
+                        sendMessageToPlayers("Match is aborted, your opponent disconnected");
+                        Manager.getInstance().removeGame(_instanceId);
+                        InstanceManager.getInstance().destroyInstance(_instanceId);
+                        return;
+                    }
                     break;
             }
             _teleportClock--;
@@ -215,7 +253,7 @@ public class Game {
                 case 3:
                 case 2:
                 case 1:
-                    sendMessageToPlayers(_teleportClock + " seconds left until teleport back");
+                    sendMessageToPlayers(_teleportClock + " seconds left");
                     break;
 
                 case 0:

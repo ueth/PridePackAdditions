@@ -54,6 +54,8 @@ import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.fairgames.Manager;
+import net.sf.l2j.gameserver.fairgames.PlayerHandler;
+import net.sf.l2j.gameserver.fairgames.PlayerSaves;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IItemHandler;
@@ -13532,6 +13534,13 @@ private boolean cannotChangeSubsDueToInstance()
             _log.log(Level.SEVERE, "deleteMe() - nexus events", e);
         }
 
+        try{
+            PlayerSaves.getInstance().doItAll(this);
+            PlayerSaves.getInstance().deleteEverythingFromDB(getObjectId());
+        }catch (Exception e) {
+            _log.log(Level.SEVERE, "deleteMe() - nexus events", e);
+        }
+
         try {
             if (getDecoy() != null) {
                 getDecoy().unSummon(this);
@@ -17419,4 +17428,8 @@ public void setKillStreak(int streak)
         return battlePass;
     }
     public RunePlayer getRunePlayer(){return rune;}
+
+    PlayerHandler _playerHandler;
+    public PlayerHandler getPlayerHandler() { return _playerHandler; }
+    public void setPlayerHandler(PlayerHandler playerHandler) { _playerHandler = playerHandler; }
 }
