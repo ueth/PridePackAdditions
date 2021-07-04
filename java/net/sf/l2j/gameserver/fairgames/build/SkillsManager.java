@@ -1,6 +1,6 @@
 package net.sf.l2j.gameserver.fairgames.build;
 
-import net.sf.l2j.gameserver.fairgames.build.ClassSkill;
+import net.sf.l2j.gameserver.fairgames.entities.ClassSkill;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,7 +27,7 @@ public class SkillsManager {
 
             for(int i=0; i<_xmlName.length; i++){
                 Map<Integer, ClassSkill> list = new HashMap<>();
-                Document doc = db.parse(new File("data/xml/fairGames/"+_xmlName[i]+"Skills.xml"));
+                Document doc = db.parse(new File("data/xml/fairGames/skills/"+_xmlName[i]+"Skills.xml"));
                 doc.getDocumentElement().normalize();
 
                 NodeList nList = doc.getElementsByTagName("skill");

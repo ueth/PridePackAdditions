@@ -4,6 +4,7 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.communitybbs.Manager.custom.FairGamesBBSManager;
 import net.sf.l2j.gameserver.fairgames.Manager;
+import net.sf.l2j.gameserver.fairgames.html.HtmlHandler;
 import net.sf.l2j.gameserver.network.serverpackets.*;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
@@ -70,8 +71,9 @@ public class FairGamesBuildManagerInstance extends L2NpcInstance {
                         break;
 
                     case SKILLS_CHOOSE:
-                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"skills.html");
-                        separateAndSend(content, player);
+                        HtmlHandler.getInstance().showSkillsBoard(player, 0);
+//                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"skills.html");
+//                        separateAndSend(content, player);
                         break;
 
                     case WEAPON_CHOOSE:

@@ -1,5 +1,6 @@
 package net.sf.l2j.gameserver.fairgames.build;
 
+import net.sf.l2j.gameserver.fairgames.entities.ClassSkill;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.util.StringUtil;
