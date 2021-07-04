@@ -2,6 +2,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.cache.HtmCache;
+import net.sf.l2j.gameserver.communitybbs.Manager.custom.FairGamesBBSManager;
 import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.network.serverpackets.*;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -61,12 +62,43 @@ public class FairGamesBuildManagerInstance extends L2NpcInstance {
                 // note: commented out so the player must stand close
                 player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
             } else {
-                NpcHtmlMessage html = new NpcHtmlMessage(1);
-                html.setFile(PARENT_DIR + "skills.html");
+                String content;
+                switch(player.getPlayerHandler().getBuildStage()){
+                    case CLASS_CHOOSE:
+                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"classes.html");
+                        separateAndSend(content, player);
+                        break;
 
-                String content = HtmCache.getInstance().getHtm(PARENT_DIR+"skills.html");
-                separateAndSend(content, player);
-                //sendHtmlMessage(player, html);
+                    case SKILLS_CHOOSE:
+                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"skills.html");
+                        separateAndSend(content, player);
+                        break;
+
+                    case WEAPON_CHOOSE:
+                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"weapons.html");
+                        separateAndSend(content, player);
+                        break;
+
+                    case ARMOR_CHOOSE:
+                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"armors.html");
+                        separateAndSend(content, player);
+                        break;
+
+                    case BUFFS_CHOOSE:
+                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"buffs.html");
+                        separateAndSend(content, player);
+                        break;
+
+                    case JEWELS_CHOOSE:
+                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"jewels.html");
+                        separateAndSend(content, player);
+                        break;
+
+                    case TATTOO_CHOOSE:
+                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"tattoos.html");
+                        separateAndSend(content, player);
+                        break;
+                }
             }
         }
         // Send a Server->Client ActionFailed to the L2PcInstance in order to
@@ -74,16 +106,12 @@ public class FairGamesBuildManagerInstance extends L2NpcInstance {
         player.sendPacket(ActionFailed.STATIC_PACKET);
     }
 
+
+
     protected void separateAndSend(final String html, final L2PcInstance acha) {
         if (html == null) {
             return;
         }
         acha.sendPacket(new ShowBoard(html, "101"));
-    }
-
-    private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html) {
-        html.replace("%objectId%", String.valueOf(getObjectId()));
-        html.replace("%npcId%", String.valueOf(getNpcId()));
-        player.sendPacket(html);
     }
 }

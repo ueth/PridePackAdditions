@@ -1,12 +1,12 @@
 package net.sf.l2j.gameserver.fairgames.classes;
 
-public class Assassin extends AbstractFGClass{
+public class Mage extends AbstractFGClass{
     protected static final int MAX_SKILLS = 10;
     protected static final int MAX_BUFFS = 7;
     protected static final int MAX_DANCESONGS = 3;
 
-    public Assassin() {
-        _name = "assassin";
+    public Mage() {
+        _name = "mage";
     }
 
     @Override

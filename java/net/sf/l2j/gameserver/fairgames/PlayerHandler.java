@@ -1,7 +1,10 @@
 package net.sf.l2j.gameserver.fairgames;
 
 import cz.nxs.events.engine.base.Loc;
+import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.fairgames.classes.AbstractFGClass;
+import net.sf.l2j.gameserver.fairgames.build.SkillsPages;
+import net.sf.l2j.gameserver.fairgames.enums.BuildStage;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
@@ -19,10 +22,14 @@ public class PlayerHandler {
     private List<L2Skill> _oldSkills = new ArrayList<>();
     private int _damage = 0;
     private AbstractFGClass _class;
+    private SkillsPages _skillsPages;
+    private BuildStage _buildStage;
 
     public PlayerHandler(L2PcInstance player, int instanceId) {
         _player = player;
         _instanceId = instanceId;
+        _skillsPages = new SkillsPages(player);
+        _buildStage = BuildStage.CLASS_CHOOSE;
         player.setPlayerHandler(this);
     }
 
@@ -132,8 +139,6 @@ public class PlayerHandler {
         _damage += damage;
     }
 
-    //public void
-
     /**
      * A method that prepares the player before teleporting him for battle
      */
@@ -211,6 +216,18 @@ public class PlayerHandler {
 
     }
 
+    public AbstractFGClass getFGClass(){
+        return _class;
+    }
+
+    public String getClassName(){
+        return _class.getName();
+    }
+
+    public void setClass(AbstractFGClass _class){
+        this._class = _class;
+    }
+
     public L2PcInstance getPlayer(){
         return _player;
     }
@@ -221,5 +238,49 @@ public class PlayerHandler {
 
     public int getDamage(){
         return _damage;
+    }
+
+    public SkillsPages getSkillPages(){
+        return _skillsPages;
+    }
+
+    public BuildStage getBuildStage() {
+        return _buildStage;
+    }
+
+    public void switchBuildStage(){
+        switch (_buildStage){
+            case CLASS_CHOOSE:
+                _buildStage = BuildStage.SKILLS_CHOOSE;
+                break;
+
+            case SKILLS_CHOOSE:
+                _buildStage = BuildStage.WEAPON_CHOOSE;
+                break;
+
+            case WEAPON_CHOOSE:
+                _buildStage = BuildStage.ARMOR_CHOOSE;
+                break;
+
+            case ARMOR_CHOOSE:
+                _buildStage = BuildStage.JEWELS_CHOOSE;
+                break;
+
+            case BUFFS_CHOOSE:
+                _buildStage = BuildStage.NONE;
+                break;
+
+            case JEWELS_CHOOSE:
+                _buildStage = BuildStage.TATTOO_CHOOSE;
+                break;
+
+            case TATTOO_CHOOSE:
+                _buildStage = BuildStage.BUFFS_CHOOSE;
+                break;
+
+            case NONE:
+                Manager.getInstance().getGame(_instanceId).unSpawnCoaches();
+                break;
+        }
     }
 }

@@ -111,10 +111,17 @@ public class Game {
 
         //InstanceManager.getInstance().getInstance(_instanceId).addNpc(_spawnOne);
 
-        _spawnOne = SpawnCoach(0,0, 0, 123);
-        _spawnTwo = SpawnCoach(0,0, 0, 123);
+        _spawnOne = SpawnCoach(84455,-17077, -1847, 1);
+        _spawnTwo = SpawnCoach(81931,-15233, -1841, 1);
 
         return true;
+    }
+
+    protected void unSpawnCoaches(){
+        if(_spawnOne.getLastSpawn() != null)
+            _spawnOne.getLastSpawn().deleteMe();
+        if(_spawnTwo.getLastSpawn() != null)
+            _spawnTwo.getLastSpawn().deleteMe();
     }
 
     public void teleportPlayersBack(){
@@ -125,6 +132,7 @@ public class Game {
     public void fight(){
         _player1.fight();
         _player2.fight();
+        unSpawnCoaches();
     }
 
     private void sendPlayersClock(){
@@ -137,6 +145,13 @@ public class Game {
             _player1.getPlayer().sendMessage(message);
         if(_player2.getPlayer().isOnline()==1)
             _player2.getPlayer().sendMessage(message);
+    }
+
+    private void removePlayersFromInstance(){
+        if(_player1.getPlayer().isOnline()==1)
+            InstanceManager.getInstance().getInstance(_instanceId).removePlayer(_player1.getPlayer().getObjectId());
+        if(_player2.getPlayer().isOnline()==1)
+            InstanceManager.getInstance().getInstance(_instanceId).removePlayer(_player2.getPlayer().getObjectId());
     }
 
     public L2Spawn SpawnCoach(int xPos, int yPos, int zPos, int npcId) {
@@ -170,7 +185,7 @@ public class Game {
                     handleGame();
                     break;
 
-                case GAME_TIME-5 :
+                case GAME_TIME-60 :
                     _gameStage = GameStage.STARTED;
                     handleGame();
                     break;
@@ -239,6 +254,7 @@ public class Game {
             _teleportClock = TELEPORT_TIME;
             _gameTask.cancel(false);
             _gameTask = null;
+            unSpawnCoaches();
         }
 
         public void run() {
@@ -262,6 +278,7 @@ public class Game {
                     _teleportTask = null;
                     Manager.getInstance().removeGame(_instanceId);
                     InstanceManager.getInstance().destroyInstance(_instanceId);
+                    removePlayersFromInstance();
                     break;
             }
             _teleportClock--;

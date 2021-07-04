@@ -150,6 +150,9 @@ public class Manager {
     public boolean isPlayerRegistered(L2PcInstance player){
         return _registeredPlayers.containsKey(player.getObjectId());
     }
+    public Game getGame(int id){
+        return _games.get(id);
+    }
 
     public L2Spawn spawnManager(int xPos, int yPos, int zPos, int npcId) {
         final L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);

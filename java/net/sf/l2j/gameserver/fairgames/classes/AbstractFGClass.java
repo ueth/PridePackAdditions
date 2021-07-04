@@ -1,49 +1,37 @@
 package net.sf.l2j.gameserver.fairgames.classes;
 
-import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class AbstractFGClass {
-    protected static final int MAX_SKILLS = 10;
-    protected List<Integer> _skills = new ArrayList<>();
     protected int _skillCounter = 0;
+    protected int _buffCounter = 0;
+    protected int _dancesongCounter = 0;
+    protected String _name;
 
-    public void fillSkills(int[] SKILLS){
-        for(int id : SKILLS)
-            _skills.add(id);
+    public void incSkillCounter(){
+        _skillCounter++;
+    }
+    public void incBuffCounter(){
+        _buffCounter++;
+    }
+    public void incDanceSongCounter(){
+        _dancesongCounter++;
     }
 
-    public void learnSkill(L2PcInstance player, int id){
-        if(_skillCounter >= MAX_SKILLS)
-            return;
 
-        int counter = 0;
-        for(int i : _skills){
-            if(i == id) {
-                _skillCounter++;
-                _skills.remove(counter);
-                player.addSkill(SkillTable.getInstance().getInfo(id, SkillTable.getInstance().getMaxLevel(id)));
-                break;
-            }
-            counter++;
-        }
-
+    public int getSkillCounter() {
+        return _skillCounter;
+    }
+    public int getBuffCounter() {
+        return _buffCounter;
+    }
+    public int getDanceSongCounter() {
+        return _dancesongCounter;
     }
 
-    public String displaySkills(){
-        //display skills in an html window
-        return null;
+    public String getName(){
+        return _name;
     }
 
-    public String displayBuffs(){
-        return null;
-    }
-
-    public List<Integer> getSkills() {
-        return _skills;
-    }
-    public abstract int[] getAllSkills();
+    public abstract int getMaxBuffs();
+    public abstract int getMaxSkills();
+    public abstract int getMaxDanceSongs();
 }

@@ -1,4 +1,4 @@
-package net.sf.l2j.gameserver.fairgames.classes;
+package net.sf.l2j.gameserver.fairgames.build;
 
 public class ClassSkill {
     private int _id;
