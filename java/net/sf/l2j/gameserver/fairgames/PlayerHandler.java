@@ -54,37 +54,7 @@ public class PlayerHandler {
             _player.removeSkill(skill, false); //Remove all added skills by the event
         }
 
-        for (L2Effect effect : _player.getAllEffects())
-            if (effect != null && effect.getSkill() != null) //Remove all added effects
-                effect.exit();
-
-        for(L2Skill skill : PlayerSaves.getInstance().getPreviousEffects(_player.getObjectId()))
-            if(skill!=null)
-                skill.getEffects(_player,_player);
-        PlayerSaves.getInstance().clearPreviousEffects(_player.getObjectId());
-
-        for(L2Skill skill : _oldSkills){
-            if(skill != null)
-                _player.addSkill(skill, false); //Give player his old skills
-        }
-        PlayerSaves.getInstance().clearPreviousSkills(_player.getObjectId());
-
-        _player.unEquipItems();
-
-        for(int objectId : PlayerSaves.getInstance().getPreviousWear(_player.getObjectId())){
-            L2ItemInstance item = _player.getInventory().getItemByObjectId(objectId);
-            if(item!=null)
-                _player.getInventory().equipItem(item);
-        }
-        PlayerSaves.getInstance().clearPreviousWear(_player.getObjectId());
-
-        for(int objectId : PlayerSaves.getInstance().getItemsToDelete(_player.getObjectId())){
-            L2ItemInstance item = _player.getInventory().getItemByObjectId(objectId);
-            if(item!=null){
-                _player.getInventory().destroyItem("destroy", item, _player, null);
-            }
-        }
-        PlayerSaves.getInstance().clearItemsToDelete(_player.getObjectId());
+        PlayerSaves.getInstance().doItAll(_player);
 
         PlayerSaves.getInstance().deleteEverythingFromDB(_player.getObjectId());
 
@@ -266,10 +236,6 @@ public class PlayerHandler {
                 _buildStage = BuildStage.JEWELS_CHOOSE;
                 break;
 
-            case BUFFS_CHOOSE:
-                _buildStage = BuildStage.NONE;
-                break;
-
             case JEWELS_CHOOSE:
                 _buildStage = BuildStage.TATTOO_CHOOSE;
                 break;
@@ -278,8 +244,8 @@ public class PlayerHandler {
                 _buildStage = BuildStage.BUFFS_CHOOSE;
                 break;
 
-            case NONE:
-                Manager.getInstance().getGame(_instanceId).unSpawnCoaches();
+            case BUFFS_CHOOSE:
+                _buildStage = BuildStage.NONE;
                 break;
         }
     }

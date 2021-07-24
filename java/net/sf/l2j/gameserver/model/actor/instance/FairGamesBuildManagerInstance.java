@@ -2,9 +2,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.cache.HtmCache;
-import net.sf.l2j.gameserver.communitybbs.Manager.custom.FairGamesBBSManager;
-import net.sf.l2j.gameserver.fairgames.Manager;
-import net.sf.l2j.gameserver.fairgames.html.HtmlHandler;
+import net.sf.l2j.gameserver.fairgames.html.FGHtmlHandler;
 import net.sf.l2j.gameserver.network.serverpackets.*;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
@@ -19,20 +17,6 @@ public class FairGamesBuildManagerInstance extends L2NpcInstance {
 
     @Override
     public void onBypassFeedback(L2PcInstance player, String command) {
-        StringTokenizer st = new StringTokenizer(command, " ");
-        String currentCommand = st.nextToken();
-
-        // initial menu
-        if (currentCommand.startsWith("register")) {
-            NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            html.setFile(PARENT_DIR + "skills.html");
-
-            String content = HtmCache.getInstance().getHtm(PARENT_DIR+"skills.html");
-
-            separateAndSend(content, player);
-            //sendHtmlMessage(player, html);
-        }
-
         super.onBypassFeedback(player, command);
     }
 
@@ -63,6 +47,9 @@ public class FairGamesBuildManagerInstance extends L2NpcInstance {
                 // note: commented out so the player must stand close
                 player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
             } else {
+                if(!player.isInFairGame())
+                    return;
+
                 String content;
                 switch(player.getPlayerHandler().getBuildStage()){
                     case CLASS_CHOOSE:
@@ -71,9 +58,7 @@ public class FairGamesBuildManagerInstance extends L2NpcInstance {
                         break;
 
                     case SKILLS_CHOOSE:
-                        HtmlHandler.getInstance().showSkillsBoard(player, 0);
-//                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"skills.html");
-//                        separateAndSend(content, player);
+                        FGHtmlHandler.getInstance().showSkillsBoard(player, 0);
                         break;
 
                     case WEAPON_CHOOSE:

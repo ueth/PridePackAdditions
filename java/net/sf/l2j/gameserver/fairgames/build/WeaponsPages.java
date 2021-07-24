@@ -1,40 +1,45 @@
 package net.sf.l2j.gameserver.fairgames.build;
 
+import net.sf.l2j.gameserver.Item;
+import net.sf.l2j.gameserver.datatables.IconTable;
+import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.fairgames.entities.ClassSkill;
+import net.sf.l2j.gameserver.fairgames.entities.FGItem;
+import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SkillsPages {
+public class WeaponsPages {
+
     private List<String> _skillsPages = new ArrayList<>();
     private L2PcInstance _player;
     private int _currentPage = 0;
 
-    public SkillsPages(L2PcInstance _player) {
+    public WeaponsPages(L2PcInstance _player) {
         this._player = _player;
     }
 
-    public void fillSkillsPages(){
+    public void fillWeaponsPages(){
         _skillsPages.clear();
         StringBuilder sb = StringUtil.startAppend(1000, "");
         int counter = 0;
 
-        for(Integer i : SkillsManager.getClassSkills(_player.getPlayerHandler().getClassName()).keySet()){
-            ClassSkill cs = SkillsManager.getClassSkills(_player.getPlayerHandler().getClassName()).get(i);
-            String icon = cs.getIcon();
-            String desc = cs.getDesc();
-            String name = cs.getName();
-            int skillId = cs.getId();
-            String tableColor = "252525";
+        for(Integer i : ItemsManager.getWeapons().keySet()){
+            FGItem fgItem = ItemsManager.getWeapons().get(i);
 
-            for(L2Skill skill : _player.getAllSkills())
-                if(skill.getId() == skillId){
-                    tableColor = "330000";
-                    break;
-                }
+            String icon = IconTable.getInstance().getIcon(fgItem.getItemId());
+            String desc = fgItem.getDesc();
+
+            L2Item item = ItemTable.getInstance().getTemplate(fgItem.getItemId());
+
+            String name = item.getName();
+
+            String tableColor = "252525";
 
             if(counter%2==0)
                 StringUtil.append(sb, "<table><tr>");

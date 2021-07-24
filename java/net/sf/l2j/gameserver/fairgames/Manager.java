@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledFuture;
 
 public class Manager {
     private Map<Integer,L2PcInstance> _registeredPlayers = new HashMap<>();
+    private Map<Integer,L2PcInstance> _waitingToStartPlayers = new HashMap<>();
 
     private final static int MINIMUM_PLAYERS = 2;
 
@@ -48,14 +49,15 @@ public class Manager {
             player.sendMessage("Fair Games are currently off");
             return;
         }
-        if(!_registeredPlayers.containsKey(player.getObjectId()))
+        if(!_registeredPlayers.containsKey(player.getObjectId()) && !_waitingToStartPlayers.containsKey(player.getObjectId()))
             _registeredPlayers.put(player.getObjectId(), player);
 
         checkIfGamesShouldStart(); //When a player registers we check if players are enough for the games to start
     }
 
     public void unRegister(L2PcInstance player){
-        if(_registeredPlayers.containsKey(player.getObjectId()) && !player.isInFairGame())
+        //if the match is about to begin and player is in waitingToStartPlayers map then he should not be able to unregister
+        if(_registeredPlayers.containsKey(player.getObjectId()) && !player.isInFairGame() && !_waitingToStartPlayers.containsKey(player.getObjectId()))
             _registeredPlayers.remove(player.getObjectId(), player);
     }
 
@@ -83,14 +85,11 @@ public class Manager {
     }
 
     private synchronized void checkIfGamesShouldStart(){
-        if(_registeredPlayers.size() < MINIMUM_PLAYERS) {
-            System.out.println("Not enough players to start");
+        if(_registeredPlayers.size() < MINIMUM_PLAYERS)
             return;
-        }
-        //System.out.println("Games are starting");
 
         if(_games.isEmpty())
-            _instanceID = 100;
+            _instanceID = 100; //resetting the instance id number to 100 so we never run out of instances
 
         List<L2PcInstance> players = new ArrayList<>(_registeredPlayers.values());
 
@@ -115,6 +114,7 @@ public class Manager {
                 game.setPlayer2(player);
             }
             _registeredPlayers.remove(player.getObjectId(), player);
+            _waitingToStartPlayers.put(player.getObjectId(), player);
             counter++;
         }
         for(Game game1 : _games.values()){
@@ -141,6 +141,10 @@ public class Manager {
             _games.get(id).notifyWin(objectId);
     }
 
+    public void removePlayerFromWaitingPlayers(L2PcInstance player){
+        _waitingToStartPlayers.remove(player.getObjectId());
+    }
+
     public int incInstanceID(){
         return _instanceID++;
     }
@@ -148,7 +152,7 @@ public class Manager {
         _instanceID--;
     }
     public boolean isPlayerRegistered(L2PcInstance player){
-        return _registeredPlayers.containsKey(player.getObjectId());
+        return _registeredPlayers.containsKey(player.getObjectId()) || _waitingToStartPlayers.containsKey(player.getObjectId());
     }
     public Game getGame(int id){
         return _games.get(id);

@@ -28,10 +28,13 @@ public class FairGamesNPCInstance extends L2NpcInstance {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
             html.setFile(PARENT_DIR + "registNPC.htm");
 
-            Manager.getInstance().register(player);
+            if(!Manager.getInstance().isPlayerRegistered(player))
+                Manager.getInstance().register(player);
+            else Manager.getInstance().unRegister(player);
 
             if(Manager.getInstance().isPlayerRegistered(player))
                 html.replace("%register%", "Unregister");
+            else html.replace("%register%", "Register");
 
             sendHtmlMessage(player, html);
         }

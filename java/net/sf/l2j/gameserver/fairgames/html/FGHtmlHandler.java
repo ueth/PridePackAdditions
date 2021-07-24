@@ -1,7 +1,6 @@
 package net.sf.l2j.gameserver.fairgames.html;
 
 import net.sf.l2j.gameserver.cache.HtmCache;
-import net.sf.l2j.gameserver.fairgames.PlayerSaves;
 import net.sf.l2j.gameserver.fairgames.build.SkillsManager;
 import net.sf.l2j.gameserver.fairgames.classes.Archer;
 import net.sf.l2j.gameserver.fairgames.classes.Assassin;
@@ -11,8 +10,8 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ShowBoard;
 
-public class HtmlHandler {
-    private static HtmlHandler _instance = null;
+public class FGHtmlHandler {
+    private static FGHtmlHandler _instance = null;
 
     public void learnAndShowSkillsBoard(L2PcInstance player, int id){
         final String path = "data/html/fairGames/";
@@ -93,11 +92,11 @@ public class HtmlHandler {
         acha.sendPacket(new ShowBoard(html, "101"));
     }
 
-    public static HtmlHandler getInstance(){
+    public static FGHtmlHandler getInstance(){
         if (_instance == null)
-            synchronized (HtmlHandler.class) {
+            synchronized (FGHtmlHandler.class) {
                 if (_instance == null)
-                    _instance = new HtmlHandler();
+                    _instance = new FGHtmlHandler();
             }
 
         return _instance;

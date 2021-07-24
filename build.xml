@@ -25,6 +25,7 @@
         	<include name="mmocore.jar"/>
         	<include name="trove-3.0.3.jar"/>
         	<include name="nexus_interface.jar" />
+			<include name="mysql:mysql-connector-java:jar:8.0.25" />
         </fileset>
     </path>
     

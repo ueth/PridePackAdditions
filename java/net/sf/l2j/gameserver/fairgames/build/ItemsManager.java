@@ -132,7 +132,7 @@ public class ItemsManager {
 
             DocumentBuilder db = dbf.newDocumentBuilder();
 
-            Document doc = db.parse(new File("data/xml/fairGames/items/tattoos.xml"));
+            Document doc = db.parse(new File("data/xml/fairGames/items/armorSets.xml"));
             doc.getDocumentElement().normalize();
 
             NodeList nList = doc.getElementsByTagName("item");
@@ -154,7 +154,11 @@ public class ItemsManager {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            System.out.println("---------Loaded FG Tattoos ----------");
+            System.out.println("---------Loaded FG ArmorSets----------");
         }
     }
+
+    public static Map<Integer, FGItem> getWeapons(){return _weapons;}
+    public static Map<Integer, FGItem> getJewels(){return _jewels;}
+    public static Map<Integer, FGItem> getTattoos(){return _tattoos;}
 }

@@ -39,7 +39,7 @@ public class L2DatabaseFactory
 	
 	// =========================================================
 	// Constructor
-	public L2DatabaseFactory() throws SQLException
+	public 	L2DatabaseFactory() throws SQLException
 	{
 		try
 		{

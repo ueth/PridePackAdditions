@@ -235,6 +235,8 @@ public class Game {
                 case 0:
                     _teleportTask.cancel(false);
                     _teleportTask = null;
+                    Manager.getInstance().removePlayerFromWaitingPlayers(_player1.getPlayer());
+                    Manager.getInstance().removePlayerFromWaitingPlayers(_player2.getPlayer());
                     if(teleportPlayersIntoArena())
                         _gameTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GameTask(), 100,  1000);
                     else{
