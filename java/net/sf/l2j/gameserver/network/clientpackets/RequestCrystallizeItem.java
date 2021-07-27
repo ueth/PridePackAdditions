@@ -66,7 +66,10 @@ protected void runImpl()
 		Util.handleIllegalPlayerAction(activeChar, "[RequestCrystallizeItem] count <= 0! ban! oid: " + _objectId + " owner: " + activeChar.getName(), Config.DEFAULT_PUNISH);
 		return;
 	}
-	
+
+	if(activeChar.isInFairGame())
+		return;
+
 	if (activeChar.isAccountLockedDown() || activeChar.isInJail())
 	{
 		activeChar.sendMessage("Your account is in lockdown");

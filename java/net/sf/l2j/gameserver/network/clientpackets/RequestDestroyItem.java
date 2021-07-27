@@ -67,6 +67,10 @@ protected void runImpl()
 		activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
 		return;
 	}
+
+	if(activeChar.isInFairGame()){
+		return;
+	}
 	
 	if (activeChar.isAccountLockedDown() || activeChar.isInJail())
 	{

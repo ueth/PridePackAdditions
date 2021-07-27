@@ -295,6 +295,8 @@ protected void runImpl()
 		break;
 	case 51:
 		// Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
+		if(activeChar.isInFairGame())
+			return;
 		if (activeChar.isAlikeDead())
 		{
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);

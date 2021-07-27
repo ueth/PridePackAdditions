@@ -40,7 +40,6 @@ public class RequestUnEquipItem extends L2GameClientPacket
 	/**
 	 * packet type id 0x11
 	 * format:		cd
-	 * @param decrypt
 	 */
 	@Override
 	protected void readImpl()
@@ -58,6 +57,11 @@ public class RequestUnEquipItem extends L2GameClientPacket
 
 		if (activeChar == null)
 		    return;
+
+		if(activeChar.isInFairGame()) {
+			activeChar.sendMessage("Can't change gear in fair games");
+			return;
+		}
 
 		L2ItemInstance item = activeChar.getInventory().getPaperdollItemByL2ItemId(_slot);
 		if (item != null && item.isWear())

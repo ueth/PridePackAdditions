@@ -47,7 +47,15 @@ public class PlayerSaves {
     public void addItemsToDelete(int objectID, List<Integer> itemList) {
         _itemsToDelete.put(objectID, itemList);
     }
+
+    public void initItemsToDelete(int objectID){
+        if(!_itemsToDelete.containsKey(objectID))
+            _itemsToDelete.put(objectID, new ArrayList<>());
+    }
+
     public void addItemToDelete(int objectID, int itemId){
+        if(!_itemsToDelete.containsKey(objectID))
+            _itemsToDelete.put(objectID, new ArrayList<>());
         _itemsToDelete.get(objectID).add(itemId);
     }
 

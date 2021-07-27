@@ -152,22 +152,6 @@ protected void runImpl()
 	}
 	
 	_text = _text.replaceAll("\\\\n", "");
-	_text = _text.replaceAll("solstice", "Prideful");
-	_text = _text.replaceAll("l2epic", "L2Prideful");
-	_text = _text.replaceAll("crabbed", "Prideful");
-	_text = _text.replaceAll("cr4bbed", "");
-	_text = _text.replaceAll("cr4bb3d", "");
-	_text = _text.replaceAll("crabb3d", "");
-	_text = _text.replaceAll("CRABBED", "");
-	_text = _text.replaceAll("kemosa", "Prideful");
-	_text = _text.replaceAll("k3mosa", "");
-	_text = _text.replaceAll("kem0sa", "");
-	_text = _text.replaceAll("kemos4", "");
-	_text = _text.replaceAll("k3m0sa", "");
-	_text = _text.replaceAll("xdem", "Pride's Cancer");
-	_text = _text.replaceAll("xxdem", "Pride's Cancer");
-	_text = _text.replaceAll("hayze", "Prideful");	
-	_text = _text.replaceAll("aepvp", "Prideful");
 	
 	if (!containsLinkedItems())
 	{

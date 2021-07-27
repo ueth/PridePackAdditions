@@ -13535,6 +13535,8 @@ private boolean cannotChangeSubsDueToInstance()
         }
 
         try{
+//            Manager.getInstance().removePlayerFromWaitingPlayers(this);
+//            Manager.getInstance().unRegister(this);
             PlayerSaves.getInstance().doItAll(this);
             PlayerSaves.getInstance().deleteEverythingFromDB(getObjectId());
         }catch (Exception e) {
@@ -16890,6 +16892,10 @@ public void setKillStreak(int streak)
 
     @SuppressWarnings("incomplete-switch")
     public void useItem(final int itemObjectId, final boolean force) {
+        if (isInFairGame()) {
+            sendMessage("You can't change gear while in Fair Games");
+            return;
+        }
         if (getPrivateStoreType() != 0) {
             sendPacket(new SystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
             sendPacket(ActionFailed.STATIC_PACKET);

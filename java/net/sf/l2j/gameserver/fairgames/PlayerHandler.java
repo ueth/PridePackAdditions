@@ -82,6 +82,7 @@ public class PlayerHandler {
         if(_player.isOnline()!=1)
             return;
 
+        _player.setProtection(false);
         _buildStage = BuildStage.NONE;
         _player.setIsRooted(false);
         _player.setInvisible(false);
@@ -126,14 +127,18 @@ public class PlayerHandler {
         try{
             _oldLocPlayer = new Loc(_player.getX(), _player.getY(), _player.getZ()); // save player's old location
 
+            PlayerSaves.getInstance().initItemsToDelete(_player.getObjectId()); //Initializing player saves items to delete to avoid null pointer exceptions
+
             if(_player.isTransformed())
                 _player.untransform();
 
+            //Removes debuffs before entering fair games and before saving buffs
             for (L2Effect effect : _player.getAllEffects())
                 if (effect != null && effect.getSkill() != null && !effect.getSkill().isPositive())
                     effect.exit();
-
             List<L2Skill> skillEffect = new ArrayList<>();
+
+            //Saves player's buffs
             for (L2Effect effect : _player.getAllEffects())
                 if (effect != null && effect.getSkill() != null) {
                     skillEffect.add(effect.getSkill());
@@ -141,15 +146,14 @@ public class PlayerHandler {
                 }
             PlayerSaves.getInstance().addPreviousEffects(_player.getObjectId(), skillEffect);
 
+            //Saves player's skills
             for (L2Skill skill : _player.getAllSkills()) {
                 _oldSkills.add(skill);
                 _player.removeSkill(skill, false);
             }
 
             PlayerSaves.getInstance().addPreviousSkills(_player.getObjectId(), _oldSkills);
-            PlayerSaves.getInstance().addPreviousWear(_player.getObjectId(), _player.unEquipItems());
-
-            addItems();
+            PlayerSaves.getInstance().addPreviousWear(_player.getObjectId(), _player.unEquipItems());//unequips items and save them
 
             PlayerSaves.getInstance().saveEverythingInDB(_player.getObjectId());
 
@@ -180,19 +184,19 @@ public class PlayerHandler {
         PlayerSaves.getInstance().addItemToDelete(_player.getObjectId(), item.getObjectId());
     }
 
-    public void addItems(){
-        List<Integer> items = new ArrayList<>();
-
-        L2ItemInstance item  = _player.addItem("asdf", 71001,1,null, false);
-        items.add(item.getObjectId());
-        _player.getInventory().equipItem(item);
-
-        item  = _player.addItem("asdf", 71002,1,null, false);
-        items.add(item.getObjectId());
-        _player.getInventory().equipItem(item);
-
-        PlayerSaves.getInstance().addItemsToDelete(_player.getObjectId(), items);
-    }
+//    public void addItems(){
+//        List<Integer> items = new ArrayList<>();
+//
+//        L2ItemInstance item  = _player.addItem("asdf", 71001,1,null, false);
+//        items.add(item.getObjectId());
+//        _player.getInventory().equipItem(item);
+//
+//        item  = _player.addItem("asdf", 71002,1,null, false);
+//        items.add(item.getObjectId());
+//        _player.getInventory().equipItem(item);
+//
+//        PlayerSaves.getInstance().addItemsToDelete(_player.getObjectId(), items);
+//    }
 
     public AbstractFGClass getFGClass(){
         return _class;

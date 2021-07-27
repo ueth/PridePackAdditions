@@ -6,6 +6,7 @@ import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.entity.Instance;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.util.Broadcast;
 
@@ -16,7 +17,7 @@ public class Manager {
     private Map<Integer,L2PcInstance> _registeredPlayers = new HashMap<>();
     private Map<Integer,L2PcInstance> _waitingToStartPlayers = new HashMap<>();
 
-    private final static int MINIMUM_PLAYERS = 2;
+    private final static int MINIMUM_PLAYERS = 4;
 
     private static Manager _instance = null;
 
@@ -142,15 +143,17 @@ public class Manager {
     }
 
     public void removePlayerFromWaitingPlayers(L2PcInstance player){
-        _waitingToStartPlayers.remove(player.getObjectId());
+        if(_waitingToStartPlayers.containsKey(player.getObjectId()))
+            _waitingToStartPlayers.remove(player.getObjectId());
     }
 
     public int incInstanceID(){
-        return _instanceID++;
+        return InstanceManager.getInstance().createDynamicInstance("FairGames");
     }
     public void decInstanceID(){
         _instanceID--;
     }
+
     public boolean isPlayerRegistered(L2PcInstance player){
         return _registeredPlayers.containsKey(player.getObjectId()) || _waitingToStartPlayers.containsKey(player.getObjectId());
     }
