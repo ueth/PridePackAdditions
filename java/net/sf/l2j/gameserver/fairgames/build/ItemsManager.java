@@ -20,7 +20,14 @@ public class ItemsManager {
     private static final Map<Integer, FGItem> _weapons = new HashMap<>();
     private static final Map<Integer, FGItem> _jewels = new HashMap<>();
     private static final Map<Integer, FGItem> _tattoos = new HashMap<>();
-    private static final Map<Integer, List<FGItem>> _armorSets= new HashMap<>();
+    private static final Map<Integer, FGItem> _armors = new HashMap<>();
+
+    public static void loadItems(){
+        loadFairGameWeapons();
+        loadFairGameArmors();
+        loadFairGameJewels();
+        loadFairGameTattoos();
+    }
 
     public static void loadFairGameWeapons() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -124,7 +131,7 @@ public class ItemsManager {
         }
     }
 
-    public static void loadFairGameArmorSets() {
+    public static void loadFairGameArmors() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
         try {
@@ -132,7 +139,7 @@ public class ItemsManager {
 
             DocumentBuilder db = dbf.newDocumentBuilder();
 
-            Document doc = db.parse(new File("data/xml/fairGames/items/armorSets.xml"));
+            Document doc = db.parse(new File("data/xml/fairGames/items/armors.xml"));
             doc.getDocumentElement().normalize();
 
             NodeList nList = doc.getElementsByTagName("item");
@@ -147,18 +154,19 @@ public class ItemsManager {
                     int itemId = Integer.valueOf(eElement.getElementsByTagName("itemId").item(0).getTextContent());
                     String description = eElement.getElementsByTagName("description").item(0).getTextContent();
 
-                    _tattoos.put(id, new FGItem(itemId, description));
+                    _armors.put(id, new FGItem(itemId, description));
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            System.out.println("---------Loaded FG ArmorSets----------");
+            System.out.println("---------Loaded FG Armors----------");
         }
     }
 
     public static Map<Integer, FGItem> getWeapons(){return _weapons;}
     public static Map<Integer, FGItem> getJewels(){return _jewels;}
     public static Map<Integer, FGItem> getTattoos(){return _tattoos;}
+    public static Map<Integer, FGItem> getArmors(){return _armors;}
 }

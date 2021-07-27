@@ -1,8 +1,8 @@
 package net.sf.l2j.gameserver.fairgames.entities;
 
 public class FGItem {
-    int _itemId;
-    String _desc;
+    private int _itemId;
+    private String _desc;
 
     public FGItem(int _itemId, String _desc) {
         this._itemId = _itemId;

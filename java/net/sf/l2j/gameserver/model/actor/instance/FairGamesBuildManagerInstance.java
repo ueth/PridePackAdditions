@@ -6,8 +6,6 @@ import net.sf.l2j.gameserver.fairgames.html.FGHtmlHandler;
 import net.sf.l2j.gameserver.network.serverpackets.*;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-import java.util.StringTokenizer;
-
 public class FairGamesBuildManagerInstance extends L2NpcInstance {
     private static final String PARENT_DIR = "data/html/fairGames/";
 
@@ -62,29 +60,18 @@ public class FairGamesBuildManagerInstance extends L2NpcInstance {
                         break;
 
                     case WEAPON_CHOOSE:
-                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"weapons.html");
-                        separateAndSend(content, player);
-                        break;
-
-                    case ARMOR_CHOOSE:
-                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"armors.html");
-                        separateAndSend(content, player);
+                    case  ARMOR_CHOOSE:
+                    case JEWELS_CHOOSE:
+                    case TATTOO_CHOOSE:
+                        FGHtmlHandler.getInstance().showItemsBoard(player, 0);
                         break;
 
                     case BUFFS_CHOOSE:
-                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"buffs.html");
-                        separateAndSend(content, player);
+                        FGHtmlHandler.getInstance().showBuffsBoard(player, 0);
                         break;
 
-                    case JEWELS_CHOOSE:
-                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"jewels.html");
-                        separateAndSend(content, player);
-                        break;
-
-                    case TATTOO_CHOOSE:
-                        content = HtmCache.getInstance().getHtm(PARENT_DIR+"tattoos.html");
-                        separateAndSend(content, player);
-                        break;
+                    default:
+                        player.sendMessage("Your Build is complete");
                 }
             }
         }

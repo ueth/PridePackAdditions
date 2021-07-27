@@ -1,7 +1,7 @@
 package net.sf.l2j.gameserver.fairgames;
 
 import cz.nxs.events.engine.base.Loc;
-import net.sf.l2j.gameserver.cache.HtmCache;
+import net.sf.l2j.gameserver.fairgames.build.ItemsPages;
 import net.sf.l2j.gameserver.fairgames.classes.AbstractFGClass;
 import net.sf.l2j.gameserver.fairgames.build.SkillsPages;
 import net.sf.l2j.gameserver.fairgames.enums.BuildStage;
@@ -22,13 +22,19 @@ public class PlayerHandler {
     private List<L2Skill> _oldSkills = new ArrayList<>();
     private int _damage = 0;
     private AbstractFGClass _class;
-    private SkillsPages _skillsPages;
     private BuildStage _buildStage;
+
+    private int _armorCounter = 0;
+    private int _jewelCounter = 0;
+
+    private SkillsPages _skillsPages;
+    private ItemsPages _itemsPages;
 
     public PlayerHandler(L2PcInstance player, int instanceId) {
         _player = player;
         _instanceId = instanceId;
         _skillsPages = new SkillsPages(player);
+        _itemsPages = new ItemsPages( player);
         _buildStage = BuildStage.CLASS_CHOOSE;
         player.setPlayerHandler(this);
     }
@@ -76,6 +82,7 @@ public class PlayerHandler {
         if(_player.isOnline()!=1)
             return;
 
+        _buildStage = BuildStage.NONE;
         _player.setIsRooted(false);
         _player.setInvisible(false);
         _player.broadcastUserInfo();
@@ -167,14 +174,16 @@ public class PlayerHandler {
         }
     }
 
+    public void addItem(int id){
+        L2ItemInstance item  = _player.addItem("Fair Games Item", id,1,null, false);
+        _player.getInventory().equipItem(item);
+        PlayerSaves.getInstance().addItemToDelete(_player.getObjectId(), item.getObjectId());
+    }
+
     public void addItems(){
         List<Integer> items = new ArrayList<>();
 
-        L2ItemInstance item  = _player.addItem("asdf", 90000,1,null, false);
-        items.add(item.getObjectId());
-        _player.getInventory().equipItem(item);
-
-        item  = _player.addItem("asdf", 71001,1,null, false);
+        L2ItemInstance item  = _player.addItem("asdf", 71001,1,null, false);
         items.add(item.getObjectId());
         _player.getInventory().equipItem(item);
 
@@ -183,7 +192,6 @@ public class PlayerHandler {
         _player.getInventory().equipItem(item);
 
         PlayerSaves.getInstance().addItemsToDelete(_player.getObjectId(), items);
-
     }
 
     public AbstractFGClass getFGClass(){
@@ -214,9 +222,17 @@ public class PlayerHandler {
         return _skillsPages;
     }
 
+    public ItemsPages getItemPages(){
+        return _itemsPages;
+    }
+
     public BuildStage getBuildStage() {
         return _buildStage;
     }
+
+    public int getArmorCounter(){ return _armorCounter;}
+
+    public int getJewelCounter(){ return _jewelCounter;}
 
     public void switchBuildStage(){
         switch (_buildStage){
@@ -233,11 +249,15 @@ public class PlayerHandler {
                 break;
 
             case ARMOR_CHOOSE:
-                _buildStage = BuildStage.JEWELS_CHOOSE;
+                _armorCounter++;
+                if(_armorCounter == 5)
+                    _buildStage = BuildStage.JEWELS_CHOOSE;
                 break;
 
             case JEWELS_CHOOSE:
-                _buildStage = BuildStage.TATTOO_CHOOSE;
+                _jewelCounter++;
+                if(_jewelCounter == 5)
+                    _buildStage = BuildStage.TATTOO_CHOOSE;
                 break;
 
             case TATTOO_CHOOSE:

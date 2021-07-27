@@ -1,12 +1,12 @@
 package net.sf.l2j.gameserver.fairgames.entities;
 
-public class ClassSkill {
+public class FGSkill {
     private int _id;
     private String _name;
     private String _icon;
     private String _desc;
 
-    public ClassSkill(int _id, String _name, String _icon, String _desc) {
+    public FGSkill(int _id, String _name, String _icon, String _desc) {
         this._id = _id;
         this._name = _name;
         this._icon = _icon;
