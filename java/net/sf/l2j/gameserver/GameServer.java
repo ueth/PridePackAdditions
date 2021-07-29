@@ -61,6 +61,8 @@ import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.fairgames.build.ItemsManager;
 import net.sf.l2j.gameserver.fairgames.build.SkillsManager;
+import net.sf.l2j.gameserver.fairgames.stadium.Stadium;
+import net.sf.l2j.gameserver.fairgames.stadium.StadiumManager;
 import net.sf.l2j.gameserver.geoeditorcon.GeoEditorListener;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.ChatHandler;
@@ -471,6 +473,7 @@ public GameServer() throws Exception
 	IconTable.getInstance().reload();
 	SkillsManager.loadFairGameSkillsAndBuffs();
 	ItemsManager.loadItems();
+	StadiumManager.getInstance().loadStadiums();
 
 	try
 	{

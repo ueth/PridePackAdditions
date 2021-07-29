@@ -4,6 +4,8 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.fairgames.enums.GameStage;
+import net.sf.l2j.gameserver.fairgames.stadium.Stadium;
+import net.sf.l2j.gameserver.fairgames.stadium.StadiumManager;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -14,6 +16,8 @@ public class Game {
     private PlayerHandler _player1;
     private PlayerHandler _player2;
     private int _instanceId;
+
+    private Stadium _stadium = StadiumManager.getInstance().getRandomStadium();
 
     protected ScheduledFuture<?> _gameTask = null;
     public static final int GAME_TIME = 120; // seconds
@@ -46,11 +50,11 @@ public class Game {
      */
     public void setPlayer1(L2PcInstance player){
         _player1 = new PlayerHandler(player, _instanceId);
-        _player1.setLoc(84455, -17077, -1847);
+        _player1.setLoc(_stadium.getLocPlayer1().getX(), _stadium.getLocPlayer1().getY(), _stadium.getLocPlayer1().getZ());
     }
     public void setPlayer2(L2PcInstance player){
         _player2 = new PlayerHandler(player, _instanceId);
-        _player2.setLoc(81931, -15233, -1841);
+        _player2.setLoc(_stadium.getLocPlayer2().getX(), _stadium.getLocPlayer2().getY(), _stadium.getLocPlayer2().getZ());
     }
 
 
@@ -109,10 +113,8 @@ public class Game {
         _player1.teleportPlayerToArena();
         _player2.teleportPlayerToArena();
 
-        //InstanceManager.getInstance().getInstance(_instanceId).addNpc(_spawnOne);
-
-        _spawnOne = SpawnCoach(84455,-17077, -1847, 1);
-        _spawnTwo = SpawnCoach(81931,-15233, -1841, 1);
+        _spawnOne = SpawnCoach(_stadium.getLocManager1().getX(), _stadium.getLocManager1().getY(), _stadium.getLocManager1().getZ(), 1);
+        _spawnTwo = SpawnCoach(_stadium.getLocManager2().getX(), _stadium.getLocManager2().getY(), _stadium.getLocManager2().getZ(), 1);
 
         return true;
     }

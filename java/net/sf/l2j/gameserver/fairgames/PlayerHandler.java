@@ -9,6 +9,7 @@ import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowScreenMessage;
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ import java.util.List;
 public class PlayerHandler {
     private L2PcInstance _player;
     private int _instanceId;
-    private Loc _oldLocPlayer;
-    private Loc _locPlayer ;
+    private Location _oldLocPlayer;
+    private Location _locPlayer ;
     private List<L2Skill> _oldSkills = new ArrayList<>();
     private int _damage = 0;
     private AbstractFGClass _class;
@@ -125,7 +126,7 @@ public class PlayerHandler {
             return;
 
         try{
-            _oldLocPlayer = new Loc(_player.getX(), _player.getY(), _player.getZ()); // save player's old location
+            _oldLocPlayer = new Location(_player.getX(), _player.getY(), _player.getZ()); // save player's old location
 
             PlayerSaves.getInstance().initItemsToDelete(_player.getObjectId()); //Initializing player saves items to delete to avoid null pointer exceptions
 
@@ -167,7 +168,7 @@ public class PlayerHandler {
             if (_player.isSitting())
                 _player.standUp();
 
-            _locPlayer.addRadius(0);
+            _locPlayer.setHeading(0);
             _player.setTarget(null);
             _player.setIsRooted(true);
             _player.doRevive();
@@ -215,7 +216,7 @@ public class PlayerHandler {
     }
 
     public void setLoc(int x, int y, int z){
-        _locPlayer = new Loc(x, y, z);
+        _locPlayer = new Location(x, y, z);
     }
 
     public int getDamage(){

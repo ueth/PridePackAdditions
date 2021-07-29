@@ -27,6 +27,7 @@ public final class Location
 	private int _z;
 	private int _heading;
 
+	public Location(){}
 
 	public Location(int x, int y, int z)
 	{
@@ -42,6 +43,14 @@ public final class Location
 		_z = z;
 		_heading = heading;
 	}
+
+	public void setHeading(int heading){_heading = heading;}
+
+	public void setX(int _x) {this._x = _x;}
+
+	public void setY(int _y) {this._y = _y;}
+
+	public void setZ(int _z) {this._z = _z;}
 
 	public int getX()
 	{
