@@ -3,6 +3,7 @@ package net.sf.l2j.gameserver.fairgames;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
+import net.sf.l2j.gameserver.fairgames.configurations.ConfigManager;
 import net.sf.l2j.gameserver.fairgames.enums.GameStage;
 import net.sf.l2j.gameserver.fairgames.stadium.Stadium;
 import net.sf.l2j.gameserver.fairgames.stadium.StadiumManager;
@@ -20,12 +21,13 @@ public class Game {
     private Stadium _stadium = StadiumManager.getInstance().getRandomStadium();
 
     protected ScheduledFuture<?> _gameTask = null;
-    public static final int GAME_TIME = 120; // seconds
+    public static final int GAME_TIME = ConfigManager.getInstance().getGameTime(); // seconds
     private GameStage _gameStage;
     private int _clock = GAME_TIME;
+    private static final int BUILD_TIME = ConfigManager.getInstance().getBildTime();
 
     protected ScheduledFuture<?> _teleportTask = null;
-    public static final int TELEPORT_TIME = 20; // seconds
+    public static final int TELEPORT_TIME = ConfigManager.getInstance().getTeleportTime(); // seconds
     private int _teleportClock = TELEPORT_TIME;
 
     private boolean _abort = false;
@@ -103,8 +105,6 @@ public class Game {
     }
 
     public boolean teleportPlayersIntoArena(){
-        System.out.println("teleportPlayersToArena");
-
         _abort = !(_player1.getPlayer().isOnline() == 1 && _player2.getPlayer().isOnline() == 1);
 
         if(_abort)
@@ -181,21 +181,16 @@ public class Game {
                         new TeleportBackTask(), 1,  1000
                 );
             }
-            switch (_clock){
-                case GAME_TIME :
-                    _gameStage = GameStage.CHOOSING_BUILD;
-                    handleGame();
-                    break;
-
-                case GAME_TIME-60 :
-                    _gameStage = GameStage.STARTED;
-                    handleGame();
-                    break;
-
-                case 0:
-                    _gameStage = GameStage.ENDED;
-                    handleGame();
-                    break;
+            //Could use switch but wouldn't be able to use configs
+            if(_clock == GAME_TIME){
+                _gameStage = GameStage.CHOOSING_BUILD;
+                handleGame();
+            }else if(_clock == GAME_TIME-BUILD_TIME){
+                _gameStage = GameStage.STARTED;
+                handleGame();
+            }else if(_clock == 0){
+                _gameStage = GameStage.ENDED;
+                handleGame();
             }
             sendPlayersClock();
             _clock--;

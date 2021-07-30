@@ -3,6 +3,7 @@ package net.sf.l2j.gameserver.fairgames;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
+import net.sf.l2j.gameserver.fairgames.configurations.ConfigManager;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -16,7 +17,7 @@ public class Manager {
     private Map<Integer,L2PcInstance> _registeredPlayers = new HashMap<>();
     private Map<Integer,L2PcInstance> _waitingToStartPlayers = new HashMap<>();
 
-    private final static int MINIMUM_PLAYERS = 2;
+    private final static int MINIMUM_PLAYERS = ConfigManager.getInstance().getMinRegisteredPlayers();
 
     private static Manager _instance = null;
 
@@ -26,7 +27,7 @@ public class Manager {
 
     private boolean _registrationPhase = false;
     private ScheduledFuture<?> _registrationTask = null;
-    private static final int REGISTRATION_TIME = 3000; // seconds
+    private static final int REGISTRATION_TIME = ConfigManager.getInstance().getRegistrationTime(); // seconds
     private int _clock = REGISTRATION_TIME;
 
     public synchronized void run(){
@@ -43,6 +44,8 @@ public class Manager {
     }
 
     public void register(L2PcInstance player){
+        if(!ConditionChecker.validate(player))
+            return;
         if(!_registrationPhase) {
             player.sendMessage("Fair Games are currently off");
             return;
@@ -62,21 +65,20 @@ public class Manager {
     public class RegistrationTask implements Runnable {
         public void run() {
 
-            switch (_clock){
-                case REGISTRATION_TIME:{
-                    _registrationPhase = true;
-                    _spawn = spawnManager(-80844, 149898, -3042, 31783);
-                    Broadcast.announceToOnlinePlayers("Fair Games are now active!");
-                    break;
-                }
-                case 0 : {
-                    Broadcast.announceToOnlinePlayers("Fair Games are now over");
-                    _clock = REGISTRATION_TIME;
-                    _registrationPhase = false;
-                    _registrationTask.cancel(true);
-                    _registrationTask = null;
-                    _spawn.getLastSpawn().deleteMe();
-                }
+            if(_clock == REGISTRATION_TIME){
+                _registrationPhase = true;
+                _spawn = spawnManager(ConfigManager.getInstance().getRegNPCSpawnLocation().getX(),
+                        ConfigManager.getInstance().getRegNPCSpawnLocation().getY(),
+                        ConfigManager.getInstance().getRegNPCSpawnLocation().getZ(), 31783);
+
+                Broadcast.announceToOnlinePlayers("Fair Games are now active!");
+            }else if(_clock == 0){
+                Broadcast.announceToOnlinePlayers("Fair Games are now over");
+                _clock = REGISTRATION_TIME;
+                _registrationPhase = false;
+                _registrationTask.cancel(true);
+                _registrationTask = null;
+                _spawn.getLastSpawn().deleteMe();
             }
             _clock-=5;
         }

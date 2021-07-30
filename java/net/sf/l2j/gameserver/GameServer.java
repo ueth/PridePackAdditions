@@ -61,6 +61,7 @@ import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.fairgames.build.ItemsManager;
 import net.sf.l2j.gameserver.fairgames.build.SkillsManager;
+import net.sf.l2j.gameserver.fairgames.configurations.ConfigManager;
 import net.sf.l2j.gameserver.fairgames.stadium.Stadium;
 import net.sf.l2j.gameserver.fairgames.stadium.StadiumManager;
 import net.sf.l2j.gameserver.geoeditorcon.GeoEditorListener;
@@ -401,6 +402,7 @@ public GameServer() throws Exception
 	
 	ItemLists.getInstance();
 	RuneTable.loadRunes();
+	ConfigManager.getInstance().loadConfigurations();
 	Manager.getInstance().run();
 	
 	// forums has to be loaded before clan data, because of last forum id used should have also memo included
@@ -474,6 +476,7 @@ public GameServer() throws Exception
 	SkillsManager.loadFairGameSkillsAndBuffs();
 	ItemsManager.loadItems();
 	StadiumManager.getInstance().loadStadiums();
+
 
 	try
 	{

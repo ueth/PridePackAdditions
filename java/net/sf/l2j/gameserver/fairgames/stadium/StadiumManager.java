@@ -69,7 +69,7 @@ public class StadiumManager {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            System.out.println("---------Loaded FG Stadiums----------"+_stadiums.size());
+            System.out.println("---------Loaded FG Stadiums----------");
         }
     }
 

@@ -4,6 +4,7 @@ import cz.nxs.events.engine.base.Loc;
 import net.sf.l2j.gameserver.fairgames.build.ItemsPages;
 import net.sf.l2j.gameserver.fairgames.classes.AbstractFGClass;
 import net.sf.l2j.gameserver.fairgames.build.SkillsPages;
+import net.sf.l2j.gameserver.fairgames.configurations.ConfigManager;
 import net.sf.l2j.gameserver.fairgames.enums.BuildStage;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -43,7 +44,6 @@ public class PlayerHandler {
     public boolean teleportPlayerToArena() {
         if (_player == null || _player.isOnline() != 1)
             return false;
-        System.out.println("teleportPlayerToArena");
 
         prepPlayer();
         InstanceManager.getInstance().getInstance(_instanceId).addPlayer(_player.getObjectId());
@@ -111,7 +111,7 @@ public class PlayerHandler {
 
         String time = minutesString+":"+secondsString;
 
-        _player.sendPacket(new ExShowScreenMessage(1, -1, 4, 0, 1, 0, 0, true, 2000, 0, time));
+        _player.sendPacket(new ExShowScreenMessage(1, -1, ConfigManager.getInstance().getClockPosition(), 0, 1, 0, 0, true, 2000, 0, time));
     }
 
     public void increaseDamage(int damage){

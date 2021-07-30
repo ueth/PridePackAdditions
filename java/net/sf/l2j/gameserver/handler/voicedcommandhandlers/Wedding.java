@@ -16,6 +16,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.fairgames.Manager;
+import net.sf.l2j.gameserver.fairgames.configurations.ConfigManager;
 import net.sf.l2j.gameserver.handler.IVoicedCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
@@ -59,7 +60,8 @@ private static final String[] _voicedCommands =
 	"adenaclanwh",
 	"marrytime",
 		"abort",
-		"run"
+		"run",
+		"fgreload"
 };
 
 public boolean useVoicedCommand(String command, L2PcInstance activeChar, String target)
@@ -81,6 +83,9 @@ public boolean useVoicedCommand(String command, L2PcInstance activeChar, String 
 	{
 		activeChar.setTradeRefusal(true);
 		return true;
+	}
+	else if(command.equalsIgnoreCase("fgreload")){
+		ConfigManager.getInstance().loadConfigurations();
 	}
 	else if (command.equalsIgnoreCase("accD"))
 	{
