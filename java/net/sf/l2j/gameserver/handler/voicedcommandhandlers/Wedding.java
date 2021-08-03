@@ -60,8 +60,7 @@ private static final String[] _voicedCommands =
 	"adenaclanwh",
 	"marrytime",
 		"abort",
-		"run",
-		"fgreload"
+		"run"
 };
 
 public boolean useVoicedCommand(String command, L2PcInstance activeChar, String target)
@@ -83,9 +82,6 @@ public boolean useVoicedCommand(String command, L2PcInstance activeChar, String 
 	{
 		activeChar.setTradeRefusal(true);
 		return true;
-	}
-	else if(command.equalsIgnoreCase("fgreload")){
-		ConfigManager.getInstance().loadConfigurations();
 	}
 	else if (command.equalsIgnoreCase("accD"))
 	{

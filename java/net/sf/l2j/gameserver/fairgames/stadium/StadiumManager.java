@@ -75,7 +75,7 @@ public class StadiumManager {
 
     public Stadium getRandomStadium(){
         Random rand = new Random();
-        return  _stadiums.get(rand.nextInt(_stadiums.size()+1));
+        return  _stadiums.get(rand.nextInt(_stadiums.size())+1);
     }
 
     public static StadiumManager getInstance(){

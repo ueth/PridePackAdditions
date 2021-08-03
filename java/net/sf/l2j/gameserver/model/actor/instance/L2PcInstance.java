@@ -56,6 +56,7 @@ import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.fairgames.PlayerHandler;
 import net.sf.l2j.gameserver.fairgames.PlayerSaves;
+import net.sf.l2j.gameserver.fairgames.PlayerStats;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IItemHandler;
@@ -15309,7 +15310,7 @@ private boolean cannotChangeSubsDueToInstance()
     }
 
     public void enteredNoLanding() {
-        _dismountTask = ThreadPoolManager.getInstance().scheduleGeneral(new L2PcInstance.dismount(), 5000);
+        _dismountTask = ThreadPoolManager.getInstance().scheduleGeneral(new dismount(), 5000);
     }
 
     public void exitedNoLanding() {
@@ -17438,4 +17439,7 @@ public void setKillStreak(int streak)
     PlayerHandler _playerHandler;
     public PlayerHandler getPlayerHandler() { return _playerHandler; }
     public void setPlayerHandler(PlayerHandler playerHandler) { _playerHandler = playerHandler; }
+
+    private PlayerStats _playerStats = new PlayerStats(this);
+    public PlayerStats getPlayerStats(){return _playerStats;}
 }

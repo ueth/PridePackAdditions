@@ -18,6 +18,8 @@ public class Game {
     private PlayerHandler _player2;
     private int _instanceId;
 
+    private int _winningPlayer = 0;
+
     private Stadium _stadium = StadiumManager.getInstance().getRandomStadium();
 
     protected ScheduledFuture<?> _gameTask = null;
@@ -61,29 +63,39 @@ public class Game {
 
 
     public void notifyWin(int objectId){
-        if(_player2.getPlayer().isOnline() == 1 && _player2.getPlayer().getObjectId() == objectId)
+        if(_player2.getPlayer().isOnline() == 1 && _player2.getPlayer().getObjectId() == objectId) {
+            _winningPlayer = 1;
             sendMessageToPlayers(_player1.getPlayer().getName() + " won the match!");
-        else if(_player1.getPlayer().isOnline() == 1 && _player1.getPlayer().getObjectId() == objectId)
+        }
+        else if(_player1.getPlayer().isOnline() == 1 && _player1.getPlayer().getObjectId() == objectId) {
+            _winningPlayer = 2;
             sendMessageToPlayers(_player2.getPlayer().getName() + " won the match!");
+        }
 
         _win = true;
     }
 
     private void notifyWinDamage(){
-        if(_player1.getDamage() > _player2.getDamage())
+        if(_player1.getDamage() > _player2.getDamage()) {
+            _winningPlayer = 1;
             sendMessageToPlayers(_player1.getPlayer().getName() + " won the match!");
-        else if(_player1.getDamage() < _player2.getDamage())
+        }
+        else if(_player1.getDamage() < _player2.getDamage()) {
+            _winningPlayer = 2;
             sendMessageToPlayers(_player2.getPlayer().getName() + " won the match!");
+        }
         else
             sendMessageToPlayers("Match ended in a draw");
     }
 
     private boolean notifyWinDisconnect(){
         if(_player1.getPlayer().isOnline() != 1) {
+            _winningPlayer = 2;
             sendMessageToPlayers(_player2.getPlayer().getName() + " won the match!");
             return true;
         }
         else if(_player2.getPlayer().isOnline() != 1) {
+            _winningPlayer = 1;
             sendMessageToPlayers(_player1.getPlayer().getName() + " won the match!");
             return true;
         }
@@ -154,6 +166,23 @@ public class Game {
             InstanceManager.getInstance().getInstance(_instanceId).removePlayer(_player1.getPlayer().getObjectId());
         if(_player2.getPlayer().isOnline()==1)
             InstanceManager.getInstance().getInstance(_instanceId).removePlayer(_player2.getPlayer().getObjectId());
+    }
+
+    private void saveStats(){
+        switch (_winningPlayer){
+            case 0 :
+                _player1.getPlayer().getPlayerStats().saveStatsAfterGame(false, _player1.getClassName());
+                _player2.getPlayer().getPlayerStats().saveStatsAfterGame(false, _player2.getClassName());
+                break;
+            case 1 :
+                _player1.getPlayer().getPlayerStats().saveStatsAfterGame(true, _player1.getClassName());
+                _player2.getPlayer().getPlayerStats().saveStatsAfterGame(false, _player2.getClassName());
+                break;
+            case 2 :
+                _player1.getPlayer().getPlayerStats().saveStatsAfterGame(false, _player1.getClassName());
+                _player2.getPlayer().getPlayerStats().saveStatsAfterGame(true, _player2.getClassName());
+                break;
+        }
     }
 
     public L2Spawn SpawnCoach(int xPos, int yPos, int zPos, int npcId) {
@@ -254,6 +283,7 @@ public class Game {
             _gameTask.cancel(false);
             _gameTask = null;
             unSpawnCoaches();
+            saveStats();
         }
 
         public void run() {
