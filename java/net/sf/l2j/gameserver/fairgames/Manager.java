@@ -21,6 +21,8 @@ public class Manager {
 
     private static Manager _instance = null;
 
+    private static int _instanceID = 2000;
+
     public L2Spawn _spawn;
 
     private Map<Integer, Game> _games = new HashMap<>();
@@ -144,7 +146,15 @@ public class Manager {
     }
 
     public int createInstanceID(){
-        return InstanceManager.getInstance().createDynamicInstance("FairGames");
+        _instanceID = 100;
+        if(_games.isEmpty())
+            return _instanceID;
+        else{
+            while (_games.keySet().contains(_instanceID))
+                _instanceID++;
+        }
+
+        return _instanceID;
     }
 
     public boolean isPlayerRegistered(L2PcInstance player){

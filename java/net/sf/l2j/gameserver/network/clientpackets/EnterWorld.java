@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.datatables.CharSchemesTable;
 import net.sf.l2j.gameserver.datatables.MapRegionTable.TeleportWhereType;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 //import net.sf.l2j.gameserver.handler.itemhandlers.Gem;
+import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.fairgames.PlayerSaves;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
@@ -328,6 +329,7 @@ protected void runImpl()
 	activeChar.updateEffectIcons();
 	activeChar.getBattlePass().loadPreviousBattlePasses(activeChar);
 	activeChar.getRunePlayer().loadRunes();
+	activeChar.getPlayerStats().loadEverything(false);
 	
 	activeChar.sendPacket(new EtcStatusUpdate(activeChar));
 	
