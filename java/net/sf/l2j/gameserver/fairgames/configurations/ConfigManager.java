@@ -74,7 +74,7 @@ public class ConfigManager {
         }
     }
 
-    public int getBildTime() {return _buildTime;}
+    public int getBuildTime() {return _buildTime;}
 
     public int getGameTime() {return _gameTime;}
 

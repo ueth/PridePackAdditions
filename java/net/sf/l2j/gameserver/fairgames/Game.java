@@ -1,5 +1,7 @@
 package net.sf.l2j.gameserver.fairgames;
 
+import net.sf.l2j.L2DatabaseFactory;
+import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
@@ -11,6 +13,9 @@ import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.concurrent.ScheduledFuture;
 
 public class Game {
@@ -19,6 +24,7 @@ public class Game {
     private int _instanceId;
 
     private int _winningPlayer = 0;
+    private String _winHow = "Draw";
 
     private Stadium _stadium = StadiumManager.getInstance().getRandomStadium();
 
@@ -26,7 +32,7 @@ public class Game {
     public static final int GAME_TIME = ConfigManager.getInstance().getGameTime(); // seconds
     private GameStage _gameStage;
     private int _clock = GAME_TIME;
-    private static final int BUILD_TIME = ConfigManager.getInstance().getBildTime();
+    private static final int BUILD_TIME = ConfigManager.getInstance().getBuildTime();
 
     protected ScheduledFuture<?> _teleportTask = null;
     public static final int TELEPORT_TIME = ConfigManager.getInstance().getTeleportTime(); // seconds
@@ -71,7 +77,7 @@ public class Game {
             _winningPlayer = 2;
             sendMessageToPlayers(_player2.getPlayer().getName() + " won the match!");
         }
-
+        _winHow = "Killed opponent";
         _win = true;
     }
 
@@ -79,10 +85,12 @@ public class Game {
         if(_player1.getDamage() > _player2.getDamage()) {
             _winningPlayer = 1;
             sendMessageToPlayers(_player1.getPlayer().getName() + " won the match!");
+            _winHow = "Most damage";
         }
         else if(_player1.getDamage() < _player2.getDamage()) {
             _winningPlayer = 2;
             sendMessageToPlayers(_player2.getPlayer().getName() + " won the match!");
+            _winHow = "Most damage";
         }
         else
             sendMessageToPlayers("Match ended in a draw");
@@ -92,11 +100,13 @@ public class Game {
         if(_player1.getPlayer().isOnline() != 1) {
             _winningPlayer = 2;
             sendMessageToPlayers(_player2.getPlayer().getName() + " won the match!");
+            _winHow = "Opponent disconnected";
             return true;
         }
         else if(_player2.getPlayer().isOnline() != 1) {
             _winningPlayer = 1;
             sendMessageToPlayers(_player1.getPlayer().getName() + " won the match!");
+            _winHow = "Opponent disconnected";
             return true;
         }
         return false;
@@ -284,6 +294,7 @@ public class Game {
             _gameTask = null;
             unSpawnCoaches();
             saveStats();
+            saveMatch();
         }
 
         public void run() {
@@ -312,5 +323,66 @@ public class Game {
             }
             _teleportClock--;
         }
+    }
+
+    private void saveMatch(){
+        try (Connection con = L2DatabaseFactory.getInstance().getConnection()) {
+            PreparedStatement statement = con.prepareStatement(
+                    "INSERT INTO fg_match_history (playerName1,playerName2,playerId1,playerId2,class1,class2,dmgDone1,dmgDone2,gameTime,winner,winHow,realTime) " +
+                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+
+            String playerName1 = _player1.getPlayer().getName();
+            String playerName2 = _player2.getPlayer().getName();
+            int playerId1 = _player1.getPlayer().getObjectId();
+            int playerId2 = _player2.getPlayer().getObjectId();
+            String class1 = _player1.getClassName();
+            String class2 = _player2.getClassName();
+            int dmgDone1 = _player1.getDamage();
+            int dmgDone2 = _player2.getDamage();
+            String gameTime = getGameTimeInTimeFormat(GAME_TIME-_clock);
+            String winner = _winningPlayer == 0 ? "Draw" : _winningPlayer == 1 ? playerName1 : playerName2;
+
+            String match = playerName1 + "(" + class1 + ")" + " Dmg - " + dmgDone1 + " vs " + playerName2 + "(" + class2 + ")" + " Dmg - " + dmgDone2 + " / Winner - " + winner + " / Won by: " + _winHow + " / Game time - " + gameTime;
+
+            if(_player1.getPlayer().isOnline() == 1)
+                _player1.getPlayer().getPlayerStats().addMatch(match);
+            if(_player2.getPlayer().isOnline() == 1)
+                _player2.getPlayer().getPlayerStats().addMatch(match);
+
+            statement.setString(1, playerName1);
+            statement.setString(2, playerName2);
+            statement.setInt(3, playerId1);
+            statement.setInt(4, playerId2);
+            statement.setString(5, class1);
+            statement.setString(6, class2);
+            statement.setInt(7, dmgDone1);
+            statement.setInt(8, dmgDone2);
+            statement.setString(9, gameTime);
+            statement.setString(10, winner);
+            statement.setString(11, _winHow);
+            statement.setLong(12, System.currentTimeMillis());
+
+            statement.execute();
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getGameTimeInTimeFormat(int gameTime){
+        int minutes = gameTime/60;
+        int seconds = gameTime%60;
+
+        String minutesString;
+        String secondsString;
+
+        if(minutes<10) minutesString = "0"+minutes;
+        else minutesString = minutes+"";
+
+        if(seconds<10) secondsString = "0"+seconds;
+        else secondsString = seconds+"";
+
+        return  minutesString+":"+secondsString;
     }
 }

@@ -12,6 +12,7 @@ import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ShowBoard;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 public class FGHtmlHandler {
     private static FGHtmlHandler _instance = null;
@@ -174,6 +175,65 @@ public class FGHtmlHandler {
             default:
                 return false;
         }
+    }
+
+    public void showFairGamesStats(L2PcInstance player){
+        final String path = "data/html/fairGames/stats/";
+        String filepath = path + "stats.html";
+        String content = HtmCache.getInstance().getHtm(filepath);
+
+        content = content.replace("%gamesDone%", String.valueOf(player.getPlayerStats().getGamesDone()));
+        content = content.replace("%compWon%", String.valueOf(player.getPlayerStats().getCompetitionWon()));
+        content = content.replace("%compLost%", String.valueOf(player.getPlayerStats().getCompetitionLost()));
+        content = content.replace("%points%", String.valueOf(player.getPlayerStats().getPoints()));
+        content = content.replace("%streak%", String.valueOf(player.getPlayerStats().getStreak()));
+
+        double winrate = ((double)player.getPlayerStats().getCompetitionWon() / (double)player.getPlayerStats().getGamesDone())*100;
+        String winratecolor = "009933";
+
+        if(winrate<50)
+            winratecolor = "cc0000";
+
+        StringBuilder sb = StringUtil.startAppend(1000, "");
+
+        for(String match : player.getPlayerStats().getMatchHistory()){
+            StringUtil.append(sb, "<tr>" +
+                    "<td width=80 align=center>" +
+                    "<font name=\"hs9\">" + match + "</font>" +
+                    "</td>" +
+                    "</tr>");
+        }
+
+        content = content.replace("%matchHistory%", sb.toString());
+
+        content = content.replace("%winRateColor%", winratecolor);
+        content = content.replace("%winRate%", winrate + "%");
+
+        this.separateAndSend(content, player);
+    }
+
+    public void showFairGamesRankings(L2PcInstance player){
+        final String path = "data/html/fairGames/stats/";
+        String filepath = path + "rankings.html";
+
+        String content = HtmCache.getInstance().getHtm(filepath);
+
+
+        this.separateAndSend(content, player);
+    }
+
+    public void showFairGamesScheme(L2PcInstance player){
+        final String path = "data/html/fairGames/";
+        String filepath = path + "scheme.html";
+        String content = HtmCache.getInstance().getHtm(filepath);
+        this.separateAndSend(content, player);
+    }
+
+    public void showFairGamesClassStats(L2PcInstance player){
+        final String path = "data/html/fairGames/stats/";
+        String filepath = path + "classStats.html";
+        String content = HtmCache.getInstance().getHtm(filepath);
+        this.separateAndSend(content, player);
     }
 
     protected void separateAndSend(final String html, final L2PcInstance acha) {

@@ -146,7 +146,7 @@ public class Manager {
     }
 
     public int createInstanceID(){
-        _instanceID = 100;
+        _instanceID = 2000;
         if(_games.isEmpty())
             return _instanceID;
         else{

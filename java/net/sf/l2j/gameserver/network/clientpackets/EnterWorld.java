@@ -330,6 +330,7 @@ protected void runImpl()
 	activeChar.getBattlePass().loadPreviousBattlePasses(activeChar);
 	activeChar.getRunePlayer().loadRunes();
 	activeChar.getPlayerStats().loadEverything(false);
+	activeChar.getPlayerStats().loadMatchHistory();
 	
 	activeChar.sendPacket(new EtcStatusUpdate(activeChar));
 	

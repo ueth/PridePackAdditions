@@ -1,14 +1,13 @@
 package net.sf.l2j.gameserver.fairgames;
 
 import net.sf.l2j.L2DatabaseFactory;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class PlayerStats {
     private int _competitionWon;
@@ -16,6 +15,7 @@ public class PlayerStats {
     private int _gamesDone;
     private int _points;
     private int _streak;
+    private List<String> _matchHistory = new ArrayList<>();
     private L2PcInstance _player;
     private static final String[] _classes = {"mage", "warrior", "assassin", "archer"};
     private final Map<String, PlayerStats> _classesStats = new HashMap<>();
@@ -44,12 +44,13 @@ public class PlayerStats {
     public void saveStatsInDB() {
         try (Connection con = L2DatabaseFactory.getInstance().getConnection()) {
             //PreparedStatement statement = con.prepareStatement("UPDATE fg_stats SET compWon=?,compLost=?,gamesDone=?,points=?,streak=?,classStats=? WHERE charId=?");
-            PreparedStatement statement = con.prepareStatement("REPLACE INTO fg_stats (compWon,compLost,gamesDone,points,streak,classStats,charId) VALUES (?,?,?,?,?,?,?)");
-            statement.setInt(1, _competitionWon);
-            statement.setInt(2, _competitionLost);
-            statement.setInt(3, _gamesDone);
-            statement.setInt(4, _points);
-            statement.setInt(5, _streak);
+            PreparedStatement statement = con.prepareStatement("REPLACE INTO fg_stats (name,compWon,compLost,gamesDone,points,streak,classStats,charId) VALUES (?,?,?,?,?,?,?,?)");
+            statement.setString(1, _player.getName());
+            statement.setInt(2, _competitionWon);
+            statement.setInt(3, _competitionLost);
+            statement.setInt(4, _gamesDone);
+            statement.setInt(5, _points);
+            statement.setInt(6, _streak);
 
             String toSave = "";
 
@@ -58,8 +59,8 @@ public class PlayerStats {
                 toSave += className + ";" + ps.getCompetitionWon() + ";" + ps.getCompetitionLost() + ";" + ps.getGamesDone() + ";" + ps.getStreak() + "/";
             }
 
-            statement.setString(6, toSave);
-            statement.setInt(7, _player.getObjectId());
+            statement.setString(7, toSave);
+            statement.setInt(8, _player.getObjectId());
 
             statement.execute();
             statement.close();
@@ -141,6 +142,70 @@ public class PlayerStats {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void loadMatchHistory(){
+        try (Connection con = L2DatabaseFactory.getInstance().getConnection()) {
+
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM fg_match_history where playerId1=? OR playerId2=? ORDER BY realTime DESC LIMIT 0, 10");
+            statement.setInt(1, _player.getObjectId());
+            statement.setInt(2, _player.getObjectId());
+            ResultSet rs = statement.executeQuery();
+
+            String playerName1;
+            String playerName2;
+            String class1;
+            String class2;
+            int dmgDone1;
+            int dmgDone2;
+            String gameTime;
+            String winner;
+            String winHow;
+
+            while (rs.next()) {
+                String temp = "";
+
+                playerName1 = rs.getString("playerName1");
+                playerName2 = rs.getString("playerName2");
+                class1 = rs.getString("class1");
+                class2 = rs.getString("class2");
+                dmgDone1 = rs.getInt("dmgDone1");
+                dmgDone2 = rs.getInt("dmgDone2");
+                gameTime = rs.getString("gameTime");
+                winner = rs.getString("winner");
+                winHow = rs.getString("winHow");
+
+                temp += playerName1 + "(" + class1 + ")" + " Dmg - " + dmgDone1 + " vs " + playerName2 + "(" + class2 + ")" + " Dmg - " + dmgDone2 + " / Winner - " + winner + " / Won by: " + winHow + " / Game time - " + gameTime;
+                _matchHistory.add(temp);
+            }
+
+
+            rs.close();
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getMatchHistory(){
+        return _matchHistory;
+    }
+
+    public void addMatch(String str){
+        //First we shift the list and then we add the string
+        List<String> temp = new ArrayList<>();
+        temp.addAll(_matchHistory);
+
+        _matchHistory.clear();
+        _matchHistory.add(str);
+
+        int size = temp.size();
+        if (size>=10)
+            size = 9;
+
+        for(int i = 0; i<size; i++)
+            _matchHistory.add(temp.get(i));
     }
 
     public int getCompetitionWon() {

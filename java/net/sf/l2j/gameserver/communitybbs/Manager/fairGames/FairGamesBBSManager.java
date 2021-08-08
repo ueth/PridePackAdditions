@@ -1,4 +1,4 @@
-package net.sf.l2j.gameserver.communitybbs.Manager.custom;
+package net.sf.l2j.gameserver.communitybbs.Manager.fairGames;
 
 import net.sf.l2j.gameserver.fairgames.build.ItemsManager;
 import net.sf.l2j.gameserver.fairgames.enums.BuildStage;
@@ -10,6 +10,24 @@ public class FairGamesBBSManager {
     public static FairGamesBBSManager getInstance() { return FairGamesBBSManager.SingletonHolder._instance; }
 
     public void parsecmd(final String command, final L2PcInstance player) {
+        if(command.equals("_bbsFGStats")){
+            FGHtmlHandler.getInstance().showFairGamesStats(player);
+            return;
+        }else if(command.equals("_bbsFGRankings")){
+            FGHtmlHandler.getInstance().showFairGamesRankings(player);
+            return;
+        }else if(command.equals("_bbsFGScheme")){
+            FGHtmlHandler.getInstance().showFairGamesScheme(player);
+            return;
+        }else if(command.equals("_bbsFGClassStats")){
+            FGHtmlHandler.getInstance().showFairGamesClassStats(player);
+            return;
+        }
+
+
+        /**
+         * Fair Games Build section
+         */
         if(player.getPlayerHandler().getBuildStage() == BuildStage.NONE)
             return;
         if (command.startsWith("_bbsFGChooseSkill ")) {

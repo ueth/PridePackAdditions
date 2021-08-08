@@ -1340,9 +1340,8 @@ public final class L2PcInstance extends L2Playable {
     }
 
     public String getAccountNameIgnoreDetached() {
-        if (getClient() == null) {
+        if (getClient() == null)
             return "disconnected";
-        }
 
         return getClient().getAccountName();
     }
@@ -1350,129 +1349,6 @@ public final class L2PcInstance extends L2Playable {
     public Map<Integer, String> getAccountChars() {
         return _chars;
     }
-
-/*public Future<?> getPartyPassiveTask()
-{
-	return _partyPassiveTask;
-}
-
-public void stopPartyPassiveTask(boolean interruptifrunning)
-{
-	if (_partyPassiveTask != null)
-		_partyPassiveTask.cancel(interruptifrunning);
-}
-
-private Future<?> _partyPassiveTask;
-
-class PartyPassive implements Runnable
-{
-final L2PcInstance _owner;
-
-public PartyPassive(L2PcInstance owner)
-{
-	_owner = owner;
-}
-
-public void run()
-{
-	try
-	{
-		if (_owner == null || _partyPassiveList == null || _partyPassiveList.isEmpty())
-			return;
-
-		final L2Party party = _owner.getParty();
-
-		if (party == null)
-			return;
-
-		int distance;
-		int skillRadius;
-
-		for (L2PcInstance partyMember : party.getPartyMembers())
-		{
-			if (partyMember == null || partyMember == _owner)
-				continue;
-
-			distance = (int) Util.calculateDistance(_owner, partyMember, true);
-
-			for (L2Skill skill : _partyPassiveList)
-			{
-				skillRadius = skill.getPartyPassiveRadius();
-
-				if (skillRadius <= 0)
-				{
-					_log.log(Level.WARNING, skill.getName()+" has error in skill party passive radius");
-				}
-				else
-				{
-					if (distance <= skillRadius)
-					{
-						if (partyMember.getKnownSkill(skill.getId()) == null)
-							partyMember.addSkillPartyPassive(skill);
-					}
-					else
-					{
-						partyMember.removeSkillPartyPassive(skill.getId(), _owner.getObjectId());
-					}
-				}
-			}
-		}
-	}
-	catch (Exception e)
-	{
-		_log.log(Level.WARNING, "error in party passive task:", e);
-	}
-}
-}
-
-public synchronized void addSkillToPartyPassiveList(final L2Skill skill)
-{
-	if (_partyPassiveTask != null)
-		_partyPassiveTask.cancel(false);
-
-	if (_partyPassiveList == null)
-		_partyPassiveList = new FastList<L2Skill>();
-
-	_partyPassiveList.addLast(skill);
-
-	_partyPassiveTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new PartyPassive(this), 2000, 8000);
-}
-
-public synchronized void removeSkillFromPartyPassiveList(final L2Skill skill)
-{
-	if (_partyPassiveList == null || _partyPassiveList.isEmpty())
-	{
-		if (_partyPassiveTask != null)
-			_partyPassiveTask.cancel(false);
-
-		return;
-	}
-
-	_partyPassiveList.remove(skill);
-
-	if (_partyPassiveList.isEmpty())
-	{
-		if (_partyPassiveTask != null)
-			_partyPassiveTask.cancel(true);
-	}
-
-	final L2Party party = getParty();
-
-	if (party == null) return;
-
-	for (L2PcInstance player : party.getPartyMembers())
-	{
-		if (player == null || player == this)
-			continue;
-
-		player.removeSkillPartyPassive(skill.getId(), getObjectId());
-	}
-}
-
-public FastList<L2Skill> getPartyPassiveList()
-{
-	return _partyPassiveList;
-}*/
 
     private Future<?> _PvPRegTask;
 
@@ -2081,7 +1957,6 @@ public FastList<L2Skill> getPartyPassiveList()
 
     /**
      * Return a table containing all QuestState to modify after a L2Attackable killing.<BR><BR>
-     *
      */
     public QuestState[] getQuestsForKills(L2Npc npc) {
         // Create a QuestState table that will contain all QuestState to modify
@@ -5118,8 +4993,7 @@ public FastList<L2Skill> getPartyPassiveList()
 		sendMessage("You need to wait 24 hours after making a character to use vendor");
 		return false;
 	}*/
-        if(Manager.getInstance().isPlayerRegistered(this))
-        {
+        if (Manager.getInstance().isPlayerRegistered(this)) {
             sendMessage("Cannot use while registered for Fair Games.");
             return false;
         }
@@ -5631,30 +5505,6 @@ public FastList<L2Skill> getPartyPassiveList()
         if (killer != null) {
             String killerName = killer.getDisplayName();
 
-		/*if(_inEventDM && DM._started)
-        {
-        	if (_streak == 2)
-        	{
-        		killer.sendMessage("You have ended "+getName()+"'s Double Kill!");
-        	}
-        	else if (_streak == 3)
-        	{
-        		killer.sendMessage("You have ended "+getName()+"'s Triple Kill!");
-        	}
-        	else if (_streak == 4)
-        	{
-        		killer.sendMessage("You have ended "+getName()+"'s Quadra Kill!");
-        	}
-        	else if (_streak == 5)
-        	{
-        		killer.sendMessage("You have ended "+getName()+"'s Penta Kill!");
-        	}
-        	else if (_streak == 6)
-        	{
-        		killer.sendMessage("You have ended "+getName()+"'s Hexa Kill!");
-        	}
-        }*/
-
             if (_streak >= 100) {
                 Announcements.getInstance().announceToAll(killerName + " has put an end to " + getName() + "'s reign of terror of " + _streak + " straight kills!");
             } else if (_streak >= 55) {
@@ -5731,49 +5581,18 @@ public FastList<L2Skill> getPartyPassiveList()
                 if (pk == null || !pk.isCursedWeaponEquipped()) {
                     onDieDropItem(killer); // Check if any item should be dropped
 
-                    if (!((isInsideZone(ZONE_PVP)/* && !isInPI()*/) && !isInsideZone(ZONE_SIEGE))) {
-                        if (pk != null && pk.getClan() != null && getClan() != null) {
-                            if (isInClanwarWith(pk) || (isInSiege() && pk.isInSiege())) {
-                                if (getClan().getReputationScore() > 0) {
+                    if (!((isInsideZone(ZONE_PVP)/* && !isInPI()*/) && !isInsideZone(ZONE_SIEGE)))
+                        if (pk != null && pk.getClan() != null && getClan() != null)
+                            if (isInClanwarWith(pk) || (isInSiege() && pk.isInSiege()))
+                                if (getClan().getReputationScore() > 0)
                                     pk.getClan().setReputationScore(pk.getClan().getReputationScore() + Config.REPUTATION_SCORE_PER_KILL, true);
-                                }
 
-							/*if (pk.getClan().getReputationScore() > 0)
-								{
-									_clan.setReputationScore(_clan.getReputationScore() - Config.REPUTATION_SCORE_PER_KILL, true);
-									getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
-									pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
-								}*/
-                            }
-                        }
-                    }
-				/*if (Config.ALT_GAME_DELEVEL)
-					{
-						// Reduce the Experience of the L2PcInstance in function of the calculated Death Penalty
-						// NOTE: deathPenalty +- Exp will update karma
-						// Penalty is lower if the player is at war with the pk (war has to be declared)
-						if (getStat().getLevel() > 70)
-						{
-							boolean siege_npc = false;
-							if (killer instanceof L2FortSiegeGuardInstance || killer instanceof L2SiegeGuardInstance || killer instanceof L2FortCommanderInstance)
-								siege_npc = true;
-
-							deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null, siege_npc);
-						}
-
-					}
-					else*/
-                    {
-                        if (!(isInsideZone(ZONE_PVP) && !isInSiege()) || pk == null)
-                            onDieUpdateKarma(); // Update karma if delevel is not allowed
-                    }
+                    if (!(isInsideZone(ZONE_PVP) && !isInSiege()) || pk == null)
+                        onDieUpdateKarma(); // Update karma if delevel is not allowed
                 }
             }
         }
 
-	/*// Untransforms character.
-		if (!isFlyingMounted() && isTransformed())
-			untransform();*/
 
         // Unsummon the Pet
         if (getPet() != null) {
@@ -6063,10 +5882,6 @@ public FastList<L2Skill> getPartyPassiveList()
         if (target == null) //custom edit
             return;
 
-	/*setKillCount(getKillCount() + 1);
-	increaseKillcount(target);*/
-        //sendMessage("You have killed "+target.getName()+" "+getKillCount()+" time(s)!");
-
         if (target.getObjectId() == _prevKill || target.getObjectId() == _prevKill2)
             return;
 
@@ -6143,8 +5958,8 @@ public FastList<L2Skill> getPartyPassiveList()
                     setPvpKills(getPvpKills() + 1);
 
 
-                    for (BattlePass battlePass : getBattlePass().getBattlePasses())
-                        battlePass.increasePoints(true, 0, 0, 0, 0, 0);
+                for (BattlePass battlePass : getBattlePass().getBattlePasses())
+                    battlePass.increasePoints(true, 0, 0, 0, 0, 0);
 
 
                 setNameColorsDueToPVP();
@@ -6606,15 +6421,6 @@ public FastList<L2Skill> getPartyPassiveList()
                 case 14:
                     chance = 1;
                     break;
-			/*		case 15:
-			chance = 1;
-			break;
-		case 16:
-			chance = 0;
-			break;
-		case 17:
-			chance = 0;
-			break;*/
 
                 default:
                     return;
@@ -7095,6 +6901,7 @@ public FastList<L2Skill> getPartyPassiveList()
         if (isInsideZone(ZONE_PVP)) return;
         if (isInFunEvent()) return;
         if (isInDuel()) return;
+        if (isInFairGame()) return;
         setPvpFlagLasts(System.currentTimeMillis() + Config.PVP_NORMAL_TIME);
 
         if (getPvpFlag() == 0)
@@ -7103,6 +6910,7 @@ public FastList<L2Skill> getPartyPassiveList()
 
     public void updatePvPStatus(L2Character target) {
         if (isInFunEvent()) return;
+        if (isInFairGame()) return;
 
         if (target instanceof L2Npc) {
             if (target.isAPC() || target.isRaid()) {
@@ -7359,14 +7167,6 @@ public FastList<L2Skill> getPartyPassiveList()
     public L2Decoy getDecoy() {
         return _decoy;
     }
-
-    /*     *//**
-     * Return the L2Trap of the L2PcInstance or null.<BR><BR>
-     *//*
-    public L2Trap getTrap()
-    {
-    	return _trap;
-    }*/
 
     /**
      * Set the L2Summon of the L2PcInstance.<BR><BR>
@@ -7665,124 +7465,11 @@ public FastList<L2Skill> getPartyPassiveList()
         }
     }
 
-    /**
-     * Reduce the number of arrows/bolts owned by the L2PcInstance and send it Server->Client Packet InventoryUpdate or ItemList (to unequip if the last arrow was consummed).<BR><BR>
-     */
-    @Override
-    protected void reduceArrowCount(boolean bolts) {
-	/*	    L2ItemInstance arrows = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
+    protected void reduceArrowCount(boolean bolts) {}
 
-	    if (arrows == null)
-        {
-            getInventory().unEquipItemInSlot(Inventory.PAPERDOLL_LHAND);
-            if (bolts)
-                _boltItem = null;
-            else
-                _arrowItem = null;
-            sendPacket(new ItemList(this,false));
-            return;
-        }
+    protected boolean checkAndEquipArrows() {return true;}
 
-	    // Adjust item quantity
-        if (arrows.getCount() > 1)
-        {
-            synchronized(arrows)
-            {
-                arrows.changeCountWithoutTrace(-1, this, null);
-                arrows.setLastChange(L2ItemInstance.MODIFIED);
-
-                // could do also without saving, but let's save approx 1 of 10
-                if(GameTimeController.getGameTicks() % 10 == 0)
-                    arrows.updateDatabase();
-                _inventory.refreshWeight();
-            }
-        }
-        else
-        {
-            // Destroy entire item and save to database
-            _inventory.destroyItem("Consume", arrows, this, null);
-
-            getInventory().unEquipItemInSlot(Inventory.PAPERDOLL_LHAND);
-            if (bolts)
-                _boltItem = null;
-            else
-                _arrowItem = null;
-
-            if (Config.DEBUG) _log.fine("removed arrows count");
-            sendPacket(new ItemList(this,false));
-            return;
-        }
-
-		if (!Config.FORCE_INVENTORY_UPDATE)
-		{
-		    InventoryUpdate iu = new InventoryUpdate();
-		    iu.addModifiedItem(arrows);
-		    sendPacket(iu);
-		}
-		else sendPacket(new ItemList(this, false));*/
-    }
-
-    /**
-     * Equip arrows needed in left hand and send a Server->Client packet ItemList to the L2PcINstance then return True.<BR><BR>
-     */
-    @Override
-    protected boolean checkAndEquipArrows() {
-	/*		// Check if nothing is equiped in left hand
-		if (getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND) == null)
-		{
-			// Get the L2ItemInstance of the arrows needed for this bow
-			_arrowItem = getInventory().findArrowForBow(getActiveWeaponItem());
-
-			if (_arrowItem != null)
-			{
-				// Equip arrows needed in left hand
-				getInventory().setPaperdollItem(Inventory.PAPERDOLL_LHAND, _arrowItem);
-
-				// Send a Server->Client packet ItemList to this L2PcINstance to update left hand equipement
-				ItemList il = new ItemList(this, false);
-				sendPacket(il);
-			}
-		}
-		else
-		{
-			// Get the L2ItemInstance of arrows equiped in left hand
-			_arrowItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
-		}
-
-		return _arrowItem != null;*/
-        return true;
-    }
-
-    /**
-     * Equip bolts needed in left hand and send a Server->Client packet ItemList to the L2PcINstance then return True.<BR><BR>
-     */
-    @Override
-    protected boolean checkAndEquipBolts() {
-	/*        // Check if nothing is equiped in left hand
-        if (getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND) == null)
-        {
-            // Get the L2ItemInstance of the arrows needed for this bow
-            _boltItem = getInventory().findBoltForCrossBow(getActiveWeaponItem());
-
-            if (_boltItem != null)
-            {
-                // Equip arrows needed in left hand
-                getInventory().setPaperdollItem(Inventory.PAPERDOLL_LHAND, _boltItem);
-
-                // Send a Server->Client packet ItemList to this L2PcINstance to update left hand equipement
-                ItemList il = new ItemList(this, false);
-                sendPacket(il);
-            }
-        }
-        else
-        {
-            // Get the L2ItemInstance of arrows equiped in left hand
-            _boltItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
-        }
-
-        return _boltItem != null;*/
-        return true;
-    }
+    protected boolean checkAndEquipBolts() {return true;}
 
     public boolean disarmArmors(L2Character attacker, int count) {
         final Inventory inv = getInventory();
@@ -8028,7 +7715,7 @@ public FastList<L2Skill> getPartyPassiveList()
                 sendPacket(ActionFailed.STATIC_PACKET);
                 sendPacket(new SystemMessage(SystemMessageId.STRIDER_CAN_BE_RIDDEN_ONLY_WHILE_STANDING));
                 return false;
-            } else if (isInFunEvent()) {
+            } else if (isInFunEvent() || isInFairGame()) {
                 //A strider cannot be ridden while in events
                 sendPacket(ActionFailed.STATIC_PACKET);
                 return false;
@@ -9822,8 +9509,8 @@ public FastList<L2Skill> getPartyPassiveList()
                 else
                     return false;
             }
-            if(PCattacker.isInFairGame()) {
-                if(isInFairGame())
+            if (PCattacker.isInFairGame()) {
+                if (isInFairGame())
                     return true;
                 else
                     return false;
@@ -9923,8 +9610,8 @@ public FastList<L2Skill> getPartyPassiveList()
                 else
                     return false;
             }
-            if(PCattacker.isInFairGame()) {
-                if(isInFairGame())
+            if (PCattacker.isInFairGame()) {
+                if (isInFairGame())
                     return true;
                 else
                     return false;
@@ -10013,8 +9700,8 @@ public FastList<L2Skill> getPartyPassiveList()
             else
                 return false;
         }
-        if(attacker.isInFairGame()) {
-            if(isInFairGame())
+        if (attacker.isInFairGame()) {
+            if (isInFairGame())
                 return true;
             else
                 return false;
@@ -10066,8 +9753,8 @@ public FastList<L2Skill> getPartyPassiveList()
         if (attacker.isInOlympiadMode())
             return false;
 
-        if(attacker.isInFairGame())
-                return false;
+        if (attacker.isInFairGame())
+            return false;
 
 
         if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
@@ -10149,7 +9836,7 @@ public FastList<L2Skill> getPartyPassiveList()
 
         if (attacker.isInOlympiadMode())
             return false;
-        if(attacker.isInFairGame())
+        if (attacker.isInFairGame())
             return false;
 
 
@@ -10266,7 +9953,7 @@ public FastList<L2Skill> getPartyPassiveList()
             sendPacket(ActionFailed.STATIC_PACKET);
             return false;
         }
-        if(!isInFairGame() && target.isInFairGame()) {
+        if (!isInFairGame() && target.isInFairGame()) {
             sendPacket(ActionFailed.STATIC_PACKET);
             return false;
         }
@@ -10431,59 +10118,7 @@ public FastList<L2Skill> getPartyPassiveList()
                 return;
             }
 
-		/*boolean canuse = false;
-
-		if (isInCombat() && (getPvpFlag() != 0 || isInsideZone(L2Character.ZONE_PVP) || isInDuel()))
-			canuse = true;
-
-		if (!canuse)
-		{
-			sendPacket(ActionFailed.STATIC_PACKET);
-			sendMessage(skill.getName()+" cannot be used unless you are in combat mode");
-			return;
-		}*/
-        }
-	/*else if (skill.getSkillType() == L2SkillType.SUMMON_TRAP)
-		{
-			final int lvl = getLevel();
-
-			switch (skill.getId())
-			{
-				case 514:
-					if (skill.getLevel() > 2 && lvl < 87)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Fire trap becomes useable at level 87");
-						return;
-					}
-					break;
-				case 518:
-					if (lvl < 86)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Binding trap becomes useable at level 86");
-						return;
-					}
-					break;
-				case 836:
-					if (lvl < 88)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Oblivion trap becomes useable at level 88");
-						return;
-					}
-					break;
-				case 516:
-					if (lvl < 86)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Slow trap becomes useable at level 86");
-						return;
-					}
-					break;
-			}
-		}*/
-        else if (_inEventCTF && CTF._started) {
+        } else if (_inEventCTF && CTF._started) {
             if (skill.isPvpTransformSkill()) {
                 sendPacket(ActionFailed.STATIC_PACKET);
                 sendMessage("Transform skills cannot be used in the CTF");
@@ -10500,205 +10135,6 @@ public FastList<L2Skill> getPartyPassiveList()
                 return;
             }
         }
-
-	/*else
-		{
-			final int lvl = getLevel();
-
-			switch (skill.getId())
-			{
-				case 793: //rush impact
-					if (lvl < 88)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Rush Impact becomes useable at level 88");
-						return;
-					}
-					break;
-				case 526: //enuma elish
-					if (lvl < 87)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Enuma Elish becomes useable at level 87");
-						return;
-					}
-					break;
-				case 493: //Storm Assault
-					if (lvl < 86)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Storm Assault becomes useable at level 86");
-						return;
-					}
-					break;
-				case 833: //body reconstruction
-					if (lvl < 89)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Body Reconstruction becomes useable at level 89");
-						return;
-					}
-					break;
-				case 794: //mass disarm
-					if (lvl < 90)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Mass Disarm becomes useable at level 90");
-						return;
-					}
-					break;
-				case 792: //betrayal mark
-					if (lvl < 89)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Betrayal Mark becomes useable at level 89");
-						return;
-					}
-					break;
-				case 1488: //Restoration Impact
-					if (lvl < 87)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Restoration Impact becomes useable at level 87");
-						return;
-					}
-					break;
-				case 1476: //Appetite for Destruction
-					if (lvl < 89)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Appetite for Destruction becomes useable at level 89");
-						return;
-					}
-					break;
-				case 1477: //Vampiric Impulse
-					if (lvl < 90)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Vampiric Impulse becomes useable at level 90");
-						return;
-					}
-					break;
-				case 1478: //Protection Instinct
-					if (lvl < 88)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Protection Instinct becomes useable at level 88");
-						return;
-					}
-					break;
-				case 1479: //Magic Impulse
-					if (lvl < 86)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Magic Impulse becomes useable at level 86");
-						return;
-					}
-					break;
-				case 1401: //Major Heal
-					if (lvl < 86)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Major Heal becomes useable at level 86");
-						return;
-					}
-					break;
-				case 1469: //Leopold
-					if (lvl < 86)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Leopold becomes useable at level 86");
-						return;
-					}
-					break;
-				case 1446: //Shadow Bind
-					if (lvl < 88)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Shadow Bind becomes useable at level 88");
-						return;
-					}
-					else if (isInFunEvent())
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Shadow Bind cannot be used in events");
-						return;
-					}
-					break;
-				case 1447: //Voice Bind
-					if (lvl < 87)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Voice Bind becomes useable at level 87");
-						return;
-					}
-					break;
-				case 1480: //Soul Harmony
-					if (lvl < 87)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Soul Harmony becomes useable at level 87");
-						return;
-					}
-					break;
-				case 1414: //victory of pagrio
-					if (lvl < 88)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Victory of Pa'agrio becomes useable at level 88");
-						return;
-					}
-					break;
-				case 1364: //eye of pagrio
-					if (lvl < 88)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Eye of Pa'agrio becomes useable at level 88");
-						return;
-					}
-					break;
-				case 1305: //honor of pagrio
-					if (lvl < 86)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Honor of Pa'agrio becomes useable at level 86");
-						return;
-					}
-					break;
-				case 1416: //pag's fist
-					if (lvl < 87)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Pa'agrio's Fist becomes useable at level 87");
-						return;
-					}
-					break;
-				case 1461: //Chant of Protection
-					if (lvl < 89)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Chant of Protection becomes useable at level 89");
-						return;
-					}
-					break;
-				case 1427: //Flames of Invincibility
-					if (lvl < 90)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Flames of Invincibility becomes useable at level 90");
-						return;
-					}
-					break;
-				case 9009: //summon fang of eva
-					if (lvl < 86)
-					{
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendMessage("Fang of Eva becomes useable at level 86");
-						return;
-					}
-					break;
-			}
-		}*/
 
         // Can't use Hero and resurrect skills during Olympiad
         if (isInOlympiadMode()) {
@@ -10891,52 +10327,6 @@ public FastList<L2Skill> getPartyPassiveList()
         // Note: do not check this before TOGGLE reset
         if (isFakeDeath())
             return false;
-
-	/*if (skill.getSkillType() == L2SkillType.SUMMON) //custom edit
-	{
-		if (!skill.getName().contains("Cubic"))
-		{
-			if (isInOrcVillage())
-			{
-				sendMessage("Servitors are not allowed in Orc Village.");
-				return false;
-			}
-
-			/*if (isNecroClass())
-			{
-				if (isInFunEvent())
-				{
-					sendMessage("You cannot summon servitors while joined in an event.");
-					return false;
-				}
-				if (TvT._joining && isInsideRadius(TvT._npcX, TvT._npcY, 4000, true))
-				{
-					sendMessage("You cannot summon servitors here while an event is about to start.");
-					return false;
-				}
-				if (FOS._joining && isInsideRadius(FOS._npcX, FOS._npcY, 4000, true))
-				{
-					sendMessage("You cannot summon servitors here while an event is about to start.");
-					return false;
-				}
-				if (VIP._joining && isInsideRadius(VIP._joinX, VIP._joinY, 4000, true))
-				{
-					sendMessage("You cannot summon servitors here while an event is about to start.");
-					return false;
-				}
-				if (CTF._joining && isInsideRadius(CTF._npcX, CTF._npcY, 4000, true))
-				{
-					sendMessage("You cannot summon servitors here while an event is about to start.");
-					return false;
-				}
-				if (DM._joining && isInsideRadius(DM._npcX, DM._npcY, 4000, true))
-				{
-					sendMessage("You cannot summon servitors here while an event is about to start.");
-					return false;
-				}
-			}
-		}
-	}*/
 
         //************************************* Check Target *******************************************
         // Create and set a L2Object containing the target of the skill
@@ -11514,11 +10904,11 @@ public FastList<L2Skill> getPartyPassiveList()
                 } else if (target.isInOlympiadMode())
                     return false;
 
-                if(isInFairGame()){
-                    if(target.isInFairGame())
+                if (isInFairGame()) {
+                    if (target.isInFairGame())
                         return true;
                     return false;
-                }else if(target.isInFairGame())
+                } else if (target.isInFairGame())
                     return false;
 
                 if (isInsideZone(ZONE_PEACE) || target.isInsideZone(ZONE_PEACE))
@@ -11775,31 +11165,6 @@ public FastList<L2Skill> getPartyPassiveList()
             return 5;
         if (isInFairGame())
             return 7;
-
-        if (isInFunEvent()) {
-            if (wpn.getCrystalType() <= L2Item.CRYSTAL_S && wpn.getUniqueness() < 3) {
-                return 25;
-            }
-        } else if (isInSgradeZone()) {
-            if (wpn.getUniqueness() == 3 && !wpn.isStandardShopItem() && !wpn.isRaidbossItem()) {
-                if (wpn.getCrystalType() == L2Item.CRYSTAL_S) {
-                    if (wpn.getEnchantLevel() > 15)
-                        return 15;
-                } else {
-                    if (wpn.getEnchantLevel() > 10)
-                        return 10;
-                }
-            } else if (wpn.getUniqueness() == 2.5) {
-                if (wpn.getEnchantLevel() > 17)
-                    return 17;
-            } else if (wpn.getUniqueness() == 2) {
-                if (wpn.getEnchantLevel() > 20)
-                    return 20;
-            }
-        }
-
-        if (wpn.isDread())
-            return Math.min(127, wpn.getEnchantLevel() + 6);
 
         return Math.min(127, wpn.getEnchantLevel());
     }
@@ -12219,13 +11584,11 @@ public FastList<L2Skill> getPartyPassiveList()
             _noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_PARTICIPATING_IN_THE_OLYMPIAD;
             return false;
         }
-        if(Manager.getInstance().isPlayerRegistered(this))
-        {
+        if (Manager.getInstance().isPlayerRegistered(this)) {
             sendMessage("Cannot while registered in Fair Games.");
             return false;
         }
-        if(isInFairGame())
-        {
+        if (isInFairGame()) {
             sendMessage("Cannot duel while in Fair Games.");
             return false;
         }
@@ -12365,7 +11728,7 @@ public FastList<L2Skill> getPartyPassiveList()
         try {
             if (isInDuel() || isInOlympiadMode() || isInCombat() || _transformation != null || Olympiad.getInstance().isRegistered(this))
                 return false;
-            if(isInFairGame() || Manager.getInstance().isPlayerRegistered(this)) {
+            if (isInFairGame() || Manager.getInstance().isPlayerRegistered(this)) {
                 return false;
             }
 
@@ -12605,7 +11968,7 @@ public FastList<L2Skill> getPartyPassiveList()
 
         try {
             if (isInDuel() || isInOlympiadMode() || isInCombat() || _transformation != null ||
-                    Olympiad.getInstance().isRegistered(this) ||isInFairGame() ||
+                    Olympiad.getInstance().isRegistered(this) || isInFairGame() ||
                     Manager.getInstance().isPlayerRegistered(this))
                 return false;
 
@@ -12890,52 +12253,7 @@ private boolean cannotChangeSubsDueToInstance()
     }
 
     public void restartRecom() {
-	/*	if (Config.ALT_RECOMMEND)
-	{
-		Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(DELETE_CHAR_RECOMS);
-			statement.setInt(1, getObjectId());
 
-			statement.execute();
-			statement.close();
-
-			_recomChars.clear();
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Failed cleaning character recommendations.", e);
-		}
-		finally
-		{
-			try { con.close(); } catch (Exception e) {}
-		}
-	}
-
-	if (getStat().getLevel() < 20)
-	{
-		_recomLeft = 3;
-		_recomHave--;
-	}
-	else if (getStat().getLevel() < 40)
-	{
-		_recomLeft = 6;
-		_recomHave -= 2;
-	}
-	else
-	{
-		_recomLeft = 9;
-		_recomHave -= 3;
-	}
-	if (_recomHave < 0) _recomHave = 0;
-
-	// If we have to update last update time, but it's now before 13, we should set it to yesterday
-	Calendar update = Calendar.getInstance();
-	if(update.get(Calendar.HOUR_OF_DAY) < 13) update.add(Calendar.DAY_OF_MONTH,-1);
-	update.set(Calendar.HOUR_OF_DAY,13);
-	_charCreationTime = update.getTimeInMillis();*/
     }
 
     @Override
@@ -13535,12 +12853,12 @@ private boolean cannotChangeSubsDueToInstance()
             _log.log(Level.SEVERE, "deleteMe() - nexus events", e);
         }
 
-        try{
+        try {
 //            Manager.getInstance().removePlayerFromWaitingPlayers(this);
 //            Manager.getInstance().unRegister(this);
             PlayerSaves.getInstance().doItAll(this);
             PlayerSaves.getInstance().deleteEverythingFromDB(getObjectId());
-        }catch (Exception e) {
+        } catch (Exception e) {
             _log.log(Level.SEVERE, "deleteMe() - nexus events", e);
         }
 
@@ -14521,31 +13839,6 @@ private boolean cannotChangeSubsDueToInstance()
         _isRidingStrider = mode;
     }
 
-/* not used anymore
-	public final void setIsRidingFenrirWolf(boolean mode)
-	{
-		_isRidingFenrirWolf = mode;
-	}
-	public final void setIsRidingWFenrirWolf(boolean mode)
-	{
-		_isRidingWFenrirWolf = mode;
-	}
-	public final void setIsRidingGreatSnowWolf(boolean mode)
-	{
-		_isRidingGreatSnowWolf = mode;
-	}
-	public final boolean isRidingFenrirWolf()
-	{
-		return _isRidingFenrirWolf;
-	}
-	public final boolean isRidingWFenrirWolf()
-	{
-		return _isRidingWFenrirWolf;
-	}
-	public final boolean isRidingGreatSnowWolf()
-	{
-		return _isRidingGreatSnowWolf;
-	}*/
 
     public final boolean isRidingStrider() {
         return _isRidingStrider;
@@ -14845,7 +14138,7 @@ private boolean cannotChangeSubsDueToInstance()
             Olympiad.getInstance().notifyCompetitorDamage(this, damage, getOlympiadGameId());
         }
 
-        if(isInFairGame() && target instanceof L2PcInstance && ((L2PcInstance) target).isInFairGame()){
+        if (isInFairGame() && target instanceof L2PcInstance && ((L2PcInstance) target).isInFairGame()) {
             Manager.getInstance().notifyGameDamage(getInstanceId(), getObjectId(), damage);
         }
 
@@ -14890,33 +14183,6 @@ private boolean cannotChangeSubsDueToInstance()
     public int getAgathionId() {
         return _agathionId;
     }
-
-    /*    *//**
-     * Returns the VL <BR><BR>
-     * @return
-     *//*
-    public int getVitalityLevel()
-    {
-    	return _vitalityLevel;
-    }
-
-  *//**
-     * Sets VL of this L2PcInstance<BR><BR>
-     * @param level
-     *//*
-    public void setVitalityLevel(int level)
-    {
-    	if (level > 5)
-    		level = 5;
-    	else if (level < 0)
-    		level = 0;
-
-    	_vitalityLevel = level;
-    }*/
-
-    /*
-     * Function for skill summon friend or Gate Chant.
-     */
 
     /**
      * Request Teleport
@@ -14976,8 +14242,7 @@ private boolean cannotChangeSubsDueToInstance()
             return false;
         }
 
-        if(summonerChar.isInFairGame())
-        {
+        if (summonerChar.isInFairGame()) {
             summonerChar.sendMessage("Cannot use while in Fair Games.");
             return false;
         }
@@ -15023,8 +14288,7 @@ private boolean cannotChangeSubsDueToInstance()
             return false;
         }
 
-        if(targetChar.isInFairGame())
-        {
+        if (targetChar.isInFairGame()) {
             summonerChar.sendMessage("Cannot use while in Fair Games.");
             return false;
         }
@@ -15161,13 +14425,13 @@ private boolean cannotChangeSubsDueToInstance()
         }
     }
 
-    public synchronized List<Integer> unEquipItems(){
+    public synchronized List<Integer> unEquipItems() {
         List<Integer> items = new ArrayList<>();
 
         for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++) {
             L2ItemInstance equippedItem = getInventory().getPaperdollItem(i);
 
-            if (equippedItem != null ) {
+            if (equippedItem != null) {
                 getInventory().unEquipItemInSlotAndRecord(i);
                 items.add(equippedItem.getObjectId());
                 if (equippedItem.isWear())
@@ -15344,21 +14608,6 @@ private boolean cannotChangeSubsDueToInstance()
         }
     }
 
-    /**
-     * End of section for mounted pets
-     */
-
-/*@Override
-public int getAttackElementValue(byte attribute)
-{
-	int value = super.getAttackElementValue(attribute);
-
-	// 50% if summon exist
-	if (getPet() != null && getClassId().isSummoner() && (getPet() instanceof L2SummonInstance))
-		return value / 2;
-
-	return value;
-}*/
 
     private int _eventEffectId = 0;
 
@@ -15441,47 +14690,6 @@ public int getAttackElementValue(byte attribute)
         sendPacket(new EtcStatusUpdate(this));
     }
 
-    /*    *//**
-     * Starts/Restarts the ChargeTask to Clear Charges after 10 Mins.
-     *//*
-    private void restartChargeTask()
-    {
-    	if (_chargeTask != null)
-    	{
-    		_chargeTask.cancel(false);
-    		_chargeTask = null;
-    	}
-    	_chargeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ChargeTask(this), 600000);
-    }*/
-
-    /*    */
-
-    /**
-     * Stops the Charges Clearing Task.
-     *//*
-    public void stopChargeTask()
-    {
-    	if (_chargeTask != null)
-    	{
-    		_chargeTask.cancel(false);
-    		_chargeTask = null;
-    	}
-    }*/
-
-/*    private class ChargeTask implements Runnable
-    {
-    	L2PcInstance _player;
-
-    	protected ChargeTask(L2PcInstance player)
-    	{
-    		_player = player;
-    	}
-
-    	public void run()
-    	{
-    		_player.clearCharges();
-    	}
-    }*/
 
     public class TeleportBookmark {
         public int _id, _x, _y, _z, _icon;
@@ -15630,15 +14838,7 @@ public int getAttackElementValue(byte attribute)
         } else if (isInWater()) {
             sendPacket(new SystemMessage(2356));
             return false;
-        }
-	/* TODO: Instant Zone still not implement
-    	else if (this.isInsideZone(ZONE_INSTANT))
-    	{
-    		sendPacket(new SystemMessage(2357));
-    		return;
-    	}
-	 */
-        else
+        } else
             return true;
     }
 
@@ -15770,25 +14970,13 @@ public int getAttackElementValue(byte attribute)
     private int _prevKill2 = 0;
     private int _streak = 0;
     private int _famestreak = 0;
-    //private int _eventStreak = 0;
     public boolean _tempHero = false;
     public boolean _fakeHero = false;
-    /*private Future<?> walkBonusDelayTimer = null;
-	private boolean walkBonus = false;*/
     private String _prev1IP = "none";
     private String _prev2IP = "none";
 
-/*public int getKillStreak()
-{
-	return _eventStreak;
-}
 
-public void setKillStreak(int streak)
-{
-	_eventStreak = streak;
-}*/
-
-    final private int getSupportIncreasePvPChance() {
+    private int getSupportIncreasePvPChance() {
         if (isHealerClass())
             return 40;
 
@@ -16155,42 +15343,6 @@ public void setKillStreak(int streak)
         sendPacket(new PlaySound(sound));
     }
 
-/*    public void rewardRacialCirclets()
-    {
-    	int circletId = 0;
-
-	    switch (getRace())
-	    {
-	    	case Human:
-	    		circletId = 9391;
-	    		break;
-	    	case Elf:
-	    		circletId = 9392;
-	    		break;
-	    	case DarkElf:
-	    		circletId = 9393;
-	    		break;
-	    	case Dwarf:
-	    		circletId = 9395;
-	    		break;
-	    	case Orc:
-	    		circletId = 9394;
-	    		break;
-	    	case Kamael:
-	    		circletId = 9396;
-	    		break;
-	    }
-
-	    if (circletId != 0)
-	    {
-	    	if (getInventory().getItemByItemId(circletId) == null)
-	    	{
-	    		addItem("Racial Circlet", circletId, 1, this, true);
-	    		sendMessage("You have been granted your racial circlet for achieving level 90.");
-	    	}
-	    }
-    }*/
-
     /**
      * Sends a SystemMessage without any parameter added. No instancing at all!
      */
@@ -16316,40 +15468,7 @@ public void setKillStreak(int streak)
                     sendPacket(new RelationChanged(activeChar.getPet(), relation2, isAutoAttackable(activeChar)));
             }
             activeChar.sendPacket(new GetOnVehicle(this, getBoat(), getInBoatPosition().getX(), getInBoatPosition().getY(), getInBoatPosition().getZ()));
-		/*if(getBoat().GetVehicleDeparture() == null)
-        	{
 
-        		int xboat = getBoat().getX();
-        		int yboat= getBoat().getY();
-        		double modifier = Math.PI/2;
-        		if (yboat == 0)
-        		{
-        			yboat = 1;
-        		}
-        		if(yboat < 0)
-        		{
-        			modifier = -modifier;
-        		}
-        		double angleboat = modifier - Math.atan(xboat/yboat);
-        		int xp = getX();
-        		int yp = getY();
-        		modifier = Math.PI/2;
-        		if (yp == 0)
-        		{
-        			yboat = 1;
-        		}
-        		if(yboat < 0)
-        		{
-        			modifier = -modifier;
-        		}
-        		double anglep = modifier - Math.atan(yp/xp);
-
-        		double finx = Math.cos(anglep - angleboat)*Math.sqrt(xp *xp +yp*yp ) + Math.cos(angleboat)*Math.sqrt(xboat *xboat +yboat*yboat );
-        		double finy = Math.sin(anglep - angleboat)*Math.sqrt(xp *xp +yp*yp ) + Math.sin(angleboat)*Math.sqrt(xboat *xboat +yboat*yboat );
-        		//getPosition().setWorldPosition(getBoat().getX() - getInBoatPosition().x,getBoat().getY() - getInBoatPosition().y,getBoat().getZ()- getInBoatPosition().z);
-        		getPosition().setWorldPosition((int)finx,(int)finy,getBoat().getZ()- getInBoatPosition().z);
-
-        	}*/
         } else if (isInAirShip()) {
             getPosition().setWorldPosition(getAirShip().getPosition().getWorldPosition());
 
@@ -17420,26 +16539,41 @@ public void setKillStreak(int streak)
 
         return "FFFFFF"; //Default White
     }
+
     private boolean _fairGame = false;
-    public void setFairGame(boolean bool){
+
+    public void setFairGame(boolean bool) {
         _fairGame = bool;
     }
-    public boolean isInFairGame(){
+
+    public boolean isInFairGame() {
         return _fairGame;
     }
 
     BattlePassPlayer battlePass = new BattlePassPlayer(this);
     RunePlayer rune = new RunePlayer(this);
 
-    public BattlePassPlayer getBattlePass(){
+    public BattlePassPlayer getBattlePass() {
         return battlePass;
     }
-    public RunePlayer getRunePlayer(){return rune;}
+
+    public RunePlayer getRunePlayer() {
+        return rune;
+    }
 
     PlayerHandler _playerHandler;
-    public PlayerHandler getPlayerHandler() { return _playerHandler; }
-    public void setPlayerHandler(PlayerHandler playerHandler) { _playerHandler = playerHandler; }
+
+    public PlayerHandler getPlayerHandler() {
+        return _playerHandler;
+    }
+
+    public void setPlayerHandler(PlayerHandler playerHandler) {
+        _playerHandler = playerHandler;
+    }
 
     private PlayerStats _playerStats = new PlayerStats(this);
-    public PlayerStats getPlayerStats(){return _playerStats;}
+
+    public PlayerStats getPlayerStats() {
+        return _playerStats;
+    }
 }
