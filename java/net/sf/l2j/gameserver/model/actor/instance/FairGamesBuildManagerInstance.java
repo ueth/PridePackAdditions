@@ -63,6 +63,7 @@ public class FairGamesBuildManagerInstance extends L2NpcInstance {
                     case  ARMOR_CHOOSE:
                     case JEWELS_CHOOSE:
                     case TATTOO_CHOOSE:
+                    case SHIELD_CHOOSE:
                         FGHtmlHandler.getInstance().showItemsBoard(player, 0);
                         break;
 
@@ -71,7 +72,7 @@ public class FairGamesBuildManagerInstance extends L2NpcInstance {
                         break;
 
                     default:
-                        player.sendMessage("Your Build is complete");
+                        player.sendMessage("Your build is complete.");
                 }
             }
         }

@@ -12,6 +12,8 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowScreenMessage;
+import net.sf.l2j.gameserver.network.serverpackets.ShortCutInit;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +67,9 @@ public class PlayerHandler {
         PlayerSaves.getInstance().doItAll(_player);
 
         PlayerSaves.getInstance().deleteEverythingFromDB(_player.getObjectId());
+
+        _player.getShortCuts().restore();
+        _player.sendPacket(new ShortCutInit(_player));
 
         _player.setTarget(null);
         _player.setIsRooted(false);
@@ -205,9 +210,7 @@ public class PlayerHandler {
         return _class;
     }
 
-    public String getClassName(){
-        return _class.getName();
-    }
+    public String getClassName(){return _class.getName();}
 
     public void setClass(AbstractFGClass _class){this._class = _class;}
 
@@ -250,7 +253,8 @@ public class PlayerHandler {
                 break;
 
             case WEAPON_CHOOSE:
-                if(_player.getSecondaryWeaponInstance() != null)
+                if(_player.getActiveWeaponInstance().getLocationSlot() == 16)
+                //if(_player.getSecondaryWeaponInstance() != null)
                     _buildStage = BuildStage.ARMOR_CHOOSE;
                 else
                     _buildStage = BuildStage.SHIELD_CHOOSE;

@@ -66,6 +66,8 @@ public synchronized void registerShortCut(L2ShortCut shortcut, boolean storeToDb
 
 private void registerShortCutInDb(L2ShortCut shortcut, L2ShortCut oldShortCut)
 {
+	if(_owner.isInFairGame())
+		return;
 	if (oldShortCut != null)
 		deleteShortCutFromDb(oldShortCut);
 	
@@ -137,6 +139,8 @@ public synchronized void deleteShortCutByObjectId(int objectId)
  */
 private void deleteShortCutFromDb(L2ShortCut shortcut)
 {
+	if(_owner.isInFairGame())
+		return;
 	Connection con = null;
 	
 	try

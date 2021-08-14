@@ -175,7 +175,7 @@ public class PlayerStats {
                 winner = rs.getString("winner");
                 winHow = rs.getString("winHow");
 
-                temp += playerName1 + "(" + class1 + ")" + " Dmg - " + dmgDone1 + " vs " + playerName2 + "(" + class2 + ")" + " Dmg - " + dmgDone2 + " / Winner - " + winner + " / Won by: " + winHow + " / Game time - " + gameTime;
+                temp += playerName1 + "(" + class1 + ")" + " Dmg - " + dmgDone1 + " vs " + playerName2 + "(" + class2 + ")" + " Dmg - " + dmgDone2 + " / Winner - " + winner + " / Won by: " + winHow + " / Time - " + gameTime;
                 _matchHistory.add(temp);
             }
 

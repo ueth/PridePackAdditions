@@ -2110,6 +2110,8 @@ public final class L2PcInstance extends L2Playable {
         return _shortCuts.getAllShortCuts();
     }
 
+    public ShortCuts getShortCuts(){ return _shortCuts;}
+
     /**
      * Return the L2ShortCut of the L2PcInstance corresponding to the position (page-slot).<BR><BR>
      *

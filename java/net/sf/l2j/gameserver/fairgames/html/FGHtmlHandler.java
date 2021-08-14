@@ -171,6 +171,7 @@ public class FGHtmlHandler {
             case  ARMOR_CHOOSE:
             case JEWELS_CHOOSE:
             case TATTOO_CHOOSE:
+            case SHIELD_CHOOSE:
                 return true;
             default:
                 return false;

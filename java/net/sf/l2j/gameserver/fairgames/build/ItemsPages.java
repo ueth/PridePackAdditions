@@ -1,6 +1,5 @@
 package net.sf.l2j.gameserver.fairgames.build;
 
-import net.sf.l2j.gameserver.Item;
 import net.sf.l2j.gameserver.datatables.IconTable;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.fairgames.entities.FGItem;
@@ -124,6 +123,9 @@ public class ItemsPages {
 
             case TATTOO_CHOOSE:
                 return ItemsManager.getTattoos();
+
+            case SHIELD_CHOOSE:
+                return ItemsManager.getShields();
 
             default:
                 return null;

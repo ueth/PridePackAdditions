@@ -55,6 +55,7 @@ public class FairGamesBBSManager {
                 case  ARMOR_CHOOSE:
                 case JEWELS_CHOOSE:
                 case TATTOO_CHOOSE:
+                case SHIELD_CHOOSE:
                     FGHtmlHandler.getInstance().showItemsBoard(player, pageNum);
                     break;
 
@@ -86,6 +87,10 @@ public class FairGamesBBSManager {
 
                 case TATTOO_CHOOSE:
                     FGHtmlHandler.getInstance().chooseItem(player, ItemsManager.getTattoos().get(id).getItemId());
+                    break;
+
+                case SHIELD_CHOOSE:
+                    FGHtmlHandler.getInstance().chooseItem(player, ItemsManager.getShields().get(id).getItemId());
                     break;
             }
         }

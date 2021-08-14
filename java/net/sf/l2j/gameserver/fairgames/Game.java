@@ -273,8 +273,11 @@ public class Game {
                     _teleportTask = null;
                     Manager.getInstance().removePlayerFromWaitingPlayers(_player1.getPlayer());
                     Manager.getInstance().removePlayerFromWaitingPlayers(_player2.getPlayer());
-                    if(teleportPlayersIntoArena())
-                        _gameTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GameTask(), 100,  1000);
+                    if(teleportPlayersIntoArena()) {
+                        _player1.getPlayer().sendMessage("Opponent's class: "+_player2.getClassName());
+                        _player2.getPlayer().sendMessage("Opponent's class: "+_player1.getClassName());
+                        _gameTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GameTask(), 100, 1000);
+                    }
                     else{
                         sendMessageToPlayers("Match is aborted, your opponent disconnected");
                         Manager.getInstance().removeGame(_instanceId);
@@ -342,7 +345,7 @@ public class Game {
             String gameTime = getGameTimeInTimeFormat(GAME_TIME-_clock);
             String winner = _winningPlayer == 0 ? "Draw" : _winningPlayer == 1 ? playerName1 : playerName2;
 
-            String match = playerName1 + "(" + class1 + ")" + " Dmg - " + dmgDone1 + " vs " + playerName2 + "(" + class2 + ")" + " Dmg - " + dmgDone2 + " / Winner - " + winner + " / Won by: " + _winHow + " / Game time - " + gameTime;
+            String match = playerName1 + "(" + class1 + ")" + " Dmg - " + dmgDone1 + " vs " + playerName2 + "(" + class2 + ")" + " Dmg - " + dmgDone2 + " / Winner - " + winner + " / Won by: " + _winHow + " / Time - " + gameTime;
 
             if(_player1.getPlayer().isOnline() == 1)
                 _player1.getPlayer().getPlayerStats().addMatch(match);
