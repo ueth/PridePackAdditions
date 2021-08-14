@@ -57,6 +57,7 @@ import net.sf.l2j.gameserver.fairgames.Manager;
 import net.sf.l2j.gameserver.fairgames.PlayerHandler;
 import net.sf.l2j.gameserver.fairgames.PlayerSaves;
 import net.sf.l2j.gameserver.fairgames.PlayerStats;
+import net.sf.l2j.gameserver.fairgames.classes.AbstractFGClass;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IItemHandler;
@@ -16551,6 +16552,7 @@ private boolean cannotChangeSubsDueToInstance()
     }
 
     BattlePassPlayer battlePass = new BattlePassPlayer(this);
+
     RunePlayer rune = new RunePlayer(this);
 
     public BattlePassPlayer getBattlePass() {
@@ -16570,6 +16572,12 @@ private boolean cannotChangeSubsDueToInstance()
     public void setPlayerHandler(PlayerHandler playerHandler) {
         _playerHandler = playerHandler;
     }
+
+    private AbstractFGClass _fgClass;
+
+    public void setFGClass(AbstractFGClass fgClass){_fgClass = fgClass;}
+
+    public AbstractFGClass getFGClass(){return _fgClass;}
 
     private PlayerStats _playerStats = new PlayerStats(this);
 

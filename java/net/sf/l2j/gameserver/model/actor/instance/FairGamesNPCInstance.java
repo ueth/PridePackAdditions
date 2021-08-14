@@ -3,12 +3,18 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.fairgames.Manager;
+import net.sf.l2j.gameserver.fairgames.classes.Archer;
+import net.sf.l2j.gameserver.fairgames.classes.Assassin;
+import net.sf.l2j.gameserver.fairgames.classes.Mage;
+import net.sf.l2j.gameserver.fairgames.classes.Warrior;
+import net.sf.l2j.gameserver.fairgames.html.FGHtmlHandler;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 public class FairGamesNPCInstance extends L2NpcInstance {
@@ -32,11 +38,27 @@ public class FairGamesNPCInstance extends L2NpcInstance {
                 Manager.getInstance().register(player);
             else Manager.getInstance().unRegister(player);
 
-            if(Manager.getInstance().isPlayerRegistered(player))
-                html.replace("%register%", "Unregister");
-            else html.replace("%register%", "Register");
-
             sendHtmlMessage(player, html);
+        }
+        else if(currentCommand.startsWith("selectClass")){
+            NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+            html.setFile(PARENT_DIR + "registNPC.htm");
+
+            if(Manager.getInstance().isPlayerRegistered(player)){
+                sendHtmlMessage(player, html);
+                return;
+            }
+
+            final String className = st.nextToken();
+
+            switch (className){
+                case "archer": player.setFGClass(new Archer());break;
+                case "warrior": player.setFGClass(new Warrior());break;
+                case "mage": player.setFGClass(new Mage());break;
+                case "assassin": player.setFGClass(new Assassin());break;
+            }
+            sendHtmlMessage(player, html);
+            //FGHtmlHandler.getInstance().chooseClassBoard(player, className);
         }
 
         super.onBypassFeedback(player, command);
@@ -72,11 +94,6 @@ public class FairGamesNPCInstance extends L2NpcInstance {
                 NpcHtmlMessage html = new NpcHtmlMessage(1);
                 html.setFile(PARENT_DIR + "registNPC.htm");
 
-                if(Manager.getInstance().isPlayerRegistered(player))
-                    html.replace("%register%", "Unregister");
-                else
-                    html.replace("%register%", "Register");
-
                 sendHtmlMessage(player, html);
             }
         }
@@ -88,6 +105,17 @@ public class FairGamesNPCInstance extends L2NpcInstance {
     private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html) {
         html.replace("%objectId%", String.valueOf(getObjectId()));
         html.replace("%npcId%", String.valueOf(getNpcId()));
+
+        if(Manager.getInstance().isPlayerRegistered(player))
+            html.replace("%register%", "Unregister");
+        else
+            html.replace("%register%", "Register");
+
+        if(player.getFGClass() == null)
+            html.replace("%class%", "None");
+        else
+            html.replace("%class%", player.getFGClass().getName().toUpperCase());
+
         player.sendPacket(html);
     }
 

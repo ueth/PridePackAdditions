@@ -159,10 +159,10 @@ public class FGHtmlHandler {
             case "mage": player.getPlayerHandler().setClass(new Mage());break;
             case "assassin": player.getPlayerHandler().setClass(new Assassin());break;
         }
-        player.getPlayerHandler().switchBuildStage();
+        //player.getPlayerHandler().switchBuildStage();
 
         /*After a player chooses class, show skills*/
-        showSkillsBoard(player,0);
+        //showSkillsBoard(player,0);
     }
 
     boolean checkIfItemStage(L2PcInstance player){

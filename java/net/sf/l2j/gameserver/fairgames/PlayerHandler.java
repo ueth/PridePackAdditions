@@ -1,6 +1,5 @@
 package net.sf.l2j.gameserver.fairgames;
 
-import cz.nxs.events.engine.base.Loc;
 import net.sf.l2j.gameserver.fairgames.build.ItemsPages;
 import net.sf.l2j.gameserver.fairgames.classes.AbstractFGClass;
 import net.sf.l2j.gameserver.fairgames.build.SkillsPages;
@@ -37,7 +36,9 @@ public class PlayerHandler {
         _instanceId = instanceId;
         _skillsPages = new SkillsPages(player);
         _itemsPages = new ItemsPages( player);
-        _buildStage = BuildStage.CLASS_CHOOSE;
+        _buildStage = BuildStage.SKILLS_CHOOSE;
+        _class = player.getFGClass();
+        _class.resetCounters();
         player.setPlayerHandler(this);
     }
 
@@ -87,6 +88,7 @@ public class PlayerHandler {
         _buildStage = BuildStage.NONE;
         _player.setIsRooted(false);
         _player.setInvisible(false);
+        _player.setIsInvul(false);
         _player.broadcastUserInfo();
     }
 
@@ -207,9 +209,7 @@ public class PlayerHandler {
         return _class.getName();
     }
 
-    public void setClass(AbstractFGClass _class){
-        this._class = _class;
-    }
+    public void setClass(AbstractFGClass _class){this._class = _class;}
 
     public L2PcInstance getPlayer(){
         return _player;
@@ -241,15 +241,23 @@ public class PlayerHandler {
 
     public void switchBuildStage(){
         switch (_buildStage){
-            case CLASS_CHOOSE:
-                _buildStage = BuildStage.SKILLS_CHOOSE;
-                break;
+//            case CLASS_CHOOSE:
+//                _buildStage = BuildStage.SKILLS_CHOOSE;
+//                break;
 
             case SKILLS_CHOOSE:
                 _buildStage = BuildStage.WEAPON_CHOOSE;
                 break;
 
             case WEAPON_CHOOSE:
+                if(_player.getSecondaryWeaponInstance() != null)
+                    _buildStage = BuildStage.ARMOR_CHOOSE;
+                else
+                    _buildStage = BuildStage.SHIELD_CHOOSE;
+
+                break;
+
+            case SHIELD_CHOOSE:
                 _buildStage = BuildStage.ARMOR_CHOOSE;
                 break;
 

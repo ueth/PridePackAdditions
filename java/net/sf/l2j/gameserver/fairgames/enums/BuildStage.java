@@ -7,6 +7,7 @@ public enum BuildStage {
     WEAPON_CHOOSE,
     JEWELS_CHOOSE,
     TATTOO_CHOOSE,
+    SHIELD_CHOOSE,
     //ACCESSORY_CHOOSE,
     BUFFS_CHOOSE,
     NONE

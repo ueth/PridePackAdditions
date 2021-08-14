@@ -46,6 +46,8 @@ public class Manager {
     }
 
     public void register(L2PcInstance player){
+        if(player.getFGClass() == null)
+            return;
         if(!ConditionChecker.validate(player))
             return;
         if(!_registrationPhase) {
