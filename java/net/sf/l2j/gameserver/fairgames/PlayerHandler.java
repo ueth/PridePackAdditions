@@ -254,7 +254,6 @@ public class PlayerHandler {
 
             case WEAPON_CHOOSE:
                 if(_player.getActiveWeaponInstance().getLocationSlot() == 16)
-                //if(_player.getSecondaryWeaponInstance() != null)
                     _buildStage = BuildStage.ARMOR_CHOOSE;
                 else
                     _buildStage = BuildStage.SHIELD_CHOOSE;

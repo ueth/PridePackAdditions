@@ -267,7 +267,7 @@ public final class CharacterCreate extends L2GameClientPacket
 				_log.fine("Adding starter skill:" + skill.getId() + " / " + skill.getLevel());
 			}
 		}
-		startTutorialQuest(newChar);
+		//startTutorialQuest(newChar);
 		L2GameClient.saveCharToDisk(newChar);
 		newChar.deleteMe(); // release the world of this character and it's inventory
 		if (Config.DEBUG)

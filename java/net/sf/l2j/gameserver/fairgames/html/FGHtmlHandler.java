@@ -9,8 +9,10 @@ import net.sf.l2j.gameserver.fairgames.classes.Mage;
 import net.sf.l2j.gameserver.fairgames.classes.Warrior;
 import net.sf.l2j.gameserver.fairgames.enums.BuildStage;
 import net.sf.l2j.gameserver.model.L2Effect;
+import net.sf.l2j.gameserver.model.L2ShortCut;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.ShortCutRegister;
 import net.sf.l2j.gameserver.network.serverpackets.ShowBoard;
 import net.sf.l2j.gameserver.util.StringUtil;
 
@@ -37,6 +39,11 @@ public class FGHtmlHandler {
 
 
         player.addSkill(SkillsManager.getClassSkills(className).get(id).getId());
+        player.sendSkillList();
+
+        L2ShortCut newsc = new L2ShortCut(player.getPlayerHandler().getFGClass().getSkillCounter(), 0, 2, SkillsManager.getClassSkills(className).get(id).getId(), player.getSkillLevel(SkillsManager.getClassSkills(className).get(id).getId()), 1);
+        player.sendPacket(new ShortCutRegister(newsc));
+        player.registerShortCut(newsc);
 
         player.getPlayerHandler().getSkillPages().fillSkillsPages();
 
