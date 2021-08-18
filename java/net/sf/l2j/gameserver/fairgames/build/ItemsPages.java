@@ -88,8 +88,6 @@ public class ItemsPages {
             }
         }
 
-        if(counter%2==0)
-            StringUtil.append(sb, "<td width=5></td>");
         if(counter%2!=0)
             StringUtil.append(sb, "</tr></table></br>");
 

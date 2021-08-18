@@ -111,11 +111,8 @@ public class PlayerSaves {
      * @param activeChar
      */
     public void doItAll(L2PcInstance activeChar) {
-        for (L2Effect effect : activeChar.getAllEffects())
-            if (effect != null && effect.getSkill() != null) //Remove all added effects
-                effect.exit();
 
-        if (PlayerSaves.getInstance().getItemsToDelete(activeChar.getObjectId()) != null) {
+        if (PlayerSaves.getInstance().getItemsToDelete(activeChar.getObjectId()) != null && !PlayerSaves.getInstance().getItemsToDelete(activeChar.getObjectId()).isEmpty()) {
             for (int objectId : PlayerSaves.getInstance().getItemsToDelete(activeChar.getObjectId())) {
                 L2ItemInstance item = activeChar.getInventory().getItemByObjectId(objectId);
                 if (item != null) {
@@ -125,7 +122,7 @@ public class PlayerSaves {
         }
         PlayerSaves.getInstance().clearItemsToDelete(activeChar.getObjectId());
 
-        if (PlayerSaves.getInstance().getPreviousWear(activeChar.getObjectId()) != null) {
+        if (PlayerSaves.getInstance().getPreviousWear(activeChar.getObjectId()) != null && !PlayerSaves.getInstance().getPreviousWear(activeChar.getObjectId()).isEmpty()) {
             for (int objectId : PlayerSaves.getInstance().getPreviousWear(activeChar.getObjectId())) {
                 L2ItemInstance item = activeChar.getInventory().getItemByObjectId(objectId);
                 if (item != null)
@@ -135,7 +132,7 @@ public class PlayerSaves {
             PlayerSaves.getInstance().clearPreviousWear(activeChar.getObjectId());
         }
 
-        if (PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId()) != null) {
+        if (PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId()) != null && !PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId()).isEmpty()) {
             for (L2Skill skill : PlayerSaves.getInstance().getPreviousSkills(activeChar.getObjectId())) {
                 if (skill != null)
                     activeChar.addSkill(skill, false);
@@ -144,7 +141,10 @@ public class PlayerSaves {
             PlayerSaves.getInstance().clearPreviousSkills(activeChar.getObjectId());
         }
 
-        if (PlayerSaves.getInstance().getPreviousEffects(activeChar.getObjectId()) != null)
+        if (PlayerSaves.getInstance().getPreviousEffects(activeChar.getObjectId()) != null && !PlayerSaves.getInstance().getPreviousEffects(activeChar.getObjectId()).isEmpty())
+            for (L2Effect effect : activeChar.getAllEffects())
+                if (effect != null && effect.getSkill() != null) //Remove all added effects
+                    effect.exit();
             for (L2Skill skill : PlayerSaves.getInstance().getPreviousEffects(activeChar.getObjectId())) {
                 if (skill != null)
                     skill.getEffects(activeChar, activeChar);

@@ -12859,8 +12859,8 @@ private boolean cannotChangeSubsDueToInstance()
         try {
 //            Manager.getInstance().removePlayerFromWaitingPlayers(this);
 //            Manager.getInstance().unRegister(this);
-            PlayerSaves.getInstance().doItAll(this);
-            PlayerSaves.getInstance().deleteEverythingFromDB(getObjectId());
+            //PlayerSaves.getInstance().doItAll(this);
+            //PlayerSaves.getInstance().deleteEverythingFromDB(getObjectId());
         } catch (Exception e) {
             _log.log(Level.SEVERE, "deleteMe() - nexus events", e);
         }
