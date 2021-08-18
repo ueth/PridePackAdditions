@@ -3,6 +3,7 @@ package net.sf.l2j.gameserver.fairgames;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -107,8 +108,6 @@ public class PlayerStats {
             statement.setInt(1, _player.getObjectId());
             ResultSet rs = statement.executeQuery();
 
-            //rset.getInt("targetid")
-
             if (rs.next()) {
                 setCompetitionLost(rs.getInt("compLost"));
                 setCompetitionWon(rs.getInt("compWon"));
@@ -134,7 +133,6 @@ public class PlayerStats {
                         ps.setStreak(Integer.valueOf(st1.nextToken()));
                 }
             }
-
 
             rs.close();
             statement.close();

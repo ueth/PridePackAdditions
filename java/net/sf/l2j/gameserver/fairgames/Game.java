@@ -12,6 +12,7 @@ import net.sf.l2j.gameserver.fairgames.stadium.StadiumManager;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 import java.sql.Connection;
@@ -44,11 +45,16 @@ public class Game {
     public L2Spawn _spawnOne;
     public L2Spawn _spawnTwo;
 
+    private int _playerPoints1;
+    private int _playerPoints2;
+
     public Game(int instanceId){_instanceId = instanceId;}
 
     public Game(L2PcInstance player1, L2PcInstance player2, int instanceId){
         _player1 = new PlayerHandler(player1, instanceId);
         _player2 = new PlayerHandler(player2, instanceId);
+        _playerPoints1 = player1.getPlayerStats().getPoints();
+        _playerPoints2 = player2.getPlayerStats().getPoints();
         _instanceId = instanceId;
     }
 
@@ -59,10 +65,12 @@ public class Game {
      * @param player
      */
     public void setPlayer1(L2PcInstance player){
+        _playerPoints1 = player.getPlayerStats().getPoints();
         _player1 = new PlayerHandler(player, _instanceId);
         _player1.setLoc(_stadium.getLocPlayer1().getX(), _stadium.getLocPlayer1().getY(), _stadium.getLocPlayer1().getZ());
     }
     public void setPlayer2(L2PcInstance player){
+        _playerPoints2 = player.getPlayerStats().getPoints();
         _player2 = new PlayerHandler(player, _instanceId);
         _player2.setLoc(_stadium.getLocPlayer2().getX(), _stadium.getLocPlayer2().getY(), _stadium.getLocPlayer2().getZ());
     }
@@ -179,6 +187,8 @@ public class Game {
     }
 
     private void saveStats(){
+        String fontPlayer1 = "ffffff";
+        String fontPlayer2 = "ffffff";
         switch (_winningPlayer){
             case 0 :
                 _player1.getPlayer().getPlayerStats().saveStatsAfterGame(false, _player1.getClassName());
@@ -187,12 +197,32 @@ public class Game {
             case 1 :
                 _player1.getPlayer().getPlayerStats().saveStatsAfterGame(true, _player1.getClassName());
                 _player2.getPlayer().getPlayerStats().saveStatsAfterGame(false, _player2.getClassName());
+                fontPlayer1 = "339966";
+                fontPlayer2 = "ff5050";
                 break;
             case 2 :
                 _player1.getPlayer().getPlayerStats().saveStatsAfterGame(false, _player1.getClassName());
                 _player2.getPlayer().getPlayerStats().saveStatsAfterGame(true, _player2.getClassName());
+                fontPlayer2 = "339966";
+                fontPlayer1 = "ff5050";
                 break;
         }
+        NpcHtmlMessage htmlMessage = new NpcHtmlMessage(1);
+        htmlMessage.setFile("data/html/fairGames/gameResults.html");
+        htmlMessage.replace("%fontPlayer1%", fontPlayer1);
+        htmlMessage.replace("%fontPlayer2%", fontPlayer2);
+        htmlMessage.replace("%player1%", _player1.getPlayer().getName());
+        htmlMessage.replace("%player2%", _player2.getPlayer().getName());
+        htmlMessage.replace("%player1points%", _player1.getPlayer().getPlayerStats().getPoints() + "" + (_playerPoints1>=_player1.getPlayer().getPlayerStats().getPoints() ?
+                "(-"+(_playerPoints1-_player1.getPlayer().getPlayerStats().getPoints())+")" : "(+"+(_player1.getPlayer().getPlayerStats().getPoints()-_playerPoints1)+")"));
+        htmlMessage.replace("%player2points%", _player2.getPlayer().getPlayerStats().getPoints() + "" + (_playerPoints2>=_player2.getPlayer().getPlayerStats().getPoints() ?
+                "(-"+(_playerPoints2-_player2.getPlayer().getPlayerStats().getPoints())+")" : "(+"+(_player2.getPlayer().getPlayerStats().getPoints()-_playerPoints2)+")"));
+        htmlMessage.replace("%player1dmg%", _player1.getDamage()+"");
+        htmlMessage.replace("%player2dmg%", _player2.getDamage()+"");
+
+        _player1.getPlayer().sendPacket(htmlMessage);
+        _player2.getPlayer().sendPacket(htmlMessage);
+
     }
 
     public L2Spawn SpawnCoach(int xPos, int yPos, int zPos, int npcId) {

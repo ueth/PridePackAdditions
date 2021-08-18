@@ -244,16 +244,12 @@ public class PlayerHandler {
 
     public void switchBuildStage(){
         switch (_buildStage){
-//            case CLASS_CHOOSE:
-//                _buildStage = BuildStage.SKILLS_CHOOSE;
-//                break;
-
             case SKILLS_CHOOSE:
                 _buildStage = BuildStage.WEAPON_CHOOSE;
                 break;
 
             case WEAPON_CHOOSE:
-                if(_player.getActiveWeaponInstance().getLocationSlot() == 16)
+                if(_player.getActiveWeaponInstance().getLocationSlot() == 16) //if weapon is two handed then we go to armor choose
                     _buildStage = BuildStage.ARMOR_CHOOSE;
                 else
                     _buildStage = BuildStage.SHIELD_CHOOSE;
