@@ -23,7 +23,7 @@ Battle Passes are available for players and clans. Progress through the Battle P
 To get started, you will need:
 
 - The datapack of a Pridepack
-- JDK 1.6
+- JDK 1.8
 
 ## Contributing
 
